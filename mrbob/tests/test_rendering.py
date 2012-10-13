@@ -3,6 +3,7 @@ from filecmp import cmp
 from tempfile import mkdtemp
 from shutil import rmtree
 from pytest import raises
+
 from mrbob.rendering import render_structure, render_template
 
 
@@ -22,17 +23,25 @@ def pytest_funcarg__examples(request):
         teardown=teardown, scope='function')
 
 
-def  test_subdirectories_created(examples):
+def test_subdirectories_created(examples):
     target_dir, fs_examples = examples
-    fs_rendered = render_structure(path.join(fs_examples, 'unbound'),
-        dict(ip_addr='192.168.0.1', access_control='10.0.1.0/16 allow'), target_dir)
+    fs_rendered = render_structure(
+        path.join(fs_examples, 'unbound'),
+        target_dir,
+        dict(ip_addr='192.168.0.1',
+             access_control='10.0.1.0/16 allow'),
+    )
     assert path.exists('%s/%s' % (fs_rendered, '/usr/local/etc'))
 
 
-def  test_string_replacement(examples):
+def test_string_replacement(examples):
     target_dir, fs_examples = examples
-    fs_rendered = render_structure(path.join(fs_examples, 'unbound'),
-        dict(ip_addr='192.168.0.1', access_control='10.0.1.0/16 allow'), target_dir)
+    fs_rendered = render_structure(
+        path.join(fs_examples, 'unbound'),
+        target_dir,
+        dict(ip_addr='192.168.0.1',
+             access_control='10.0.1.0/16 allow')
+    )
     fs_unbound_conf = path.join(fs_rendered, 'usr/local/etc/unbound/unbound.conf')
     assert ('interface: 192.168.0.1' in open(fs_unbound_conf).read())
 

@@ -33,6 +33,7 @@ TODO
 ====
 
 - [high] Python 3 support
+- [high] template copying should preserve permissions
 - [high] non interactive support
 - [high] ability to use multiple templates at the same time
 - [high] support pluggable rendering engine

@@ -3,10 +3,8 @@ from os import path
 from shutil import copy2
 
 
-def render_structure(fs_source_root, context, fs_target_root=None):
+def render_structure(fs_source_root, fs_target_root, context):
     """Recursively copies the given filesystem path to a target directory.
-
-    If no target directory is specified a temporary directory is created and used.
 
     Any files ending in `.tmpl` are interpreted as templates using Python
     string formatting and rendered using the context dictionary, thereby losing
@@ -31,7 +29,8 @@ def render_template(fs_source, fs_target_dir, context):
     filename = path.split(fs_source)[1]
     if filename.endswith('.tmpl'):
         filename = filename.split('.tmpl')[0]
-        fs_target = open(path.join(fs_target_dir, filename), 'w')
+        fs_path = path.join(fs_target_dir, filename)
+        fs_target = open(fs_path, 'w')
         fs_target.write(open(fs_source).read() % context)
         fs_target.close()
     else:
