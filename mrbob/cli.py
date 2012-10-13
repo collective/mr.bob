@@ -56,9 +56,10 @@ def main(args=sys.argv[1:], quiet=False):
     c = Configurator(template=options.template,
                      target_directory=options.target_directory,
                      verbose=options.verbose)
-    if options.list_variables:
-        variables = c.get_variables()  # pragma: no cover
+    if options.list_variables:  # pragma: no cover
+        variables = c.get_variables()
         # TODO: format string of variables and return
+        return variables
 
 
 if __name__ == '__main__':  # pragma: nocover
