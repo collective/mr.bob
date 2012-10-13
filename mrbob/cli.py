@@ -2,9 +2,20 @@
 
 import pkg_resources
 import sys
+
 import argparse
+from jinja2 import Environment
 
 from .configurator import Configurator
+
+
+jinja2_env = Environment(
+    block_start_string="{{%",
+    block_end_string="%}}",
+    variable_start_string="{{{",
+    variable_end_string="}}}",
+    trim_blocks=True,
+)
 
 
 # http://docs.python.org/library/argparse.html
@@ -53,13 +64,18 @@ def main(args=sys.argv[1:], quiet=False):
     if not options.template:
         parser.error('You must specify what template to use.')
 
+    bobconfig = {
+        'verbose': options.verbose,
+        'renderer': jinja2_env.from_string,
+    }
     c = Configurator(template=options.template,
                      target_directory=options.target_directory,
-                     verbose=options.verbose)
-    if options.list_variables:  # pragma: no cover
-        variables = c.get_variables()
-        # TODO: format string of variables and return
-        return variables
+                     bobconfig=bobconfig)
+    if options.list_questions:  # pragma: no cover
+        # TODO: list questions and return
+        return c.get_questions()
+
+    return c.render()
 
 
 if __name__ == '__main__':  # pragma: nocover

@@ -28,6 +28,7 @@ setup(name='mr.bob',
       install_requires=[
           'setuptools',
           'argparse',
+          'jinja2',
       ],
       extras_require={
           'test': [

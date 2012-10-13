@@ -25,13 +25,14 @@ def pytest_funcarg__examples(request):
 
 def test_subdirectories_created(examples):
     target_dir, fs_examples = examples
-    fs_rendered = render_structure(
+    render_structure(
         path.join(fs_examples, 'unbound'),
         target_dir,
         dict(ip_addr='192.168.0.1',
              access_control='10.0.1.0/16 allow'),
+        {'renderer': lambda s, v: s % v},
     )
-    assert path.exists('%s/%s' % (fs_rendered, '/usr/local/etc'))
+    assert path.exists('%s/%s' % (target_dir, '/usr/local/etc'))
 
 
 def test_string_replacement(examples):
@@ -40,9 +41,10 @@ def test_string_replacement(examples):
         path.join(fs_examples, 'unbound'),
         target_dir,
         dict(ip_addr='192.168.0.1',
-             access_control='10.0.1.0/16 allow')
+             access_control='10.0.1.0/16 allow'),
+        {'renderer': lambda s, v: s % v},
     )
-    fs_unbound_conf = path.join(fs_rendered, 'usr/local/etc/unbound/unbound.conf')
+    fs_unbound_conf = path.join(target_dir, 'usr/local/etc/unbound/unbound.conf')
     assert ('interface: 192.168.0.1' in open(fs_unbound_conf).read())
 
 
@@ -52,7 +54,8 @@ def test_render_copy(examples):
     fs_source = path.join(fs_examples, 'unbound/etc/rc.conf')
     fs_rendered = render_template(fs_source,
         target_dir,
-        dict(ip_addr='192.168.0.1', access_control='10.0.1.0/16 allow'))
+        dict(ip_addr='192.168.0.1', access_control='10.0.1.0/16 allow'),
+        {'renderer': lambda s, v: s % v})
     assert fs_rendered.endswith('/rc.conf')
     assert (cmp(fs_source, fs_rendered))
 
@@ -64,7 +67,8 @@ def test_render_template(examples):
     fs_rendered = render_template(path.join(fs_examples,
             'unbound/usr/local/etc/unbound/unbound.conf.tmpl'),
         target_dir,
-        dict(ip_addr='192.168.0.1', access_control='10.0.1.0/16 allow'))
+        dict(ip_addr='192.168.0.1', access_control='10.0.1.0/16 allow'),
+        {'renderer': lambda s, v: s % v})
     assert fs_rendered.endswith('/unbound.conf')
     assert ('interface: 192.168.0.1' in open(fs_rendered).read())
 
@@ -75,4 +79,5 @@ def test_render_missing_key(examples):
         render_template(path.join(fs_examples,
                 'unbound/usr/local/etc/unbound/unbound.conf.tmpl'),
             target_dir,
-            dict())
+            dict(),
+            {'renderer': lambda s, v: s % v})

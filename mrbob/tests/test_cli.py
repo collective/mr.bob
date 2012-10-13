@@ -11,8 +11,11 @@ class TestCLI(unittest.TestCase):
         output = self.call_FUT('--version')
         self.assertEqual(output, '0.1')
 
-    def test_no_template(self):
+    def test_no_template_name(self):
         self.assertRaises(SystemExit, self.call_FUT)
 
-    def test_template_render(self):
-        self.call_FUT('foo')
+    def test_no_template_directory(self):
+        self.assertRaises(ValueError, self.call_FUT, 'foo')
+
+    #def test_dummy_template(self):
+    #    self.call_FUT()
