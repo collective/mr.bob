@@ -15,6 +15,6 @@ class ConfigParser(ConfigParser_.SafeConfigParser):
 
 
 def config_from_file(fs_config):
-    parser = ConfigParser(allow_no_value=True)
+    parser = ConfigParser()
     parser.read(fs_config)
     return parser.as_dict()
