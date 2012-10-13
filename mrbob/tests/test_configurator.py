@@ -2,11 +2,11 @@ import unittest
 import os
 
 
-class resolve_dottedTest(unittest.TestCase):
+class resolve_dotted_pathTest(unittest.TestCase):
 
     def call_FUT(self, name):
-        from ..configurator import resolve_dotted
-        return resolve_dotted(name)
+        from ..configurator import resolve_dotted_path
+        return resolve_dotted_path(name)
 
     def test_nomodule(self):
         self.assertRaises(ImportError, self.call_FUT, 'foobar.blabla:foo')
@@ -15,6 +15,24 @@ class resolve_dottedTest(unittest.TestCase):
         template_dir = os.path.join(os.path.dirname(__file__), 'templates')
         abs_path = self.call_FUT('mrbob.tests:templates')
         self.assertEquals(abs_path, template_dir)
+
+
+class resolve_dotted_funcTest(unittest.TestCase):
+
+    def call_FUT(self, name):
+        from ..configurator import resolve_dotted_func
+        return resolve_dotted_func(name)
+
+    def test_nomodule(self):
+        self.assertRaises(ImportError, self.call_FUT, 'foobar.blabla:foo')
+
+    def test_error_no_func(self):
+        self.assertRaises(ValueError, self.call_FUT, 'mrbob.rendering:foo')
+
+    def test_return_func(self):
+        from mrbob.rendering import jinja2_renderer
+        func = self.call_FUT('mrbob.rendering:jinja2_renderer')
+        self.assertEquals(func, jinja2_renderer)
 
 
 class parse_templateTest(unittest.TestCase):

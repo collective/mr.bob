@@ -6,15 +6,25 @@ from importlib import import_module
 from .rendering import render_structure
 
 
-def resolve_dotted(name):
+def resolve_dotted_path(name):
     module_name, dir_name = name.split(':')
     module = import_module(module_name)
     return os.path.join(os.path.dirname(module.__file__), dir_name)
 
 
+def resolve_dotted_func(name):
+    module_name, func_name = name.split(':')
+    module = import_module(module_name)
+    func = getattr(module, func_name, None)
+    if func:
+        return func
+    else:
+        raise ValueError("There is no object named %s in module %s" % (module_name, func_name))
+
+
 def parse_template(template_name):
     if ':' in template_name:
-        path = resolve_dotted(template_name)
+        path = resolve_dotted_path(template_name)
     else:
         path = os.path.realpath(template_name)
 
@@ -37,8 +47,7 @@ class Configurator(object):
         if not os.path.isdir(self.target_directory):
             os.makedirs(self.target_directory)
         self.bobconfig = bobconfig
-        self.renderer = import_module(bobconfig.get('renderer',
-            'mrbob.rendering.python_formatting_renderer'))
+        self.renderer = resolve_dotted_func(bobconfig['renderer'])
 
     def get_questions(self):  # pragma: no cover
         # TODO: return information about questions

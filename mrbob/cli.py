@@ -56,7 +56,7 @@ def main(args=sys.argv[1:], quiet=False):
 
     bobconfig = {
         'verbose': options.verbose,
-        'renderer': 'jinja2',
+        'renderer': 'mrbob.rendering:python_formatting_renderer',
     }
     c = Configurator(template=options.template,
         target_directory=options.target_directory,

@@ -68,7 +68,6 @@ TODO
 - [high] template copying should preserve permissions
 - [high] non interactive support
 - [high] ability to use multiple templates at the same time
-- [high] support pluggable rendering engine
 - [low] ability to specify answers to questions from cli
 - [low] ability to simulate rendering
 - [low] ability to override templates

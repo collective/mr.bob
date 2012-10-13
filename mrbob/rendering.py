@@ -3,6 +3,7 @@ from os import path
 from shutil import copy2
 from jinja2 import Environment
 
+
 jinja2_env = Environment(
     block_start_string="{{%",
     block_end_string="%}}",
