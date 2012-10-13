@@ -1,6 +1,5 @@
 import os
 from os import path
-from tempfile import mkdtemp
 from shutil import copy2
 
 
@@ -15,8 +14,6 @@ def render_structure(fs_source_root, context, fs_target_root=None):
 
     Returns the absolute path to the target directory.
     """
-    if fs_target_root is None:  # pragma: no cover
-        fs_target_root = mkdtemp()
     for fs_source_dir, local_directories, local_files in os.walk(fs_source_root):
         fs_target_dir = path.abspath(path.join(fs_target_root, path.relpath(fs_source_dir, fs_source_root)))
         for local_file in local_files:
