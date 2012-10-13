@@ -1,11 +1,11 @@
-Bob renders directory structure templates
+Mister Bob the Builder renders directory structure templates.
 
 INSTALL
 =======
 
 ::
 
-    $ pip install mrbob
+    $ pip install mr.bob
 
 USAGE
 =====
@@ -67,6 +67,8 @@ TODO
 - [high] Python 3 support
 - [high] template copying should preserve permissions
 - [high] non interactive support
+- [high] ability to configure what to ignore
+- [high] ability to have variable substitution in template names
 - [high] ability to use multiple templates at the same time
 - [low] ability to specify answers to questions from cli
 - [low] ability to simulate rendering
