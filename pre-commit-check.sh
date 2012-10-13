@@ -10,14 +10,14 @@ function handle_exit {
 }
 
 echo '====== Running tests ========='
-bin/nosetests; handle_exit
+nosetests; handle_exit
 
 echo '====== Running PyFlakes ======'
-bin/python setup.py flakes; handle_exit
+python setup.py flakes; handle_exit
 
 echo '====== Running pep8 =========='
-bin/pep8 mrbob; handle_exit
-bin/pep8 *.py; handle_exit
+pep8 mrbob; handle_exit
+pep8 *.py; handle_exit
 
 if [ $EXITCODE -ne 0 ]; then
     exit 1
