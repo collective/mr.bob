@@ -3,7 +3,6 @@ from filecmp import cmp
 from tempfile import mkdtemp
 from shutil import rmtree
 from pytest import raises
-from mrbob.context import Context
 from mrbob.rendering import render_structure, render_template
 
 
@@ -23,13 +22,6 @@ def pytest_funcarg__examples(request):
         teardown=teardown, scope='function')
 
 
-class DummyContext(Context):
-
-    @property
-    def access_control(self):
-        return '%s/16 allow' % self.ip_addr
-
-
 def  test_subdirectories_created(examples):
     target_dir, fs_examples = examples
     fs_rendered = render_structure(path.join(fs_examples, 'unbound'),
@@ -43,18 +35,6 @@ def  test_string_replacement(examples):
         dict(ip_addr='192.168.0.1', access_control='10.0.1.0/16 allow'), target_dir)
     fs_unbound_conf = path.join(fs_rendered, 'usr/local/etc/unbound/unbound.conf')
     assert ('interface: 192.168.0.1' in open(fs_unbound_conf).read())
-
-
-def  test_computed_string_replacement(examples):
-    """a jail instance can provide additional values computed from
-    configuration values."""
-    target_dir, fs_examples = examples
-    jail = DummyContext(ip_addr='192.168.0.1', fs_local_root=path.join(fs_examples, 'unbound'))
-    fs_rendered = render_structure(jail.fs_local_root, jail, target_dir)
-    fs_unbound_conf = path.join(fs_rendered, 'usr/local/etc/unbound/unbound.conf')
-    # eventhough we didn't provide it in the config explicitly, the
-    # access control has been computed from the ip_addr and rendered:
-    assert ('access-control: 192.168.0.1/16 allow' in open(fs_unbound_conf).read())
 
 
 def test_render_copy(examples):
