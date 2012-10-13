@@ -24,7 +24,7 @@ def nest_variables(variables):
                 location[segment] = dict()
             location = location[segment]
             if not isinstance(location, dict):
-                raise ValueError('"%s" is not a dictionary' % location)
+                raise ValueError('Cannot assign "%s" to "%s".' % (value, location))
 
         location[segments[-1]] = value
     return nested
