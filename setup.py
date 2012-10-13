@@ -42,6 +42,8 @@ setup(name='mr.bob',
           ],
       },
       entry_points="""
+      [console_scripts]
+      mrbob = mrbob.cli:main
       """,
       include_package_data=True,
       zip_safe=False,
