@@ -11,7 +11,7 @@ parser.add_argument('template',
                     nargs="?",
                     help="""Template to use for rendering
                     """)
-parser.add_argument('--directory',
+parser.add_argument('-O, --target-directory',
                     default=".",
                     help='Where to output rendered structure')
 parser.add_argument('--verbose',

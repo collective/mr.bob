@@ -27,6 +27,7 @@ setup(name='mr.bob',
       packages=find_packages(),
       install_requires=[
           'setuptools',
+          'argparse',
       ],
       extras_require={
           'test': [
