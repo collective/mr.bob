@@ -1,0 +1,2 @@
+graft mr.bob
+include *.cfg *.rst *.in LICENSE
