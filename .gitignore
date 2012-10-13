@@ -5,3 +5,6 @@ local/
 lib/
 dist/
 include/
+/.coverage
+/htmlcov
+

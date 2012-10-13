@@ -31,9 +31,8 @@ setup(name='mr.bob',
       ],
       extras_require={
           'test': [
-              'nose',
-              'nose-selecttests',
-              'coverage',
+              'pytest',
+              'pytest-cov',
               'unittest2',
               'setuptools-flakes',
               'pep8',
