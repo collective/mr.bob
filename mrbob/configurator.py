@@ -2,13 +2,14 @@
 
 import os
 from importlib import import_module
+
 from .rendering import render_structure
 
 
 def resolve_dotted(name):
     module_name, dir_name = name.split(':')
-    module = __import__(module_name)
-    return os.path.join(module.__file__, dir_name)
+    module = import_module(module_name)
+    return os.path.join(os.path.dirname(module.__file__), dir_name)
 
 
 def parse_template(template_name):

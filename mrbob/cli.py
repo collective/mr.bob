@@ -26,7 +26,7 @@ parser.add_argument('--version',
                     action="store_true",
                     default=False,
                     help='Display version number')
-parser.add_argument('--list-variables',
+parser.add_argument('--list-questions',
                     action="store_true",
                     default=False,
                     help='List all variables needed for the template')

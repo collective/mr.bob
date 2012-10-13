@@ -1,4 +1,6 @@
 import unittest
+import tempfile
+import os
 
 
 class TestCLI(unittest.TestCase):
@@ -17,5 +19,7 @@ class TestCLI(unittest.TestCase):
     def test_no_template_directory(self):
         self.assertRaises(ValueError, self.call_FUT, 'foo')
 
-    #def test_dummy_template(self):
-    #    self.call_FUT()
+    def test_dummy_template(self):
+        template_dir = os.path.join(os.path.dirname(__file__), 'templates', 'unbound', 'etc')
+        output_dir = tempfile.mkdtemp()
+        self.call_FUT('-O', output_dir, template_dir)
