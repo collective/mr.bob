@@ -36,7 +36,7 @@ def render_template(fs_source, fs_target_dir, context):
         filename = filename.split('.tmpl')[0]
         fs_target = open(path.join(fs_target_dir, filename), 'w')
         fs_target.write(open(fs_source).read() % context)
-        fs_target.close
+        fs_target.close()
     else:
         copy2(fs_source, path.join(fs_target_dir, filename))
     return path.join(fs_target_dir, filename)
