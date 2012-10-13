@@ -1,7 +1,7 @@
 """"""
 
 import os
-
+from importlib import import_module
 from .rendering import render_structure
 
 
@@ -36,6 +36,8 @@ class Configurator(object):
         if not os.path.isdir(self.target_directory):
             os.makedirs(self.target_directory)
         self.bobconfig = bobconfig
+        self.renderer = import_module(bobconfig.get('renderer',
+            'mrbob.rendering.python_formatting_renderer'))
 
     def get_questions(self):  # pragma: no cover
         # TODO: return information about questions
@@ -45,4 +47,4 @@ class Configurator(object):
         render_structure(self.template_dir,
                          self.target_directory,
                          self.variables,
-                         self.bobconfig)
+                         self.renderer)

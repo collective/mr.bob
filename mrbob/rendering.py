@@ -1,9 +1,21 @@
 import os
 from os import path
 from shutil import copy2
+from jinja2 import Environment
+
+jinja2_env = Environment(
+    block_start_string="{{%",
+    block_end_string="%}}",
+    variable_start_string="{{{",
+    variable_end_string="}}}",
+    trim_blocks=True,
+)
+
+jinja2_renderer = jinja2_env.from_string,
+python_formatting_renderer = lambda s, v: s % v
 
 
-def render_structure(fs_source_root, fs_target_root, context, config):
+def render_structure(fs_source_root, fs_target_root, context, renderer):
     """Recursively copies the given filesystem path to a target directory.
 
     Any files ending in `.tmpl` are interpreted as templates using Python
@@ -17,7 +29,7 @@ def render_structure(fs_source_root, fs_target_root, context, config):
                 path.join(fs_source_dir, local_file),
                 fs_target_dir,
                 context,
-                config,
+                renderer,
             )
         for local_directory in local_directories:
             abs_dir = path.join(fs_target_dir, local_directory)
@@ -25,12 +37,12 @@ def render_structure(fs_source_root, fs_target_root, context, config):
                 os.mkdir(abs_dir)
 
 
-def render_template(fs_source, fs_target_dir, context, config):
+def render_template(fs_source, fs_target_dir, context, renderer):
     filename = path.split(fs_source)[1]
     if filename.endswith('.tmpl'):
         filename = filename.split('.tmpl')[0]
         fs_path = path.join(fs_target_dir, filename)
-        output = config['renderer'](open(fs_source).read(), context)
+        output = renderer(open(fs_source).read(), context)
         with open(fs_path, 'w') as fs_target:
             fs_target.write(output)
     else:
