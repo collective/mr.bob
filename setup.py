@@ -36,6 +36,7 @@ setup(name='mr.bob',
               'unittest2',
               'setuptools-flakes',
               'pep8',
+              'pytest',
           ],
           'development': [
               'zest.releaser',
