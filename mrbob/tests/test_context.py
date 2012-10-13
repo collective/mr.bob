@@ -1,7 +1,7 @@
 from os import path
 from pytest import raises
-from mrbob.api import Context
-from mrbob.api import config_from_file
+from mrbob.context import Context
+from mrbob.context import config_from_file
 
 
 class DummyContext(Context):
