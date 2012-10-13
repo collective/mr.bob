@@ -27,6 +27,7 @@ setup(name='mr.bob',
       packages=find_packages(),
       install_requires=[
           'setuptools',
+          'argparse',
       ],
       extras_require={
           'test': [
@@ -43,6 +44,8 @@ setup(name='mr.bob',
           ],
       },
       entry_points="""
+      [console_scripts]
+      mrbob = mrbob.cli:main
       """,
       include_package_data=True,
       zip_safe=False,
