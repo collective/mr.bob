@@ -1,7 +1,10 @@
 *.egg-info/
 *.pyc
-bin/
-local/
-lib/
-dist/
-include/
+/bin/
+/local/
+/lib/
+/dist/
+/include/
+/.coverage
+/htmlcov
+

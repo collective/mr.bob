@@ -10,7 +10,7 @@ function handle_exit {
 }
 
 echo '====== Running tests ========='
-nosetests; handle_exit
+py.test --cov mrbob mrbob/; handle_exit
 
 echo '====== Running PyFlakes ======'
 python setup.py flakes; handle_exit
