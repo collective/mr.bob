@@ -37,7 +37,7 @@ def test_subdirectories_created(examples):
 
 def test_string_replacement(examples):
     target_dir, fs_examples = examples
-    fs_rendered = render_structure(
+    render_structure(
         path.join(fs_examples, 'unbound'),
         target_dir,
         dict(ip_addr='192.168.0.1',
