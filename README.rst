@@ -10,6 +10,38 @@ INSTALL
 USAGE
 =====
 
+Configuration
+-------------
+
+There are two types of configuration.
+
+mr.bob
+    configures how mr.bob behaves
+variables
+    populates variables that will be passed to templates
+
+Configuration can be specified in multiple ways at the same time. 
+
+Global config -> config passed to mr.bob -> mr.bob variables passed in CLI -> questions answered in interactive mode
+
+
+Using configuration file
+------------------------
+
+Example of global `~/.mrbob` or ``--config foo.ini` passed to mrbob command line.
+
+::
+
+    [mr.bob]
+    non-interactive = true
+    renderer = moo.foo:render_mako
+
+    [variables]
+    webserver.ip_addr = 10.0.10.120
+    webserver.fqdn = briefkasten.10.0.10.120.xip.io
+    webserver.foo.bar = briefkasten.10.0.10.120.xip.io
+    webserver.foo.moo = briefkasten.10.0.10.120.xip.io
+
 DEVELOP
 =======
 
