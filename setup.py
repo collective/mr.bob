@@ -9,7 +9,7 @@ install_requires = [
     'setuptools',
     'argparse',
     'jinja2',
-],
+]
 
 try:
     import importlib
