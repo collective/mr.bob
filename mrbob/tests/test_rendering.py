@@ -32,7 +32,7 @@ def test_subdirectories_created(examples):
         target_dir,
         dict(ip_addr='192.168.0.1',
              access_control='10.0.1.0/16 allow'),
-         python_formatting_renderer,
+        python_formatting_renderer,
     )
     assert path.exists('%s/%s' % (target_dir, '/usr/local/etc'))
 
