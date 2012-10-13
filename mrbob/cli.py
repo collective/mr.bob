@@ -39,7 +39,7 @@ parser.add_argument('--version',
 parser.add_argument('--list-variables',
                     action="store_true",
                     default=False,
-                    help='List all variables needed for template')
+                    help='List all variables needed for the template')
 #parser.add_option('--simulate',
                   #dest='simulate',
                   #action='store_true',
