@@ -7,8 +7,9 @@ from shutil import rmtree
 from pytest import raises
 
 from mrbob.rendering import (render_structure,
-        render_template,
-        python_formatting_renderer)
+    render_template,
+    python_formatting_renderer,
+    render_filename)
 
 
 def pytest_funcarg__examples(request):
@@ -97,3 +98,80 @@ def test_rendered_permissions_preserved(examples):
         dict(ip_addr='192.168.0.1', access_control='10.0.1.0/16 allow'),
         python_formatting_renderer)
     assert stat.S_IMODE(os.stat(fs_rendered).st_mode) == 0771
+
+
+def test_filename_substitution():
+    assert render_filename('em0_+ip_addr+.conf',
+        dict(ip_addr='127.0.0.1')) == 'em0_127.0.0.1.conf'
+
+
+def test_multiple_filename_substitution():
+    assert render_filename('+device+_+ip_addr+.conf',
+        dict(ip_addr='127.0.0.1',
+            device='em0')) == 'em0_127.0.0.1.conf'
+
+
+def test_single_plus_not_substituted():
+    assert render_filename('foo+bar',
+        dict(foo='127.0.0.1',
+            bar='em0')) == 'foo+bar'
+
+
+def test_no_substitution():
+    assert render_filename('foobar',
+        dict(foo='127.0.0.1')) == 'foobar'
+
+
+def test_missing_key():
+    with raises(KeyError):
+        render_filename('foo+bar+blub', dict())
+
+
+def test_directory_is_renamed(examples):
+    target_dir, fs_examples = examples
+    render_structure(
+        path.join(fs_examples, 'renamedir'),
+        target_dir,
+        dict(name='blubber'),
+        python_formatting_renderer,
+    )
+    assert path.exists('%s/%s' % (target_dir, '/partsblubber'))
+    assert path.exists('%s/%s' % (target_dir, '/partsblubber/part'))
+
+
+def test_copied_file_is_renamed(examples):
+    target_dir, fs_examples = examples
+    render_structure(
+        path.join(fs_examples, 'renamedfile'),
+        target_dir,
+        dict(name='blubber'),
+        python_formatting_renderer,
+    )
+    assert path.exists('%s/%s' % (target_dir, '/foo.blubber.rst'))
+
+
+def test_rendered_file_is_renamed(examples):
+    target_dir, fs_examples = examples
+    render_structure(
+        path.join(fs_examples, 'renamedtemplate'),
+        target_dir,
+        dict(name='blubber', module='blather'),
+        python_formatting_renderer,
+    )
+    fs_rendered = '%s/%s' % (target_dir, '/blubber_endpoint.py')
+    assert path.exists(fs_rendered)
+    assert ('from blather import bar' in open(fs_rendered).read())
+
+
+def test_compount_renaming(examples):
+    """ all of the above edgecases in one fixture """
+    target_dir, fs_examples = examples
+    render_structure(
+        path.join(fs_examples, 'renamed'),
+        target_dir,
+        dict(name='blubber', module='blather'),
+        python_formatting_renderer,
+    )
+    fs_rendered = '%s/%s' % (target_dir, '/blatherparts/blubber_etc/blubber.conf')
+    assert path.exists(fs_rendered)
+    assert ('blather = blubber' in open(fs_rendered).read())
