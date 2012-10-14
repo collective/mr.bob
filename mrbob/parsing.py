@@ -1,7 +1,7 @@
 try:
-    import configparser as ConfigParser_
+    import configparser as ConfigParser_  # NOQA
 except ImportError:
-    import ConfigParser as ConfigParser_
+    import ConfigParser as ConfigParser_  # NOQA
 
 
 class ConfigParser(ConfigParser_.SafeConfigParser):
@@ -20,7 +20,7 @@ class ConfigParser(ConfigParser_.SafeConfigParser):
 def nest_variables(variables):
     from .configurator import ConfigurationError
     nested = dict()
-    for key, value in variables.iteritems():
+    for key, value in variables.items():
         segments = key.split('.')
         location = nested
         for segment in segments[:-1]:
