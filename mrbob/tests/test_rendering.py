@@ -7,8 +7,8 @@ from shutil import rmtree
 from pytest import raises
 
 from mrbob.rendering import (render_structure,
-        render_template,
-        python_formatting_renderer)
+    render_template,
+    python_formatting_renderer)
 
 
 def pytest_funcarg__examples(request):
