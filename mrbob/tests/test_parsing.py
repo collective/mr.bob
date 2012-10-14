@@ -91,3 +91,53 @@ def test_parse_config(parsed_config):
         'webserver.ip_addr = 127.0.0.2',
     ]
     assert output == expected_output
+
+
+def test_update_config_override_one_option():
+    from ..parsing import update_config
+    config = {
+        'foo': 'bar',
+        'foo1': 'mar'
+    }
+    new_config = {
+        'foo1': 'bar'
+    }
+    update_config(config, new_config)
+
+    expected_config = {
+        'foo': 'bar',
+        'foo1': 'bar'
+    }
+
+    assert config == expected_config
+
+
+def test_update_config_override_nested():
+    from ..parsing import update_config
+    config = {
+        'foo': 'bar',
+        'bar': {
+            'foo': 'bar',
+            'foo1': 'foo',
+        }
+    }
+    new_config = {
+        'foo1': 'bar',
+        'bar': {
+            'foo1': 'moo',
+            'moo': 'moo',
+        }
+    }
+    update_config(config, new_config)
+
+    expected_config = {
+        'foo': 'bar',
+        'foo1': 'bar',
+        'bar': {
+            'foo': 'bar',
+            'foo1': 'moo',
+            'moo': 'moo',
+        }
+    }
+
+    assert config == expected_config

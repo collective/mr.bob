@@ -17,6 +17,10 @@ class ConfigurationError(MrBobError):
     """Raised during configuration phase"""
 
 
+class TemplateConfigurationError(ConfigurationError):
+    """Raised reading template configuration"""
+
+
 class ValidationError(MrBobError):
     """Raised during question validation"""
 

@@ -23,3 +23,9 @@ class TestCLI(unittest.TestCase):
         template_dir = os.path.join(os.path.dirname(__file__), 'templates', 'unbound', 'etc')
         output_dir = tempfile.mkdtemp()
         self.call_FUT('-O', output_dir, template_dir)
+
+    def test_dummy_template_create_target_directory(self):
+        template_dir = os.path.join(os.path.dirname(__file__), 'templates', 'unbound', 'etc')
+        output_dir = os.path.join(tempfile.mkdtemp(), 'notexist')
+        self.call_FUT('-O', os.path.join(output_dir), template_dir)
+        self.assertTrue(os.path.isdir(output_dir))

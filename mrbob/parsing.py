@@ -1,3 +1,4 @@
+import collections
 try:
     import configparser as ConfigParser_  # NOQA
 except ImportError:
@@ -45,7 +46,12 @@ def parse_config(fs_config):
 
 
 def update_config(to_be_updated_config, new_config):
-    # TODO: write update function
+    for k, v in new_config.iteritems():
+        if isinstance(v, collections.Mapping):
+            r = update_config(to_be_updated_config.get(k, {}), v)
+            to_be_updated_config[k] = r
+        else:
+            to_be_updated_config[k] = new_config[k]
     return to_be_updated_config
 
 
