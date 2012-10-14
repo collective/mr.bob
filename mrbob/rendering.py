@@ -1,3 +1,4 @@
+import stat
 import os
 from os import path
 from shutil import copy2
@@ -42,9 +43,11 @@ def render_template(fs_source, fs_target_dir, context, renderer):
     if filename.endswith('.tmpl'):
         filename = filename.split('.tmpl')[0]
         fs_path = path.join(fs_target_dir, filename)
+        fs_mode = stat.S_IMODE(os.stat(fs_source).st_mode)
         output = renderer(open(fs_source).read(), context)
         with open(fs_path, 'w') as fs_target:
             fs_target.write(output)
+        os.chmod(fs_path, fs_mode)
     else:
         copy2(fs_source, path.join(fs_target_dir, filename))
     return path.join(fs_target_dir, filename)
