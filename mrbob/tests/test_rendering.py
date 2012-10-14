@@ -1,4 +1,6 @@
-from os import path
+import stat
+import os
+from os import path, chmod
 from filecmp import cmp
 from tempfile import mkdtemp
 from shutil import rmtree
@@ -83,3 +85,15 @@ def test_render_missing_key(examples):
             target_dir,
             dict(),
             python_formatting_renderer)
+
+
+def test_rendered_permissions_preserved(examples):
+    target_dir, fs_examples = examples
+    fs_template = path.join(fs_examples,
+        'unbound/usr/local/etc/unbound/unbound.conf.tmpl')
+    chmod(fs_template, 0771)
+    fs_rendered = render_template(fs_template,
+        target_dir,
+        dict(ip_addr='192.168.0.1', access_control='10.0.1.0/16 allow'),
+        python_formatting_renderer)
+    assert stat.S_IMODE(os.stat(fs_rendered).st_mode) == 0771
