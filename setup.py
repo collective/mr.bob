@@ -30,7 +30,6 @@ setup(name='mr.bob',
       classifiers=[
           "Programming Language :: Python",
       ],
-      #keywords='',
       author='Domen Kozar, Tom Lazar',
       author_email='',
       url='https://github.com/iElectric/mr.bob.git',

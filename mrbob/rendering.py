@@ -24,6 +24,7 @@ def render_structure(fs_source_root, fs_target_root, context, renderer):
     string formatting and rendered using the context dictionary, thereby losing
     the `.tmpl` suffix.
     """
+    # TODO: optionally move mrbob.ini to rendered structure
     for fs_source_dir, local_directories, local_files in os.walk(fs_source_root):
         fs_target_dir = path.abspath(path.join(fs_target_root, path.relpath(fs_source_dir, fs_source_root)))
         for local_file in local_files:
