@@ -1,7 +1,5 @@
 import ConfigParser as ConfigParser_
 
-from .configurator import ConfigurationError
-
 
 class ConfigParser(ConfigParser_.SafeConfigParser):
     """ a ConfigParser that can provide its values as simple dictionary.
@@ -17,6 +15,7 @@ class ConfigParser(ConfigParser_.SafeConfigParser):
 
 
 def nest_variables(variables):
+    from .configurator import ConfigurationError
     nested = dict()
     for key, value in variables.iteritems():
         segments = key.split('.')
@@ -36,5 +35,31 @@ def parse_config(fs_config):
     parser = ConfigParser()
     parser.read(fs_config)
     config = parser.as_dict()
-    config['variables'] = nest_variables(config['variables'])
+    config['variables'] = nest_variables(config.get('variables', {}))
+    config['mr.bob'] = nest_variables(config.get('mr.bob', {}))
+    config['questions'] = nest_variables(config.get('questions', {}))
     return config
+
+
+def update_config(to_be_updated_config, new_config):
+    # TODO: write update function
+    return to_be_updated_config
+
+
+def pretty_format_config(config):
+    l = []
+
+    def format_config(dict_, namespace=''):
+        for key, value in dict_.iteritems():
+            if namespace:
+                namespace_new = namespace + ".%s" % key
+            else:
+                namespace_new = key
+            if isinstance(value, dict):
+                format_config(value, namespace=namespace_new)
+            else:
+                l.append("%s = %s" % (namespace_new, value))
+
+    format_config(config)
+
+    return sorted(l)

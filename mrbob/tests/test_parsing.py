@@ -42,6 +42,16 @@ def test_parse_nested_variable_out_of_order(parsed_config):
     assert parsed_config['variables']['webserver']['ip_addr'] == '127.0.0.3'
 
 
+@config('example5.ini')
+def test_parse_deeply_nested_variables(parsed_config):
+    expected_config = {
+        'mr.bob': {},
+        'variables': {'a': {'b': {'c': {'d': 'foo', 'f': 'bar'}}}, 'name': 'Bob'},
+        'questions': {},
+    }
+    assert parsed_config == expected_config
+
+
 def test_overwrite_dict_with_value():
     """ providing a value for a key that already contains a
     dictionary raises a ConfigurationError """
@@ -56,3 +66,28 @@ def test_overwrite_value_with_dict():
     from ..configurator import ConfigurationError
     with raises(ConfigurationError):
         parse_config(make_one('example4.ini'))
+
+
+@config('example5.ini')
+def test_parse_config_deeply_nested_structure(parsed_config):
+    from ..parsing import pretty_format_config
+    output = pretty_format_config(parsed_config['variables'])
+    expected_output = [
+        'a.b.c.d = foo',
+        'a.b.c.f = bar',
+        'name = Bob',
+    ]
+    assert output == expected_output
+
+
+def test_parse_config(parsed_config):
+    from ..parsing import pretty_format_config
+    output = pretty_format_config(parsed_config['variables'])
+    expected_output = [
+        'host.ip_addr = 10.0.10.120',
+        'name = Bob',
+        'webserver.foo.bar = barf',
+        'webserver.fqdn = mrbob.10.0.10.120.xip.io',
+        'webserver.ip_addr = 127.0.0.2',
+    ]
+    assert output == expected_output

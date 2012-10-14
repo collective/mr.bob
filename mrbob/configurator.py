@@ -1,13 +1,24 @@
 """"""
 
 import os
+import readline
+readline  # make pyflakes happy, readline makes interactive mode keep history
 from importlib import import_module
 
 from .rendering import render_structure
+from .parsing import parse_config, pretty_format_config
 
 
-class ConfigurationError(Exception):
+class MrBobError(Exception):
+    """Base class for errors"""
+
+
+class ConfigurationError(MrBobError):
     """Raised during configuration phase"""
+
+
+class ValidationError(MrBobError):
+    """Raised during question validation"""
 
 
 def resolve_dotted_path(name):
@@ -45,20 +56,26 @@ class Configurator(object):
                  target_directory,
                  bobconfig):
         self.template_dir = parse_template(template)
-        # TODO: get variables from template_dir/questions.ini
-        self.variables = {}
+        template_config = os.path.join(self.template_dir, 'mrbob.ini')
+        self.questions = self.parse_questions(template_config)
         self.target_directory = os.path.realpath(target_directory)
         if not os.path.isdir(self.target_directory):
             os.makedirs(self.target_directory)
         self.bobconfig = bobconfig
         self.renderer = resolve_dotted_func(bobconfig['renderer'])
-
-    def get_questions(self):  # pragma: no cover
-        # TODO: return information about questions
-        return
+        self.variables = {}
 
     def render(self):
         render_structure(self.template_dir,
                          self.target_directory,
                          self.variables,
                          self.renderer)
+
+    def parse_questions(self, config_file):
+        # TODO: first aggregate all config, then generate questions
+        config = parse_config(config_file)
+        config
+
+    def print_questions(self):  # pragma: no cover
+        for line in pretty_format_config(self.questions):
+            print line

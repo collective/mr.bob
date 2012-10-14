@@ -29,7 +29,7 @@ parser.add_argument('--version',
 parser.add_argument('--list-questions',
                     action="store_true",
                     default=False,
-                    help='List all variables needed for the template')
+                    help='List all questions needed for the template')
 #parser.add_option('--simulate',
                   #dest='simulate',
                   #action='store_true',
@@ -63,9 +63,8 @@ def main(args=sys.argv[1:], quiet=False):
         c = Configurator(template=options.template,
             target_directory=options.target_directory,
             bobconfig=bobconfig)
-        if options.list_questions:  # pragma: no cover
-            # TODO: list questions and return
-            return c.get_questions()
+        if options.list_questions:
+            return c.print_questions()
 
         return c.render()
     except ConfigurationError as e:
