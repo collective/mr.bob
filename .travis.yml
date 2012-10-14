@@ -10,3 +10,6 @@ install:
   - easy_install mr.bob[test]
 script:
   - ./bin/test
+matrix:
+  allow_failures:
+    - python: pypy

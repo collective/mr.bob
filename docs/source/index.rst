@@ -11,7 +11,7 @@ Welcome to mr.bob's documentation!
 
 .. sidebar:: Features
 
-    - supports python2.6, python 2.7, pypy
+    - supports python 2.6 - 3.3, pypy
     - 100% test coverage
 
 
