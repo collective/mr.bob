@@ -52,7 +52,7 @@ DEVELOP
     $ virtualenv .
     $ source bin/activate
     $ python setup.py develop
-    $ easy_install mrbob[test]
+    $ easy_install mr.bob[test]
 
 RUNNING TESTS
 =============
@@ -65,11 +65,10 @@ TODO
 ====
 
 - [high] Python 3 support
-- [high] template copying should preserve permissions
-- [high] non interactive support
-- [high] ability to configure what to ignore
+- [high] non-interactive support
+- [high] ability to configure what to ignore when copying templates
 - [high] ability to have variable substitution in template names
-- [high] ability to use multiple templates at the same time
+- [high] ability to use multiple templates at the same time and depend on them
 - [low] ability to specify answers to questions from cli
 - [low] ability to simulate rendering
 - [low] ability to override templates
