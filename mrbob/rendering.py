@@ -19,9 +19,8 @@ python_formatting_renderer = lambda s, v: s % v
 def render_structure(fs_source_root, fs_target_root, context, renderer):
     """Recursively copies the given filesystem path to a target directory.
 
-    Any files ending in `.tmpl` are interpreted as templates using Python
-    string formatting and rendered using the context dictionary, thereby losing
-    the `.tmpl` suffix.
+    Any files ending in `.tmpl` are rendered as templates using the given
+    renderer using the context dictionary, thereby losing the `.tmpl` suffix.
     """
     for fs_source_dir, local_directories, local_files in os.walk(fs_source_root):
         fs_target_dir = path.abspath(path.join(fs_target_root, path.relpath(fs_source_dir, fs_source_root)))
