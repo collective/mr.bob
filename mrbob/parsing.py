@@ -1,4 +1,7 @@
-import ConfigParser as ConfigParser_
+try:
+    import configparser as ConfigParser_
+except ImportError:
+    import ConfigParser_
 
 
 class ConfigParser(ConfigParser_.SafeConfigParser):

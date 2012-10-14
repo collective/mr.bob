@@ -61,5 +61,4 @@ setup(name='mr.bob',
       """,
       include_package_data=True,
       zip_safe=False,
-      use_2to3=True,
       )
