@@ -42,12 +42,12 @@ def render_template(fs_source, fs_target_dir, context, renderer):
     filename = path.split(fs_source)[1]
     if filename.endswith('.tmpl'):
         filename = filename.split('.tmpl')[0]
-        fs_path = path.join(fs_target_dir, filename)
-        fs_mode = stat.S_IMODE(os.stat(fs_source).st_mode)
+        fs_target_path = path.join(fs_target_dir, filename)
+        fs_source_mode = stat.S_IMODE(os.stat(fs_source).st_mode)
         output = renderer(open(fs_source).read(), context)
-        with open(fs_path, 'w') as fs_target:
+        with open(fs_target_path, 'w') as fs_target:
             fs_target.write(output)
-        os.chmod(fs_path, fs_mode)
+        os.chmod(fs_target_path, fs_source_mode)
     else:
         copy2(fs_source, path.join(fs_target_dir, filename))
     return path.join(fs_target_dir, filename)
