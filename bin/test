@@ -12,12 +12,9 @@ function handle_exit {
 echo '====== Running tests ========='
 py.test --cov mrbob --cov-report term --cov-report html mrbob/; handle_exit
 
-echo '====== Running PyFlakes ======'
-python setup.py flakes; handle_exit
-
-echo '====== Running pep8 =========='
-pep8 mrbob; handle_exit
-pep8 *.py; handle_exit
+echo '====== Running flake8 ======'
+flake8 *.py; handle_exit
+flake8 mrbob; handle_exit
 
 if [ $EXITCODE -ne 0 ]; then
     exit 1

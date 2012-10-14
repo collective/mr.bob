@@ -12,7 +12,7 @@ install_requires = [
 ]
 
 try:
-    import importlib
+    import importlib  # NOQA
 except ImportError:
     install_requires.append('importlib')
 
@@ -47,8 +47,7 @@ setup(name='mr.bob',
           'test': [
               'pytest',
               'pytest-cov',
-              'setuptools-flakes',
-              'pep8',
+              'flake8',
               'pytest',
           ],
           'development': [
