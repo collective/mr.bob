@@ -4,15 +4,46 @@
 User guide
 ==========
 
-
 Installation
 ------------
 
-:: pip install mr.bob
+::
+
+    pip install mr.bob
 
 
 Usage
 -----
+
+
+Once you install mr.bob, there is `mrbob` command available.
+
+`$ mrbob --help`::
+
+    usage: mrbob [-h] [-O, --target-directory TARGET_DIRECTORY] [--verbose]
+                 [--version] [--list-questions]
+                 [template]
+
+    Filesystem template renderer
+
+    positional arguments:
+      template              Template to use for rendering
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      -O, --target-directory TARGET_DIRECTORY
+                            Where to output rendered structure
+      --verbose             Print more output for debugging
+      --version             Display version number
+      --list-questions      List all questions needed for the template
+
+Most basic use case it rendering a template from a folder to current folder::
+
+    $ mrbob template_folder/
+
+Or from a package::
+
+    $ mrbob some.package:template_folder/
 
 
 Configuration
@@ -29,13 +60,13 @@ Configuration can be specified in multiple ways at the same time.
 
 ::
 
-    Global config
+    Global config at ~/.mrbob
         ^
         |
-    config passed to mr.bob
+    `mrbob --config mrbob.ini`
         ^
         |
-    mr.bob variables passed in CLI
+    `mrbob --some-variable foobar`
         ^
         |
     questions answered in interactive mode
@@ -44,7 +75,7 @@ Configuration can be specified in multiple ways at the same time.
 Using configuration file
 ------------------------
 
-Example of global `~/.mrbob` or `mrbob --config foo-ini`.
+Example of global config file `~/.mrbob` or command line parameter `mrbob --config foo-ini`.
 
 ::
 
@@ -67,18 +98,15 @@ Example of global `~/.mrbob` or `mrbob --config foo-ini`.
     webserver.ip_addr.prompt_command = getpass:getpass
 
 
+Collection of community managed templates
+-----------------------------------------
+
+
 Design goals
 ------------
 
-
-
-Reporting bugs
---------------
-
-Check if an issue already exists at https://github.com/iElectric/almir/issues,
-otherwise add new one with following information: 
-
-* bacula-director version, operating system and browser version
-* include screenshot if it provides any useful information
-* pastebin (http://paste2.org) output of $ cat ALMIR_ROOT/var/logs/almir-stderr*
-* pastebin ALMIR_ROOT/buildout.cfg, but be careful to *remove any sensitive data*
+- Cover 80% of use cases, don't become too complex  
+- Ability to use templates not only from eggs, but also folders and similar
+- Python 3 support
+- Jinja2 renderer by default, but replaceable
+- Ability to render multiple templates to the same target directory
