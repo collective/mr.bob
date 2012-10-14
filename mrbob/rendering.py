@@ -1,5 +1,6 @@
 import stat
 import os
+import re
 from os import path
 from shutil import copy2
 from jinja2 import Environment
@@ -50,3 +51,14 @@ def render_template(fs_source, fs_target_dir, context, renderer):
     else:
         copy2(fs_source, path.join(fs_target_dir, filename))
     return path.join(fs_target_dir, filename)
+
+
+variables_regex = re.compile("\+[^+]+\+")
+
+
+def render_filename(filename, context):
+    variables = variables_regex.findall(filename)
+    rendered = filename
+    for variable in variables:
+        rendered = str.replace(rendered, variable, context[str.replace(variable, '+', '')])
+    return rendered
