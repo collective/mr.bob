@@ -37,7 +37,7 @@ Once you install mr.bob, there is `mrbob` command available.
       --version             Display version number
       --list-questions      List all questions needed for the template
 
-Most basic use case it rendering a template from a folder to current folder::
+Most basic use case is rendering a template from a folder to current folder::
 
     $ mrbob template_folder/
 
@@ -49,24 +49,24 @@ Or from a package::
 Configuration
 -------------
 
-There are two types of configuration.
+Configuration is done with `.ini` style files. There are two sections for configuration.
 
 mr.bob
-    configures how mr.bob behaves
+    configures how `mrbob` behaves
 variables
-    populates variables that will be passed to templates
+    parameters that will be passed to templates for rendering
 
-Configuration can be specified in multiple ways at the same time. 
+Configuration can be specified in multiple ways. Here is a graph how settings are preferred (questions override any other configuration).
 
 ::
 
     Global config at ~/.mrbob
         ^
         |
-    `mrbob --config mrbob.ini`
+    mrbob --config mrbob.ini
         ^
         |
-    `mrbob --some-variable foobar`
+    mrbob --some-variable foobar
         ^
         |
     questions answered in interactive mode
@@ -84,22 +84,29 @@ Example of global config file `~/.mrbob` or command line parameter `mrbob --conf
     renderer = moo.foo:render_mako
 
     [variables]
-    webserver.ip_addr = 10.0.10.120
-    webserver.fqdn = briefkasten.10.0.10.120.xip.io
-    webserver.foo.bar = briefkasten.10.0.10.120.xip.io
-    webserver.foo.moo = briefkasten.10.0.10.120.xip.io
+    author = Domen Kožar
+    author_email = domen@dev.si
+    foo.bar = something
 
-    [questions]
-    webserver.ip_addr.question = Why o Why?
-    webserver.ip_addr.default = True
-    webserver.ip_addr.validator = foo.boo:validator_json
-    webserver.ip_addr.help = Blabla blabal bal
-    webserver.ip_addr.action = foo.boo:too
-    webserver.ip_addr.prompt_command = getpass:getpass
+
+TODO: tell about nested settings
+
+Listing all questions needed to be answered for a template
+----------------------------------------------------------
+
+::
+
+    $ mrbob --list-questions template_folder/
+    ...
 
 
 Collection of community managed templates
 -----------------------------------------
+
+You are encouraged to use `bobtemplates.*` Python egg namespace to write
+templates and contribute them to this list by making a pull request.
+
+- `bobtemplates.ielectric <https://github.com/iElectric/bobtemplates.ielectric>`_ 
 
 
 Design goals

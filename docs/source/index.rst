@@ -11,6 +11,8 @@ Welcome to mr.bob's documentation!
 
 .. sidebar:: Features
 
+    - provide questions needed to be answered
+    - questions can be grouped by using a namespace
     - render templates from a folder or Python egg
     - supports Python 2.6 - 3.3, pypy
     - 100% test coverage
@@ -20,11 +22,14 @@ Welcome to mr.bob's documentation!
 
 .. topic:: Introduction
 
-   **mr.bob** is a tool that takes a template directory and copies over
+   **mr.bob** is a tool that takes a directory skeleton and copies over
    directory structure to target folder and might use rendering engine
-   Jinja2 to dynamically generate the files. Additionally, you might be
+   `Jinja2 <http://jinja.pocoo.org/>`_ to dynamically generate the files. Additionally, you might be
    asked some questions needed to render the structure or provide a config
    file to answer them.
+
+   **mr.bob** is meant to replace previous tools such as `paster (PasteScript) <http://pythonpaste.org/script/>`_
+   and `templer <http://templer-manual.readthedocs.org/en/latest/index.html>`_.
 
 
 .. toctree::
