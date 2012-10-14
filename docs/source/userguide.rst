@@ -16,10 +16,9 @@ Usage
 -----
 
 
-Once you install mr.bob, there is `mrbob` command available.
+Once you install mr.bob, there is `mrbob` command available::
 
-`$ mrbob --help`::
-
+    $ mrbob --help
     usage: mrbob [-h] [-O, --target-directory TARGET_DIRECTORY] [--verbose]
                  [--version] [--list-questions]
                  [template]
