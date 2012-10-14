@@ -78,4 +78,4 @@ class Configurator(object):
 
     def print_questions(self):  # pragma: no cover
         for line in pretty_format_config(self.questions):
-            print line
+            print(line)

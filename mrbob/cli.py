@@ -72,4 +72,4 @@ def main(args=sys.argv[1:], quiet=False):
 
 
 if __name__ == '__main__':  # pragma: nocover
-    print main()
+    print(main())
