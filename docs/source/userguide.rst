@@ -9,7 +9,7 @@ Installation
 
 ::
 
-    pip install mr.bob
+    $ pip install mr.bob
 
 
 Usage
