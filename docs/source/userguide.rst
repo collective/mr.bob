@@ -14,7 +14,6 @@ Installation
 Usage
 -----
 
-TODO: document that jinja templating has extra configuration
 
 Configuration
 -------------
@@ -45,7 +44,7 @@ Configuration can be specified in multiple ways at the same time.
 Using configuration file
 ------------------------
 
-Example of global `~/.mrbob` or ``--config foo.ini` passed to mrbob command line.
+Example of global `~/.mrbob` or `mrbob --config foo-ini`.
 
 ::
 
@@ -71,13 +70,6 @@ Example of global `~/.mrbob` or ``--config foo.ini` passed to mrbob command line
 Design goals
 ------------
 
-* each release is pinned to bacula-director specific major version
-* simple is better than complicated
-* inline documentation
-* convention over configuration
-* can act as view interface only (optional configuration functionality)
-* plugin into existing bacula instance
-* total control of bacula through existing bacula api
 
 
 Reporting bugs

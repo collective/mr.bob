@@ -11,12 +11,7 @@ Welcome to mr.bob's documentation!
 
 .. sidebar:: Features
 
-    - supports bacula-director version 5.x.x
-    - supports sqlite, postgresql, mysql databases
-    - complete read-only interface for bacula-director
-    - interactive web console frontend to bconsole
-    - export data to excel, pdf and clipboard 
-    - supports python2.6 and python 2.7
+    - supports python2.6, python 2.7, pypy
     - 100% test coverage
 
 
