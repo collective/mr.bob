@@ -27,7 +27,8 @@ class resolve_dotted_funcTest(unittest.TestCase):
         self.assertRaises(ImportError, self.call_FUT, 'foobar.blabla:foo')
 
     def test_error_no_func(self):
-        self.assertRaises(ValueError, self.call_FUT, 'mrbob.rendering:foo')
+        from ..configurator import ConfigurationError
+        self.assertRaises(ConfigurationError, self.call_FUT, 'mrbob.rendering:foo')
 
     def test_return_func(self):
         from mrbob.rendering import jinja2_renderer
@@ -60,7 +61,8 @@ class parse_templateTest(unittest.TestCase):
         self.assertEqual(abs_path, template_dir)
 
     def test_not_a_dir(self):
-        self.assertRaises(ValueError, self.call_FUT, 'foo_bar')
+        from ..configurator import ConfigurationError
+        self.assertRaises(ConfigurationError, self.call_FUT, 'foo_bar')
 
 
 #class ConfiguratorTest(unittest.TestCase):

@@ -17,7 +17,7 @@ class TestCLI(unittest.TestCase):
         self.assertRaises(SystemExit, self.call_FUT)
 
     def test_no_template_directory(self):
-        self.assertRaises(ValueError, self.call_FUT, 'foo')
+        self.assertRaises(SystemExit, self.call_FUT, 'foo')
 
     def test_dummy_template(self):
         template_dir = os.path.join(os.path.dirname(__file__), 'templates', 'unbound', 'etc')

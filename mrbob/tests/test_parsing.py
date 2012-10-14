@@ -44,13 +44,15 @@ def test_parse_nested_variable_out_of_order(parsed_config):
 
 def test_overwrite_dict_with_value():
     """ providing a value for a key that already contains a
-    dictionary raises a ValueError """
-    with raises(ValueError):
+    dictionary raises a ConfigurationError """
+    from ..configurator import ConfigurationError
+    with raises(ConfigurationError):
         parse_config(make_one('example3.ini'))
 
 
 def test_overwrite_value_with_dict():
     """ providing a dict for a key that already contains a
-    string raises a ValueError """
-    with raises(ValueError):
+    string raises a ConfigurationError """
+    from ..configurator import ConfigurationError
+    with raises(ConfigurationError):
         parse_config(make_one('example4.ini'))

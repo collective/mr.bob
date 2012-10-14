@@ -1,5 +1,7 @@
 import ConfigParser as ConfigParser_
 
+from .configurator import ConfigurationError
+
 
 class ConfigParser(ConfigParser_.SafeConfigParser):
     """ a ConfigParser that can provide its values as simple dictionary.
@@ -24,7 +26,7 @@ def nest_variables(variables):
                 location[segment] = dict()
             location = location[segment]
             if not isinstance(location, dict):
-                raise ValueError('Cannot assign "%s" to "%s".' % (value, location))
+                raise ConfigurationError('Cannot assign "%s" to "%s".' % (value, location))
 
         location[segments[-1]] = value
     return nested

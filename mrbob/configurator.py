@@ -6,6 +6,10 @@ from importlib import import_module
 from .rendering import render_structure
 
 
+class ConfigurationError(Exception):
+    """Raised during configuration phase"""
+
+
 def resolve_dotted_path(name):
     module_name, dir_name = name.split(':')
     module = import_module(module_name)
@@ -19,7 +23,7 @@ def resolve_dotted_func(name):
     if func:
         return func
     else:
-        raise ValueError("There is no object named %s in module %s" % (module_name, func_name))
+        raise ConfigurationError("There is no object named %s in module %s" % (module_name, func_name))
 
 
 def parse_template(template_name):
@@ -29,7 +33,7 @@ def parse_template(template_name):
         path = os.path.realpath(template_name)
 
     if not os.path.isdir(path):
-        raise ValueError('Template directory does not exist: %s' % path)
+        raise ConfigurationError('Template directory does not exist: %s' % path)
     return path
 
 

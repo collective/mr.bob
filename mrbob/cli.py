@@ -5,7 +5,7 @@ import sys
 
 import argparse
 
-from .configurator import Configurator
+from .configurator import Configurator, ConfigurationError
 
 
 # http://docs.python.org/library/argparse.html
@@ -58,14 +58,18 @@ def main(args=sys.argv[1:], quiet=False):
         'verbose': options.verbose,
         'renderer': 'mrbob.rendering:python_formatting_renderer',
     }
-    c = Configurator(template=options.template,
-        target_directory=options.target_directory,
-        bobconfig=bobconfig)
-    if options.list_questions:  # pragma: no cover
-        # TODO: list questions and return
-        return c.get_questions()
 
-    return c.render()
+    try:
+        c = Configurator(template=options.template,
+            target_directory=options.target_directory,
+            bobconfig=bobconfig)
+        if options.list_questions:  # pragma: no cover
+            # TODO: list questions and return
+            return c.get_questions()
+
+        return c.render()
+    except ConfigurationError as e:
+        parser.error(e.args[0])
 
 
 if __name__ == '__main__':  # pragma: nocover
