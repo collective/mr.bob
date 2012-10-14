@@ -47,6 +47,7 @@ setup(name='mr.bob',
           ],
           'development': [
               'zest.releaser',
+              'Sphinx',
           ],
       },
       entry_points="""
