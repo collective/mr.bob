@@ -64,6 +64,19 @@ mr.bob
 variables
     parameters that will be passed to templates for rendering
 
+Example of global config file `~/.mrbob` or command line parameter `mrbob --config foo-ini`.
+
+.. code-block:: ini
+
+    [mr.bob]
+    non-interactive = true
+    renderer = moo.foo:render_mako
+
+    [variables]
+    author = Domen Kožar
+    author_email = domen@dev.si
+    foo.bar = something
+
 Configuration can be specified in multiple ways. Here is a graph how settings are preferred (questions override any other configuration).
 
 ::
@@ -80,21 +93,8 @@ Configuration can be specified in multiple ways. Here is a graph how settings ar
     questions answered in interactive mode
 
 
-Example of global config file `~/.mrbob` or command line parameter `mrbob --config foo-ini`.
-
-.. code-block:: ini
-
-    [mr.bob]
-    non-interactive = true
-    renderer = moo.foo:render_mako
-
-    [variables]
-    author = Domen Kožar
-    author_email = domen@dev.si
-    foo.bar = something
-
-
 TODO: explain grouped variables
+
 
 Listing all questions needed to be answered for a template
 ----------------------------------------------------------
