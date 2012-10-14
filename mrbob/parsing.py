@@ -46,7 +46,7 @@ def parse_config(fs_config):
 
 
 def update_config(to_be_updated_config, new_config):
-    for k, v in new_config.iteritems():
+    for k, v in new_config.items():
         if isinstance(v, collections.Mapping):
             r = update_config(to_be_updated_config.get(k, {}), v)
             to_be_updated_config[k] = r
