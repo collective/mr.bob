@@ -7,4 +7,4 @@ install:
   - python setup.py develop
   - easy_install mr.bob[test]
 script:
-  - ./pre-commit-check.sh
+  - ./bin/test

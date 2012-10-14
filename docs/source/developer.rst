@@ -22,7 +22,7 @@ Running tests
 
 Easy as::
 
-    $ ./pre-commit-check.sh
+    $ ./bin/test
 
 
 Make a Release
