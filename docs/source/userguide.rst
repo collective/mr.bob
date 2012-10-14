@@ -72,12 +72,9 @@ Configuration can be specified in multiple ways. Here is a graph how settings ar
     questions answered in interactive mode
 
 
-Using configuration file
-------------------------
-
 Example of global config file `~/.mrbob` or command line parameter `mrbob --config foo-ini`.
 
-::
+.. code-block:: ini
 
     [mr.bob]
     non-interactive = true
@@ -89,7 +86,7 @@ Example of global config file `~/.mrbob` or command line parameter `mrbob --conf
     foo.bar = something
 
 
-TODO: tell about nested settings
+TODO: explain grouped variables
 
 Listing all questions needed to be answered for a template
 ----------------------------------------------------------
