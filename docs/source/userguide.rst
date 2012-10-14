@@ -45,6 +45,14 @@ Or from a package::
     $ mrbob some.package:template_folder/
 
 
+Using a sample template
+-----------------------
+
+
+    $ mrbob mr.bob.templates:sample/
+    ...
+
+
 Configuration
 -------------
 

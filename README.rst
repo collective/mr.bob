@@ -8,6 +8,7 @@ TODO
 - [high] write usermanual/developermanual (diagram how it works)
 - [high] non-interactive support (disable last phase of configuration)
 - [high] ability to configure what to ignore when copying templates
+- [high] write a sample template to start with (foobar template)
 - [high] ability to use multiple templates at the same time and depend on them (similar templer structures, but doesnt separate structures and templates)
 - [low] ability to have localcommands (maybe we dont need that because of multiple templates?)
 - [low] ability to specify pre/post functions when rendering templates
