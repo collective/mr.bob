@@ -48,6 +48,7 @@ Or from a package::
 Using a sample template
 -----------------------
 
+::
 
     $ mrbob mr.bob.templates:sample/
     ...
