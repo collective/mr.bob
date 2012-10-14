@@ -82,14 +82,14 @@ Configuration can be specified in multiple ways. Here is a graph how settings ar
 ::
 
     Global config at ~/.mrbob
-        ^
-        |
+            ^
+            |
     mrbob --config mrbob.ini
-        ^
-        |
+            ^
+            |
     mrbob --some-variable foobar
-        ^
-        |
+            ^
+            |
     questions answered in interactive mode
 
 
@@ -122,3 +122,14 @@ Design goals
 - Python 3 support
 - Jinja2 renderer by default, but replaceable
 - Ability to render multiple templates to the same target directory
+
+Why another tool
+----------------
+
+- PasteScript is a big package with lots of legacy code and noone seems to care about maintaining it (and porting it to python3)
+- a tool should do one thing and that thing good, which is where PasteScript fails
+- PasteScript works only with Python eggs, mr.bob can also render templates from folder and in future maybe from http links
+- PasteScript uses Cheetah which doesn't work on PyPy and has C extensions that need to be compiled
+- PasteScript in unmaintainable, with really dodgy code
+- PasteScript doesn't preserve permissions when copying/rendering files
+- mr.bob is just 200 lines of code with some extra features in mind that PasteScript cannot provide such as Python API to be used by higher level libraries
