@@ -1,4 +1,7 @@
-import ConfigParser as ConfigParser_
+try:
+    import configparser as ConfigParser_  # NOQA
+except ImportError:
+    import ConfigParser as ConfigParser_  # NOQA
 
 
 class ConfigParser(ConfigParser_.SafeConfigParser):
@@ -17,7 +20,7 @@ class ConfigParser(ConfigParser_.SafeConfigParser):
 def nest_variables(variables):
     from .configurator import ConfigurationError
     nested = dict()
-    for key, value in variables.iteritems():
+    for key, value in variables.items():
         segments = key.split('.')
         location = nested
         for segment in segments[:-1]:
@@ -50,7 +53,7 @@ def pretty_format_config(config):
     l = []
 
     def format_config(dict_, namespace=''):
-        for key, value in dict_.iteritems():
+        for key, value in dict_.items():
             if namespace:
                 namespace_new = namespace + ".%s" % key
             else:

@@ -5,7 +5,6 @@ More: http://mrbob.readthedocs.org/
 TODO
 ====
 
-- [high] Python 3 support
 - [high] write usermanual/developermanual (diagram how it works)
 - [high] non-interactive support (disable last phase of configuration)
 - [high] ability to configure what to ignore when copying templates
