@@ -53,7 +53,7 @@ def pretty_format_config(config):
     l = []
 
     def format_config(dict_, namespace=''):
-        for key, value in dict_.iteritems():
+        for key, value in dict_.items():
             if namespace:
                 namespace_new = namespace + ".%s" % key
             else:
