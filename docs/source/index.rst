@@ -15,7 +15,7 @@ Welcome to mr.bob's documentation!
     - 100% test coverage
 
 
-.. topic:: Overview
+.. topic:: Introduction
 
    Bla bla.
 
