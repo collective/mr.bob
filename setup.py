@@ -47,7 +47,7 @@ setup(name='mr.bob',
           'test': [
               'pytest',
               'pytest-cov',
-              'flake8',
+              'flake8==1.4',
               'pytest',
           ],
           'development': [
