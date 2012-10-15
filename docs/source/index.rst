@@ -28,7 +28,8 @@ Welcome to mr.bob's documentation!
    asked some questions needed to render the structure or provide a config
    file to answer them.
 
-   **mr.bob** is meant to replace previous tools such as `paster (PasteScript) <http://pythonpaste.org/script/>`_
+   **mr.bob** is meant to deprecate previous tools such as
+   `paster (PasteScript) <http://pythonpaste.org/script/>`_
    and `templer <http://templer-manual.readthedocs.org/en/latest/index.html>`_.
 
 

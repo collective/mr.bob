@@ -10,6 +10,7 @@ TODO
 - [high] ability to configure what to ignore when copying templates
 - [high] write a sample template to start with (foobar template)
 - [high] ability to use multiple templates at the same time and depend on them (similar templer structures, but doesnt separate structures and templates)
+- [low] ability to specify git+http(s) links as templates with path
 - [low] ability to have localcommands (maybe we dont need that because of multiple templates?)
 - [low] ability to specify pre/post functions when rendering templates
 - [low] ability to specify actions to answers, for example if one question was answered, another template may be triggered
