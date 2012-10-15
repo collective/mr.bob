@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from os import path
 from py.test import mark, raises
 from mrbob.parsing import parse_config
@@ -76,6 +77,15 @@ def test_parse_config_deeply_nested_structure(parsed_config):
         'a.b.c.d = foo',
         'a.b.c.f = bar',
         'name = Bob',
+    ]
+    assert output == expected_output
+
+@config('example6.ini')
+def test_parse_config_utf8(parsed_config):
+    from ..parsing import pretty_format_config
+    output = pretty_format_config(parsed_config['variables'])
+    expected_output = [
+        u'name = Čebula',
     ]
     assert output == expected_output
 
