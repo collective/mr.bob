@@ -5,7 +5,9 @@ import sys
 
 import argparse
 
-from .configurator import Configurator, ConfigurationError
+from .configurator import Configurator
+from .configurator import ConfigurationError
+from .configurator import TemplateConfigurationError
 
 
 # http://docs.python.org/library/argparse.html
@@ -30,6 +32,9 @@ parser.add_argument('--list-questions',
                     action="store_true",
                     default=False,
                     help='List all questions needed for the template')
+parser.add_argument('--renderer',
+                    action="store",
+                    help='Dotted notation to a renderer function. Defaults to mrbob.rendering:jinja2_renderer')
 #parser.add_option('--simulate',
                   #dest='simulate',
                   #action='store_true',
@@ -55,9 +60,10 @@ def main(args=sys.argv[1:], quiet=False):
         parser.error('You must specify what template to use.')
 
     bobconfig = {
-        'verbose': options.verbose,
-        'renderer': 'mrbob.rendering:python_formatting_renderer',
+        # TODO:    'verbose': options.verbose,
     }
+    if options.renderer:
+        bobconfig['renderer'] = options.renderer
 
     try:
         c = Configurator(template=options.template,
@@ -67,8 +73,10 @@ def main(args=sys.argv[1:], quiet=False):
             return c.print_questions()
 
         return c.render()
+    except TemplateConfigurationError as e:
+        parser.error(u'TemplateConfigurationError %s' % e.args[0])
     except ConfigurationError as e:
-        parser.error(e.args[0])
+        parser.error(u'ConfigurationError %s' % e.args[0])
 
 
 if __name__ == '__main__':  # pragma: nocover
