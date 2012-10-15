@@ -29,7 +29,7 @@ def nest_variables(variables):
                 location[segment] = dict()
             location = location[segment]
             if not isinstance(location, dict):
-                raise ConfigurationError('Cannot assign "%s" to "%s".' % (value, location))
+                raise ConfigurationError('Cannot assign "%s" to group "%s", subgroup is already used.' % (value, key))
 
         location[segments[-1]] = value
     return nested
