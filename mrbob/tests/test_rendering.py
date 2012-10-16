@@ -35,6 +35,7 @@ def test_subdirectories_created(examples):
         target_dir,
         dict(ip_addr='192.168.0.1',
              access_control='10.0.1.0/16 allow'),
+        True,
         python_formatting_renderer,
     )
     assert path.exists('%s/%s' % (target_dir, '/usr/local/etc'))
@@ -47,6 +48,7 @@ def test_string_replacement(examples):
         target_dir,
         dict(ip_addr='192.168.0.1',
              access_control='10.0.1.0/16 allow'),
+        False,
         python_formatting_renderer,
     )
     fs_unbound_conf = path.join(target_dir, 'usr/local/etc/unbound/unbound.conf')
@@ -60,6 +62,7 @@ def test_render_copy(examples):
     fs_rendered = render_template(fs_source,
         target_dir,
         dict(ip_addr='192.168.0.1', access_control='10.0.1.0/16 allow'),
+        False,
         python_formatting_renderer)
     assert fs_rendered.endswith('/rc.conf')
     assert (cmp(fs_source, fs_rendered))
@@ -73,6 +76,7 @@ def test_render_template(examples):
             'unbound/usr/local/etc/unbound/unbound.conf.tmpl'),
         target_dir,
         dict(ip_addr='192.168.0.1', access_control='10.0.1.0/16 allow'),
+        False,
         python_formatting_renderer)
     assert fs_rendered.endswith('/unbound.conf')
     assert ('interface: 192.168.0.1' in open(fs_rendered).read())
@@ -85,6 +89,7 @@ def test_render_missing_key(examples):
                 'unbound/usr/local/etc/unbound/unbound.conf.tmpl'),
             target_dir,
             dict(),
+            False,
             python_formatting_renderer)
 
 
@@ -96,6 +101,7 @@ def test_rendered_permissions_preserved(examples):
     fs_rendered = render_template(fs_template,
         target_dir,
         dict(ip_addr='192.168.0.1', access_control='10.0.1.0/16 allow'),
+        False,
         python_formatting_renderer)
     assert stat.S_IMODE(os.stat(fs_rendered).st_mode) == 771
 
@@ -133,6 +139,7 @@ def test_directory_is_renamed(examples):
         path.join(fs_examples, 'renamedir'),
         target_dir,
         dict(name='blubber'),
+        False,
         python_formatting_renderer,
     )
     assert path.exists('%s/%s' % (target_dir, '/partsblubber'))
@@ -145,6 +152,7 @@ def test_copied_file_is_renamed(examples):
         path.join(fs_examples, 'renamedfile'),
         target_dir,
         dict(name='blubber'),
+        False,
         python_formatting_renderer,
     )
     assert path.exists('%s/%s' % (target_dir, '/foo.blubber.rst'))
@@ -156,6 +164,7 @@ def test_rendered_file_is_renamed(examples):
         path.join(fs_examples, 'renamedtemplate'),
         target_dir,
         dict(name='blubber', module='blather'),
+        False,
         python_formatting_renderer,
     )
     fs_rendered = '%s/%s' % (target_dir, '/blubber_endpoint.py')
@@ -170,6 +179,7 @@ def test_compount_renaming(examples):
         path.join(fs_examples, 'renamed'),
         target_dir,
         dict(name='blubber', module='blather'),
+        False,
         python_formatting_renderer,
     )
     fs_rendered = '%s/%s' % (target_dir, '/blatherparts/blubber_etc/blubber.conf')

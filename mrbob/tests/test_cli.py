@@ -85,7 +85,8 @@ overriden_by_file = file1
 
         # TODO: also test cli parameters when it's implemented
         template_dir = os.path.join(os.path.dirname(__file__), 'templates', 'multiconfig')
-        self.call_FUT('-O', self.output_dir,
+        self.call_FUT('-v',
+                      '-O', self.output_dir,
                       '-c', tempconfig,
                       template_dir)
         with open(os.path.join(self.output_dir, 'vars')) as f:

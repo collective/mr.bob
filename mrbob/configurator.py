@@ -118,6 +118,7 @@ class Configurator(object):
         render_structure(self.template_dir,
                          self.target_directory,
                          self.variables,
+                         self.verbose,
                          self.renderer)
 
     def parse_questions(self, config):
