@@ -3,6 +3,7 @@ import os
 import sys
 import tempfile
 import shutil
+import six
 
 
 def dummy_validator(value):  # pragma: no cover
@@ -121,11 +122,11 @@ class ConfiguratorTest(unittest.TestCase):
                           self.target_dir,
                           {})
         self.assertEqual(len(c.questions), 1)
-        self.assertEqual(c.questions[0].name, u'foo')
+        self.assertEqual(c.questions[0].name, six.u('foo'))
         self.assertEqual(c.questions[0].default, True)
         self.assertEqual(c.questions[0].required, True)
         self.assertEqual(c.questions[0].validator, dummy_validator)
-        self.assertEqual(c.questions[0].help, u'Blabla blabal balasd a a sd')
+        self.assertEqual(c.questions[0].help, six.u('Blabla blabal balasd a a sd'))
         self.assertEqual(c.questions[0].action, dummy_action)
         self.assertEqual(c.questions[0].command_prompt, dummy_prompt)
 

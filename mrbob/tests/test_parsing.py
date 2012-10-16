@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from os import path
+import six
 from py.test import mark, raises
 from mrbob.parsing import parse_config
 
@@ -86,7 +87,7 @@ def test_parse_config_utf8(parsed_config):
     from ..parsing import pretty_format_config
     output = pretty_format_config(parsed_config['variables'])
     expected_output = [
-        u'name = Čebula',
+        six.u('name = Čebula'),
     ]
     assert output == expected_output
 
