@@ -153,7 +153,7 @@ class Question(object):
         # TODO: choice question?
 
     def __repr__(self):
-        return u"<Question name=%(name)s question='%(question)s' default=%(default)s required=%(required)s>" % self.__dict__
+        return "<Question name=%(name)s question='%(question)s' default=%(default)s required=%(required)s>" % self.__dict__
 
     def ask(self):
         correct_answer = None
