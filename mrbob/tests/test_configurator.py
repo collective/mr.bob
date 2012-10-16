@@ -138,13 +138,14 @@ class QuestionTest(unittest.TestCase):
         return Question(*args, **kw)
 
     def test_defaults(self):
+        from ..configurator import input_func
         q = self.call_FUT('foo', 'Why?')
         self.assertEqual(q.name, 'foo')
         self.assertEqual(q.default, None)
         self.assertEqual(q.required, False)
         self.assertEqual(q.help, "")
         self.assertEqual(q.validator, None)
-        self.assertEqual(q.command_prompt, raw_input)
+        self.assertEqual(q.command_prompt, input_func)
 
     def test_repr(self):
         q = self.call_FUT('foo', 'Why?')

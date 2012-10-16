@@ -12,6 +12,7 @@ from .parsing import parse_config, pretty_format_config
 
 
 DOTTED_REGEX = re.compile(r'^[a-zA-Z_.]+:[a-zA-Z_.]+$')
+input_func = getattr(__builtins__, 'raw_input', input)
 
 
 class MrBobError(Exception):
@@ -138,7 +139,7 @@ class Question(object):
                  required=False,
                  action=lambda x: x,
                  validator=None,
-                 command_prompt=raw_input,
+                 command_prompt=input_func,
                  help=""):
         self.name = name
         self.question = question
