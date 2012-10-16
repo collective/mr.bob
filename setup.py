@@ -50,6 +50,7 @@ setup(name='mr.bob',
               'pytest-cov',
               'flake8',
               'pytest',
+              'mock',
           ],
           'development': [
               'zest.releaser',
