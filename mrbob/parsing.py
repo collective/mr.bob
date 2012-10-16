@@ -1,8 +1,6 @@
 import collections
-try:
-    import configparser as ConfigParser_  # NOQA
-except ImportError:
-    import ConfigParser as ConfigParser_  # NOQA
+from six.moves import configparser as ConfigParser_
+from six import PY3
 
 
 class ConfigParser(ConfigParser_.SafeConfigParser):
@@ -31,7 +29,10 @@ def nest_variables(variables):
             if not isinstance(location, dict):
                 raise ConfigurationError('Cannot assign "%s" to group "%s", subgroup is already used.' % (value, key))
 
-        location[segments[-1]] = unicode(value, 'utf-8')
+        if PY3:
+            location[segments[-1]] = value
+        else:
+            location[segments[-1]] = value.decode('utf-8')
     return nested
 
 

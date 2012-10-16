@@ -1,5 +1,21 @@
 import unittest
 import os
+import sys
+import tempfile
+import shutil
+import six
+
+
+def dummy_validator(value):  # pragma: no cover
+    pass
+
+
+def dummy_action(value):  # pragma: no cover
+    pass
+
+
+def dummy_prompt(value):  # pragma: no cover
+    pass
 
 
 class resolve_dotted_pathTest(unittest.TestCase):
@@ -65,11 +81,176 @@ class parse_templateTest(unittest.TestCase):
         self.assertRaises(ConfigurationError, self.call_FUT, 'foo_bar')
 
 
-#class ConfiguratorTest(unittest.TestCase):
+class ConfiguratorTest(unittest.TestCase):
 
-#    def call_FUT(self, *args, **kw):
-#        from ..configurator import Configurator
-#        return Configurator(*args, **kw)
+    def setUp(self):
+        self.target_dir = tempfile.mkdtemp()
 
-#    def test_foobar(self):
-#        self.call_FUT()
+    def tearDown(self):
+        shutil.rmtree(self.target_dir)
+
+    def call_FUT(self, *args, **kw):
+        from ..configurator import Configurator
+        return Configurator(*args, **kw)
+
+    def test_parse_questions_basic(self):
+        c = self.call_FUT('mrbob.tests:templates/questions1',
+                          self.target_dir,
+                          {})
+        self.assertEqual(len(c.questions), 2)
+        self.assertEqual(c.questions[0].name, 'foo.bar.car.dar')
+        self.assertEqual(c.questions[0].question, 'Why?')
+        self.assertEqual(c.questions[1].name, 'foo')
+        self.assertEqual(c.questions[1].question, 'What?')
+
+    def test_parse_questions_no_questions(self):
+        c = self.call_FUT('mrbob.tests:templates/questions2',
+                          self.target_dir,
+                          {})
+        self.assertEqual(len(c.questions), 0)
+
+    def test_parse_questions_extra_parameter(self):
+        from ..configurator import TemplateConfigurationError
+        self.assertRaises(TemplateConfigurationError,
+                          self.call_FUT,
+                          'mrbob.tests:templates/questions3',
+                          self.target_dir,
+                          {})
+
+    def test_parse_questions_all(self):
+        c = self.call_FUT('mrbob.tests:templates/questions4',
+                          self.target_dir,
+                          {})
+        self.assertEqual(len(c.questions), 1)
+        self.assertEqual(c.questions[0].name, six.u('foo'))
+        self.assertEqual(c.questions[0].default, True)
+        self.assertEqual(c.questions[0].required, True)
+        self.assertEqual(c.questions[0].validator, dummy_validator)
+        self.assertEqual(c.questions[0].help, six.u('Blabla blabal balasd a a sd'))
+        self.assertEqual(c.questions[0].action, dummy_action)
+        self.assertEqual(c.questions[0].command_prompt, dummy_prompt)
+
+
+class QuestionTest(unittest.TestCase):
+
+    def call_FUT(self, *args, **kw):
+        from ..configurator import Question
+        return Question(*args, **kw)
+
+    def test_defaults(self):
+        from six import moves
+        q = self.call_FUT('foo', 'Why?')
+        self.assertEqual(q.name, 'foo')
+        self.assertEqual(q.default, None)
+        self.assertEqual(q.required, False)
+        self.assertEqual(q.help, "")
+        self.assertEqual(q.validator, None)
+        self.assertEqual(q.command_prompt, moves.input)
+
+    def test_repr(self):
+        q = self.call_FUT('foo', 'Why?')
+        self.assertEqual(repr(q), six.u("<Question name=foo question='Why?' default=None required=False>"))
+
+    def test_ask(self):
+
+        def cmd(q):
+            self.assertEqual(q, '--> Why?:')
+            return 'foo'
+
+        q = self.call_FUT('foo', 'Why?', command_prompt=cmd)
+        answer = q.ask()
+        self.assertEqual(answer, 'foo')
+
+    def test_ask_default_empty(self):
+        q = self.call_FUT('foo',
+                          'Why?',
+                          default="moo",
+                          command_prompt=lambda x: '')
+        answer = q.ask()
+        self.assertEqual(answer, 'moo')
+
+    def test_ask_default_not_empty(self):
+
+        def cmd(q):
+            self.assertEqual(q, '--> Why? [moo]:')
+            return 'foo'
+
+        q = self.call_FUT('foo',
+                          'Why?',
+                          default="moo",
+                          command_prompt=cmd)
+        answer = q.ask()
+        self.assertEqual(answer, 'foo')
+
+    def test_ask_no_default(self):
+
+        def cmd(q, go=['foo', '']):
+            return go.pop()
+
+        q = self.call_FUT('foo',
+                          'Why?',
+                          command_prompt=cmd)
+        answer = q.ask()
+        self.assertEqual(answer, 'foo')
+
+    def test_ask_no_help(self):
+        from six import StringIO
+
+        def cmd(q, go=['foo', '?']):
+            return go.pop()
+
+        sys.stdout = StringIO()
+        q = self.call_FUT('foo',
+                          'Why?',
+                          command_prompt=cmd)
+        q.ask()
+        self.assertEqual(sys.stdout.getvalue(), 'There is no additional help text.\n')
+        sys.stdout = sys.__stdout__
+
+    def test_ask_help(self):
+        from six import StringIO
+
+        def cmd(q, go=['foo', '?']):
+            return go.pop()
+
+        sys.stdout = StringIO()
+        q = self.call_FUT('foo',
+                          'Why?',
+                          help="foobar_help",
+                          command_prompt=cmd)
+        q.ask()
+        self.assertEqual(sys.stdout.getvalue(), 'foobar_help\n')
+        sys.stdout = sys.__stdout__
+
+    def test_validator_no_return(self):
+        q = self.call_FUT('foo',
+                          'Why?',
+                          validator=dummy_validator,
+                          command_prompt=lambda x: 'foo')
+        answer = q.ask()
+        self.assertEqual(answer, 'foo')
+
+    def test_validator_return(self):
+        q = self.call_FUT('foo',
+                          'Why?',
+                          validator=lambda x: 'moo',
+                          command_prompt=lambda x: 'foo')
+        answer = q.ask()
+        self.assertEqual(answer, 'moo')
+
+    def test_validator_error(self):
+        from ..configurator import ValidationError
+
+        def cmd(q, go=['foo', 'moo']):
+            return go.pop()
+
+        def validator(value):
+            if value != 'foo':
+                raise ValidationError
+
+        q = self.call_FUT('foo',
+                          'Why?',
+                          validator=validator,
+                          command_prompt=cmd)
+        answer = q.ask()
+        self.assertEqual(answer, 'foo')
