@@ -177,7 +177,7 @@ class Question(object):
                         _ = self.validator(answer)
                         if _:
                             answer = _
-                    except ValidationError, e:
+                    except ValidationError as e:
                         print('    Error:' + str(e))
                         continue
 
