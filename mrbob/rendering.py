@@ -29,6 +29,8 @@ def render_structure(fs_source_root, fs_target_root, context, verbose, renderer)
     with values from the context, i.e. a file named `+name+.py.tmpl` given a
     dictionary {'name': 'bar'} would be rendered as `bar.py`.
     """
+    if not isinstance(fs_source_root, six.text_type):
+        fs_source_root = six.u(fs_source_root)
     for fs_source_dir, local_directories, local_files in os.walk(fs_source_root):
         fs_target_dir = path.abspath(path.join(fs_target_root, path.relpath(fs_source_dir, fs_source_root)))
         for local_file in local_files:
@@ -76,5 +78,5 @@ def render_filename(filename, context):
     variables = variables_regex.findall(filename)
     rendered = filename
     for variable in variables:
-        rendered = str.replace(rendered, variable, context[str.replace(variable, '+', '')])
+        rendered = rendered.replace(variable, context[variable.replace('+', '')])
     return rendered

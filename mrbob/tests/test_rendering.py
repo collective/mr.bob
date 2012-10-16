@@ -1,10 +1,13 @@
+# -*- coding: utf-8 -*-
 import stat
 import os
+import codecs
 from os import path, chmod
 from filecmp import cmp
 from tempfile import mkdtemp
 from shutil import rmtree
 from pytest import raises
+import six
 
 from mrbob.rendering import (render_structure,
     render_template,
@@ -39,6 +42,31 @@ def test_subdirectories_created(examples):
         python_formatting_renderer,
     )
     assert path.exists('%s/%s' % (target_dir, '/usr/local/etc'))
+
+
+def test_encoding_is_utf_eight(examples):
+    target_dir, fs_examples = examples
+    if six.PY3:  # pragma: no cover
+        folder_name = 'encodingč'
+    else:  # pragma: no cover
+        folder_name = 'encodingč'.decode('utf-8')
+    render_structure(
+        path.join(fs_examples, folder_name),
+        target_dir,
+        dict(),
+        True,
+        python_formatting_renderer,
+    )
+    if six.PY3:  # pragma: no cover
+        file_name = '/mapča/ća'
+    else:  # pragma: no cover
+        file_name = '/mapča/ća'.decode('utf-8')
+    if six.PY3:  # pragma: no cover
+        expected = 'Ćača.\n'
+    else:  # pragma: no cover
+        expected = 'Ćača.\n'.decode('utf-8')
+    with codecs.open(target_dir + file_name, 'r', 'utf-8') as f:
+        assert f.read() == expected
 
 
 def test_string_replacement(examples):
