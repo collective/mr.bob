@@ -123,12 +123,40 @@ class ConfiguratorTest(unittest.TestCase):
                           {})
         self.assertEqual(len(c.questions), 1)
         self.assertEqual(c.questions[0].name, six.u('foo'))
-        self.assertEqual(c.questions[0].default, True)
-        self.assertEqual(c.questions[0].required, True)
+        self.assertEqual(c.questions[0].default, "True")
+        self.assertEqual(c.questions[0].required, False)
         self.assertEqual(c.questions[0].validator, dummy_validator)
         self.assertEqual(c.questions[0].help, six.u('Blabla blabal balasd a a sd'))
         self.assertEqual(c.questions[0].action, dummy_action)
         self.assertEqual(c.questions[0].command_prompt, dummy_prompt)
+
+    def test_default_and_required(self):
+        from ..configurator import TemplateConfigurationError
+        args = ['mrbob.tests:templates/questions5',
+                self.target_dir,
+                {}]
+        self.assertRaises(TemplateConfigurationError, self.call_FUT, *args)
+
+    def test_ask_questions_empty(self):
+        args = ['mrbob.tests:templates/questions1',
+                self.target_dir,
+                {}]
+        c = self.call_FUT(*args)
+        c.questions = []
+        c.variables = {}
+        c.ask_questions()
+        self.assertEquals(c.variables, {})
+
+    def test_ask_questions_missing(self):
+        from ..configurator import Question
+        args = ['mrbob.tests:templates/questions1',
+                self.target_dir,
+                {}]
+        c = self.call_FUT(*args)
+        c.questions = [Question('foo.bar', 'fobar?'), Question('moo', "Moo?", command_prompt=lambda x: 'moo.')]
+        c.variables = {'foo.bar': 'answer'}
+        c.ask_questions()
+        self.assertEquals(c.variables, {'foo.bar': 'answer', 'moo': 'moo.'})
 
 
 class QuestionTest(unittest.TestCase):
@@ -204,7 +232,7 @@ class QuestionTest(unittest.TestCase):
                           'Why?',
                           command_prompt=cmd)
         q.ask()
-        self.assertEqual(sys.stdout.getvalue(), 'There is no additional help text.\n')
+        self.assertEqual(sys.stdout.getvalue(), 'There is no additional help text.\n\n')
         sys.stdout = sys.__stdout__
 
     def test_ask_help(self):
@@ -219,7 +247,7 @@ class QuestionTest(unittest.TestCase):
                           help="foobar_help",
                           command_prompt=cmd)
         q.ask()
-        self.assertEqual(sys.stdout.getvalue(), 'foobar_help\n')
+        self.assertEqual(sys.stdout.getvalue(), 'foobar_help\n\n')
         sys.stdout = sys.__stdout__
 
     def test_validator_no_return(self):

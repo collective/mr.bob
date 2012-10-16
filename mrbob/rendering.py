@@ -14,7 +14,7 @@ jinja2_env = Environment(
     trim_blocks=True,
 )
 
-jinja2_renderer = jinja2_env.from_string,
+jinja2_renderer = lambda s, v: jinja2_env.from_string(s).render(v)
 python_formatting_renderer = lambda s, v: s % v
 
 
@@ -50,7 +50,9 @@ def render_template(fs_source, fs_target_dir, context, renderer):
         filename = filename.split('.tmpl')[0]
         fs_target_path = path.join(fs_target_dir, render_filename(filename, context))
         fs_source_mode = stat.S_IMODE(os.stat(fs_source).st_mode)
-        output = renderer(open(fs_source).read(), context)
+        with open(fs_source) as f:
+            source_output = f.read()
+            output = renderer(source_output, context)
         with open(fs_target_path, 'w') as fs_target:
             fs_target.write(output)
         os.chmod(fs_target_path, fs_source_mode)

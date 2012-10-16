@@ -86,11 +86,11 @@ def test_parse_config_deeply_nested_structure(parsed_config):
 def test_parse_config_utf8(parsed_config):
     from ..parsing import pretty_format_config
     output = pretty_format_config(parsed_config['variables'])
-    if six.PY3:
+    if six.PY3:  # pragma: no cover
         expected_output = [
             'name = Čebula',
         ]
-    else:
+    else:  # pragma: no cover
         expected_output = [
             'name = Čebula'.decode('utf-8'),
         ]
