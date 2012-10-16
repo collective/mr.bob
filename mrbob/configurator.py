@@ -49,7 +49,7 @@ def resolve_dotted_func(name):
 
 
 def maybe_resolve_dotted_func(name):
-    if isinstance(name, (unicode, str)) and DOTTED_REGEX.match(name):
+    if isinstance(name, six.string_types) and DOTTED_REGEX.match(name):
         return resolve_dotted_func(name)
     else:
         return name
