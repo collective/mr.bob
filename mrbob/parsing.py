@@ -1,6 +1,6 @@
 import collections
 from six.moves import configparser as ConfigParser_
-from six import PY3K
+from six import PY3
 
 
 class ConfigParser(ConfigParser_.SafeConfigParser):
