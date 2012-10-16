@@ -31,6 +31,14 @@ class TestCLI(unittest.TestCase):
         template_dir = os.path.join(os.path.dirname(__file__), 'templates', 'empty')
         self.call_FUT('-O', self.output_dir, template_dir)
 
+    @mock.patch('mrbob.cli.Configurator')
+    def test_cleanup_tempdir(self, mock_Configurator):
+        template_dir = tempfile.mkdtemp()
+        mock_Configurator().is_tempdir.return_value = True
+        mock_Configurator().template_dir = template_dir
+        self.call_FUT(template_dir)
+        self.assertFalse(os.path.exists(template_dir))
+
     def test_dummy_template_create_target_directory(self):
         template_dir = os.path.join(os.path.dirname(__file__), 'templates', 'empty')
         self.call_FUT('-O', os.path.join(self.output_dir, 'notexist'), template_dir)

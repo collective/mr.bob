@@ -4,6 +4,9 @@ import os
 import re
 import sys
 import readline
+import urllib
+import tempfile
+from zipfile import ZipFile
 readline  # make pyflakes happy, readline makes interactive mode keep history
 
 import six
@@ -33,7 +36,7 @@ class ValidationError(MrBobError):
 
 
 def resolve_dotted_path(name):
-    module_name, dir_name = name.split(':')
+    module_name, dir_name = name.rsplit(':', 1)
     module = import_module(module_name)
     return os.path.join(os.path.dirname(module.__file__), dir_name)
 
@@ -65,7 +68,22 @@ def maybe_bool(value):
 
 
 def parse_template(template_name):
-    """Resolve template name into absolute path to the template."""
+    """Resolve template name into absolute path to the template
+    and boolean if absolute path is temporary directory.
+    """
+    if template_name.startswith('http'):
+        if '#' in template_name:
+            url, subpath = template_name.rsplit('#', 1)
+        else:
+            url = template_name
+            subpath = ''
+        with tempfile.TemporaryFile() as tmpfile:
+            urllib.urlretrieve(url, tmpfile)
+            with ZipFile(tmpfile) as zf:
+                path = tempfile.mkdtemp()
+                zf.extractall(path)
+                return os.path.join(path, subpath), True
+
     if ':' in template_name:
         path = resolve_dotted_path(template_name)
     else:
@@ -73,7 +91,7 @@ def parse_template(template_name):
 
     if not os.path.isdir(path):
         raise ConfigurationError('Template directory does not exist: %s' % path)
-    return path
+    return path, False
 
 
 class Configurator(object):
@@ -95,7 +113,7 @@ class Configurator(object):
             bobconfig = {}
         if not variables:
             variables = {}
-        self.template_dir = parse_template(template)
+        self.template_dir, self.is_tempdir = parse_template(template)
         template_config = os.path.join(self.template_dir, '.mrbob.ini')
         if not os.path.exists(template_config):
             raise TemplateConfigurationError('Config not found: %s' % template_config)

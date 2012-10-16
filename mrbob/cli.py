@@ -3,6 +3,7 @@
 import pkg_resources
 import sys
 import os
+import shutil
 
 import six
 import argparse
@@ -101,6 +102,7 @@ def main(args=sys.argv[1:], quiet=False):
     bobconfig = update_config(update_config(global_bobconfig, file_bobconfig), cli_bobconfig)
     variables = update_config(update_config(global_variables, file_variables), cli_variables)
 
+    c = None
     if bobconfig['verbose']:
         print('Configuration provided:')
         print('[variables] from ~/.mrbob')
@@ -147,6 +149,9 @@ def main(args=sys.argv[1:], quiet=False):
         parser.error(six.u('TemplateConfigurationError: %s') % e.args[0])
     except ConfigurationError as e:
         parser.error(six.u('ConfigurationError: %s') % e.args[0])
+    finally:
+        if c and c.is_tempdir:
+            shutil.rmtree(c.template_dir)
 
 
 if __name__ == '__main__':  # pragma: nocover
