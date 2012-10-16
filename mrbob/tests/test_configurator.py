@@ -3,7 +3,6 @@ import os
 import sys
 import tempfile
 import shutil
-import StringIO
 
 
 def dummy_validator(value):  # pragma: no cover
@@ -194,11 +193,12 @@ class QuestionTest(unittest.TestCase):
         self.assertEqual(answer, 'foo')
 
     def test_ask_no_help(self):
+        from six import StringIO
 
         def cmd(q, go=['foo', '?']):
             return go.pop()
 
-        sys.stdout = StringIO.StringIO()
+        sys.stdout = StringIO()
         q = self.call_FUT('foo',
                           'Why?',
                           command_prompt=cmd)
@@ -207,11 +207,12 @@ class QuestionTest(unittest.TestCase):
         sys.stdout = sys.__stdout__
 
     def test_ask_help(self):
+        from six import StringIO
 
         def cmd(q, go=['foo', '?']):
             return go.pop()
 
-        sys.stdout = StringIO.StringIO()
+        sys.stdout = StringIO()
         q = self.call_FUT('foo',
                           'Why?',
                           help="foobar_help",
