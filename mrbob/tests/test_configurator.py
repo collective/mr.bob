@@ -149,7 +149,7 @@ class QuestionTest(unittest.TestCase):
 
     def test_repr(self):
         q = self.call_FUT('foo', 'Why?')
-        self.assertEqual(repr(q), u"<Question name=foo question='Why?' default=None required=False>")
+        self.assertEqual(repr(q), six.u("<Question name=foo question='Why?' default=None required=False>"))
 
     def test_ask(self):
 
