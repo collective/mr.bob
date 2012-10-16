@@ -9,6 +9,7 @@ install_requires = [
     'setuptools',
     'argparse',
     'jinja2',
+    'six',
 ]
 
 try:
