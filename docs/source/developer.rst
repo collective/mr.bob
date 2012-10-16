@@ -25,9 +25,9 @@ Easy as::
     $ ./bin/test
 
 
-Make a Release
---------------
+Making a Release
+----------------
 
-::
+Using `zest.releaser`::
 
     $ bin/fullrelease

@@ -7,4 +7,5 @@
 /include/
 /.coverage
 /htmlcov
+/docs/build/
 

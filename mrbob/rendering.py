@@ -28,7 +28,6 @@ def render_structure(fs_source_root, fs_target_root, context, renderer):
     with values from the context, i.e. a file named `+name+.py.tmpl` given a
     dictionary {'name': 'bar'} would be rendered as `bar.py`.
     """
-    # TODO: optionally move mrbob.ini to rendered structure
     for fs_source_dir, local_directories, local_files in os.walk(fs_source_root):
         fs_target_dir = path.abspath(path.join(fs_target_root, path.relpath(fs_source_dir, fs_source_root)))
         for local_file in local_files:

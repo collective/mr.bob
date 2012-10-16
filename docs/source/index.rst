@@ -39,7 +39,15 @@ Welcome to mr.bob's documentation!
    userguide.rst
    templateauthor.rst
    developer.rst
+   other.rst
    api.rst
+
+Glossary
+========
+
+dotted notation
+   Importable Python function specified with dots as importing a module separated with a column
+   to denote a function. For example *mrbob.rendering:render_structure*
 
 
 Indices and tables

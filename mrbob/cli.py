@@ -59,6 +59,8 @@ parser.add_argument('-r', '--renderer',
 
 
 def main(args=sys.argv[1:], quiet=False):
+    """Main function called by `mrbob` command.
+    """
     options = parser.parse_args(args=args)
 
     if options.version:

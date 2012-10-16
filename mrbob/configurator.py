@@ -65,6 +65,7 @@ def maybe_bool(value):
 
 
 def parse_template(template_name):
+    """Resolve template name into absolute path to the template."""
     if ':' in template_name:
         path = resolve_dotted_path(template_name)
     else:
@@ -76,7 +77,14 @@ def parse_template(template_name):
 
 
 class Configurator(object):
-    """"""
+    """Controller that figures out settings and renders file structure.
+
+    :param template: Template name
+    :param target_directory: Filesystem path to a output directory
+    :param bobconfig: Configuration for mr.bob behaviour
+    :param variables: Given variables
+
+    """
 
     def __init__(self,
                  template,
@@ -91,8 +99,8 @@ class Configurator(object):
         template_config = os.path.join(self.template_dir, '.mrbob.ini')
         if not os.path.exists(template_config):
             raise TemplateConfigurationError('Config not found: %s' % template_config)
+        # TODO: also join other sections from template config
         self.raw_questions = parse_config(template_config)['questions']
-        # TODO: first aggregate all config, then generate questions
         self.questions = self.parse_questions(self.raw_questions)
         self.target_directory = os.path.realpath(target_directory)
         if not os.path.isdir(self.target_directory):
@@ -104,6 +112,9 @@ class Configurator(object):
         self.verbose = bobconfig.get('verbose', False)
 
     def render(self):
+        """Render file structure given instance configuration. Basically calls
+        :func:`mrbob.rendering.render_structure`.
+        """
         render_structure(self.template_dir,
                          self.target_directory,
                          self.variables,
@@ -137,6 +148,8 @@ class Configurator(object):
             # TODO: seperate questions with a newline
 
     def ask_questions(self):
+        """Loops through questions and asks for input if variable is not yet set.
+        """
         for question in self.questions:
             if question.name in self.variables:
                 pass  # TODO: pass to ask method to validate input?
@@ -146,7 +159,8 @@ class Configurator(object):
 
 
 class Question(object):
-    """"""
+    """Question configuration. Parameters are used to configure validation of the answer.
+    """
 
     def __init__(self,
                  name,
@@ -174,6 +188,8 @@ class Question(object):
         return six.u("<Question name=%(name)s question='%(question)s' default=%(default)s required=%(required)s>") % self.__dict__
 
     def ask(self):
+        """Eventually, ask the question.
+        """
         correct_answer = None
 
         try:
