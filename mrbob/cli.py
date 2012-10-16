@@ -79,7 +79,7 @@ def main(args=sys.argv[1:], quiet=False):
 
     if options.config:
         if not os.path.exists(options.config):
-            parser.error(u'ConfigurationError: config file does not exist: %s' % options.config)
+            parser.error(six.u('ConfigurationError: config file does not exist: %s') % options.config)
         file_config = parse_config(options.config)
         file_bobconfig = file_config['mr.bob']
         file_variables = file_config['variables']
