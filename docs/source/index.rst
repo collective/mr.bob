@@ -11,7 +11,7 @@ Welcome to mr.bob's documentation!
 
 .. sidebar:: Features
 
-    - provide questions needed to be answered
+    - provide questions needed to be answered for rendering structure
     - questions can be grouped by using a namespace
     - render templates from a folder or Python egg
     - supports Python 2.6 - 3.3, pypy
