@@ -74,9 +74,9 @@ def main(args=sys.argv[1:], quiet=False):
 
         return c.render()
     except TemplateConfigurationError as e:
-        parser.error(u'TemplateConfigurationError %s' % e.args[0])
+        parser.error('TemplateConfigurationError %s' % e.args[0])
     except ConfigurationError as e:
-        parser.error(u'ConfigurationError %s' % e.args[0])
+        parser.error('ConfigurationError %s' % e.args[0])
 
 
 if __name__ == '__main__':  # pragma: nocover
