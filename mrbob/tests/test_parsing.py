@@ -80,6 +80,7 @@ def test_parse_config_deeply_nested_structure(parsed_config):
     ]
     assert output == expected_output
 
+
 @config('example6.ini')
 def test_parse_config_utf8(parsed_config):
     from ..parsing import pretty_format_config
