@@ -56,8 +56,10 @@ def maybe_resolve_dotted_func(name):
 
 
 def maybe_bool(value):
-    if value in ('True', 'False'):
-        return bool(value)
+    if value == "True":
+        return True
+    if value == "False":
+        return False
     else:
         return value
 
@@ -79,7 +81,12 @@ class Configurator(object):
     def __init__(self,
                  template,
                  target_directory,
-                 bobconfig):
+                 bobconfig=None,
+                 variables=None):
+        if not bobconfig:
+            bobconfig = {}
+        if not variables:
+            variables = {}
         self.template_dir = parse_template(template)
         template_config = os.path.join(self.template_dir, '.mrbob.ini')
         if not os.path.exists(template_config):
@@ -91,10 +98,10 @@ class Configurator(object):
         if not os.path.isdir(self.target_directory):
             os.makedirs(self.target_directory)
         self.bobconfig = bobconfig
+        self.variables = variables
         self.renderer = resolve_dotted_func(
             bobconfig.get('renderer', 'mrbob.rendering:jinja2_renderer'))
         self.verbose = bobconfig.get('verbose', False)
-        self.variables = {}
 
     def render(self):
         render_structure(self.template_dir,
@@ -129,6 +136,14 @@ class Configurator(object):
             # TODO: filter out lines without questions
             # TODO: seperate questions with a newline
 
+    def ask_questions(self):
+        for question in self.questions:
+            if question.name in self.variables:
+                pass  # TODO: pass to ask method to validate input?
+            else:
+                answer = question.ask()
+                self.variables[question.name] = answer
+
 
 class Question(object):
     """"""
@@ -144,9 +159,10 @@ class Question(object):
                  help=""):
         self.name = name
         self.question = question
-        self.default = maybe_bool(default)
-        # TODO: if we have default, then it shouldn't be required
+        self.default = default
         self.required = maybe_bool(required)
+        if maybe_bool(self.default) and self.required:
+            raise TemplateConfigurationError('Question %s is required but at the same time has defined default.' % self.name)
         self.validator = maybe_resolve_dotted_func(validator)
         self.action = maybe_resolve_dotted_func(action)
         self.command_prompt = maybe_resolve_dotted_func(command_prompt)
@@ -186,11 +202,12 @@ class Question(object):
                 if answer:
                     correct_answer = answer
                 elif not answer and self.default is not None:
-                    correct_answer = self.default
+                    correct_answer = maybe_bool(self.default)
                 elif not answer and self.default is None:
                     continue
         except KeyboardInterrupt:  # pragma: no cover
-            print('Exiting...')
+            print('\nExiting...')
             sys.exit(0)
 
+        print('')
         return self.action(correct_answer)

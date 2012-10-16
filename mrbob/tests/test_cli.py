@@ -20,22 +20,22 @@ class TestCLI(unittest.TestCase):
         self.assertRaises(SystemExit, self.call_FUT, 'foo')
 
     def test_dummy_template(self):
-        template_dir = os.path.join(os.path.dirname(__file__), 'templates', 'questions4')
+        template_dir = os.path.join(os.path.dirname(__file__), 'templates', 'empty')
         output_dir = tempfile.mkdtemp()
         self.call_FUT('-O', output_dir, template_dir)
 
     def test_dummy_template_create_target_directory(self):
-        template_dir = os.path.join(os.path.dirname(__file__), 'templates', 'questions4')
+        template_dir = os.path.join(os.path.dirname(__file__), 'templates', 'empty')
         output_dir = os.path.join(tempfile.mkdtemp(), 'notexist')
         self.call_FUT('-O', os.path.join(output_dir), template_dir)
         self.assertTrue(os.path.isdir(output_dir))
 
     def test_list_questions(self):
-        template_dir = os.path.join(os.path.dirname(__file__), 'templates', 'questions4')
+        template_dir = os.path.join(os.path.dirname(__file__), 'templates', 'empty')
         self.call_FUT('--list-questions', template_dir)
 
     def test_set_renderer(self):
-        template_dir = os.path.join(os.path.dirname(__file__), 'templates', 'questions4')
+        template_dir = os.path.join(os.path.dirname(__file__), 'templates', 'empty')
         self.call_FUT('--renderer', 'mrbob.rendering:python_formatting_renderer', template_dir)
         # TODO: assert renderer was used
 
