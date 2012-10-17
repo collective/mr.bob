@@ -227,7 +227,7 @@ class QuestionTest(unittest.TestCase):
     def test_ask(self):
 
         def cmd(q):
-            self.assertEqual(q, '--> Why?:')
+            self.assertEqual(q, '--> Why?: ')
             return 'foo'
 
         q = self.call_FUT('foo', 'Why?', command_prompt=cmd)
@@ -245,7 +245,7 @@ class QuestionTest(unittest.TestCase):
     def test_ask_default_not_empty(self):
 
         def cmd(q):
-            self.assertEqual(q, '--> Why? [moo]:')
+            self.assertEqual(q, '--> Why? [moo]: ')
             return 'foo'
 
         q = self.call_FUT('foo',
