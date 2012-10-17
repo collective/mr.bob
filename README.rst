@@ -5,10 +5,9 @@ More: http://mrbob.readthedocs.org/
 TODO
 ====
 
-- [high] Ignore .mrbob.ini by default when rendering
 - [high] Write template for quickstarter to write new templates
+- [high] Ignore .mrbob.ini by default when rendering
 - [high] Write a sample template to start with (foobar template)
-- [high] Write usermanual/developermanual (diagram how it works)
 - [medium] Ability to configure what to ignore when copying templates in bobconfig
 - [medium] validate questions being answered through config files
 - [medium] better format print questions output

@@ -32,7 +32,7 @@ When rendering structure, permissions will be preserved for files.
 Writing Questions
 -----------------
 
-`[question]` section in `.mrbob.ini` specifies schema how `[variables]` are validated.
+`[question]` section in `.mrbob.ini` specifies *schema* how `[variables]` are validated.
 Example speaks for itself:
 
 .. code-block:: ini

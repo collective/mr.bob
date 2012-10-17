@@ -65,13 +65,13 @@ Sample template to try out
     ... TODO: write this
 
 
-Listing all questions needed to have coresponding variable for a template
--------------------------------------------------------------------------
+Listing all questions needed to have corresponding variable for a template
+--------------------------------------------------------------------------
 
 ::
 
-    $ mrbob --list-questions template_folder/
-    ...
+    $ mrbob --list-questions mr.bob.templates:sample/
+    ... TODO: write this
 
 
 Configuration
@@ -82,7 +82,7 @@ Configuration is done with `.ini` style files. There are two sections for config
 mr.bob
     configures how `mrbob` behaves
 variables
-    parameters that will be passed to templates for rendering
+    answers to the questions that will be passed to templates for rendering
 
 Example of global config file `~/.mrbob` or command line parameter `mrbob --config foo.ini`.
 
@@ -114,18 +114,20 @@ Configuration can be specified in multiple ways. Here is a graph how settings ar
 Nesting variables into namespaces called groups
 ***********************************************
 
-TODO: explain grouped variables
+All variables can be specified in namespaces, such as `author.name`. Currently namespaces
+don't do anything special besides providing readability.
+
 
 
 ``mr.bob`` section reference
 ****************************
 
-============  ===========  ===============================================================
-  Parameter      Default     Explanation
-============  ===========  ===============================================================
-  renderer                  foo
-============  ===========  ===============================================================
-
+============  ===============================  ===============================================================
+  Parameter      Default                          Explanation
+============  ===============================  ===============================================================
+  renderer    mrbob.rendering:jinja2_renderer  Function for rendering templates
+  verbose     False                            Output more information, useful for debugging
+============  ===============================  ===============================================================
 
 
 
