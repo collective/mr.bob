@@ -102,9 +102,9 @@ class parse_templateTest(unittest.TestCase):
         self.assertRaises(ConfigurationError, self.call_FUT, 'http://foobar.com/bla.tar#some/dir')
 
     def fake_wrong_zip(self, url, path):
-        if six.PY3:
+        if six.PY3:  # pragma: no cover
             path.write(bytes('boo', 'utf-8'))
-        else:
+        else:  # pragma: no cover
             path.write('boo')
 
     def fake_zip(self, url, path):
