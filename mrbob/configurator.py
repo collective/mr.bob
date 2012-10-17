@@ -81,9 +81,9 @@ def parse_template(template_name):
         else:
             url = template_name
             subpath = ''
-        with tempfile.TemporaryFile() as tmpfile:
+        with tempfile.NamedTemporaryFile() as tmpfile:
             urlretrieve(url, tmpfile)
-            if not is_zipfile(tmpfile):
+            if not is_zipfile(tmpfile.name):
                 raise ConfigurationError("Not a zip file: %s" % tmpfile)
             zf = ZipFile(tmpfile)
             try:
