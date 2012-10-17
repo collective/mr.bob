@@ -20,7 +20,10 @@ parser = argparse.ArgumentParser(description='Filesystem template renderer')
 # TODO: write more about specifying templates
 parser.add_argument('template',
                     nargs="?",
-                    help="""Template to use for rendering
+                    help="""Template name to use for rendering. See
+                    http://mrbob.readthedocs.org/en/latest/userguide.html#usage what
+                    syntax it recognizes.
+
                     """)
 parser.add_argument('-O', '--target-directory',
                     default=".",

@@ -49,6 +49,12 @@ Or from a package::
 
     $ mrbob some.package:template_folder/
 
+    some.python.package:relative/path/to/template\n
+    relative/path/to/template\n
+    /absolute/path/to/template
+    https://github.com/iElectric/mr.bob/zipball/master
+    https://github.com/iElectric/mr.bob/zipball/master#relative/path/to/template
+
 
 Sample template to try out
 --------------------------

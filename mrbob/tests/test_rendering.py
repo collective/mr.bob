@@ -213,3 +213,5 @@ def test_compount_renaming(examples):
     fs_rendered = '%s/%s' % (target_dir, '/blatherparts/blubber_etc/blubber.conf')
     assert path.exists(fs_rendered)
     assert ('blather = blubber' in open(fs_rendered).read())
+
+# TODO: test namespaced rename
