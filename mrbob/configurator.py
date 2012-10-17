@@ -4,7 +4,11 @@ import os
 import re
 import sys
 import readline
-import urllib
+try:  # pragma: no cover
+    from urllib import urlretrieve  # NOQA
+except ImportError:  # pragma: no cover
+    # PY3K
+    from urllib.request import urlretrieve  # NOQA
 import tempfile
 from zipfile import ZipFile, is_zipfile
 readline  # make pyflakes happy, readline makes interactive mode keep history
@@ -78,7 +82,7 @@ def parse_template(template_name):
             url = template_name
             subpath = ''
         with tempfile.TemporaryFile() as tmpfile:
-            urllib.urlretrieve(url, tmpfile)
+            urlretrieve(url, tmpfile)
             if not is_zipfile(tmpfile):
                 raise ConfigurationError("Not a zip file: %s" % tmpfile)
             zf = ZipFile(tmpfile)
