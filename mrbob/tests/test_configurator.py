@@ -95,17 +95,32 @@ class parse_templateTest(unittest.TestCase):
         self.assertEqual(os.listdir(abs_path[0]),
                          ['test', '.mrbob.ini'])
 
+    @mock.patch('mrbob.configurator.urllib.urlretrieve')
+    def test_zipfile_not_zipfile(self, mock_urlretrieve):
+        from ..configurator import ConfigurationError
+        mock_urlretrieve.side_effect = self.fake_wrong_zip
+        self.assertRaises(ConfigurationError, self.call_FUT, 'http://foobar.com/bla.tar#some/dir')
+
+    def fake_wrong_zip(self, url, path):
+        path.write('boo')
+
     def fake_zip(self, url, path):
         import zipfile
-        with zipfile.ZipFile(path, 'w') as zf:
+        zf = zipfile.ZipFile(path, 'w')
+        try:
             zf.writestr('.mrbob.ini', '[questions]\n')
             zf.writestr('test', 'test')
+        finally:
+            zf.close()
 
     def fake_zip_base_path(self, url, path):
         import zipfile
-        with zipfile.ZipFile(path, 'w') as zf:
+        zf = zipfile.ZipFile(path, 'w')
+        try:
             zf.writestr('some/dir/.mrbob.ini', '[questions]\n')
             zf.writestr('some/dir/test', 'test')
+        finally:
+            zf.close()
 
 
 class ConfiguratorTest(unittest.TestCase):

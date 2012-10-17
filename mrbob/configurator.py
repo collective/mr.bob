@@ -6,7 +6,7 @@ import sys
 import readline
 import urllib
 import tempfile
-from zipfile import ZipFile
+from zipfile import ZipFile, is_zipfile
 readline  # make pyflakes happy, readline makes interactive mode keep history
 
 import six
@@ -79,10 +79,15 @@ def parse_template(template_name):
             subpath = ''
         with tempfile.TemporaryFile() as tmpfile:
             urllib.urlretrieve(url, tmpfile)
-            with ZipFile(tmpfile) as zf:
+            if not is_zipfile(tmpfile):
+                raise ConfigurationError("Not a zip file: %s" % tmpfile)
+            zf = ZipFile(tmpfile)
+            try:
                 path = tempfile.mkdtemp()
                 zf.extractall(path)
                 return os.path.join(path, subpath), True
+            finally:
+                zf.close()
 
     if ':' in template_name:
         path = resolve_dotted_path(template_name)
