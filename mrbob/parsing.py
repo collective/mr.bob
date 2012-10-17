@@ -29,9 +29,9 @@ def nest_variables(variables):
             if not isinstance(location, dict):
                 raise ConfigurationError('Cannot assign "%s" to group "%s", subgroup is already used.' % (value, key))
 
-        if PY3:
+        if PY3:  # pragma: no cover
             location[segments[-1]] = value
-        else:
+        else:  # pragma: no cover
             location[segments[-1]] = value.decode('utf-8')
     return nested
 
