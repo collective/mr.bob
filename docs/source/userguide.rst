@@ -92,7 +92,7 @@ Example of global config file `~/.mrbob` or command line parameter `mrbob --conf
     renderer = moo.foo:render_mako
 
     [variables]
-    author = Domen Kožar
+    author.name = Domen Kožar
     author.email = domen@dev.si
 
 
