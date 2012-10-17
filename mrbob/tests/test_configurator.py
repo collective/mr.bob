@@ -4,6 +4,7 @@ import sys
 import tempfile
 import shutil
 import six
+import mock
 
 
 def dummy_validator(value):  # pragma: no cover
@@ -64,21 +65,65 @@ class parse_templateTest(unittest.TestCase):
         template_dir = os.path.join(os.path.dirname(__file__), 'templates')
         abs_path = self.call_FUT('templates')
         os.chdir(old_cwd)
-        self.assertEqual(abs_path, template_dir)
+        self.assertEqual(abs_path, (template_dir, False))
 
     def test_absolute(self):
         template_dir = os.path.join(os.path.dirname(__file__), 'templates')
         abs_path = self.call_FUT(template_dir)
-        self.assertEqual(abs_path, template_dir)
+        self.assertEqual(abs_path, (template_dir, False))
 
     def test_dotted(self):
         template_dir = os.path.join(os.path.dirname(__file__), 'templates')
         abs_path = self.call_FUT('mrbob.tests:templates')
-        self.assertEqual(abs_path, template_dir)
+        self.assertEqual(abs_path, (template_dir, False))
 
     def test_not_a_dir(self):
         from ..configurator import ConfigurationError
         self.assertRaises(ConfigurationError, self.call_FUT, 'foo_bar')
+
+    @mock.patch('mrbob.configurator.urlretrieve')
+    def test_zipfile(self, mock_urlretrieve):
+        mock_urlretrieve.side_effect = self.fake_zip
+        abs_path = self.call_FUT('http://foobar.com/bla.zip')
+        self.assertEqual(os.listdir(abs_path[0]),
+                         ['test', '.mrbob.ini'])
+
+    @mock.patch('mrbob.configurator.urlretrieve')
+    def test_zipfile_base_path(self, mock_urlretrieve):
+        mock_urlretrieve.side_effect = self.fake_zip_base_path
+        abs_path = self.call_FUT('http://foobar.com/bla.zip#some/dir')
+        self.assertEqual(os.listdir(abs_path[0]),
+                         ['test', '.mrbob.ini'])
+
+    @mock.patch('mrbob.configurator.urlretrieve')
+    def test_zipfile_not_zipfile(self, mock_urlretrieve):
+        from ..configurator import ConfigurationError
+        mock_urlretrieve.side_effect = self.fake_wrong_zip
+        self.assertRaises(ConfigurationError, self.call_FUT, 'http://foobar.com/bla.tar#some/dir')
+
+    def fake_wrong_zip(self, url, path):
+        if six.PY3:
+            path.write(bytes('boo', 'utf-8'))
+        else:
+            path.write('boo')
+
+    def fake_zip(self, url, path):
+        import zipfile
+        zf = zipfile.ZipFile(path, 'w')
+        try:
+            zf.writestr('.mrbob.ini', '[questions]\n')
+            zf.writestr('test', 'test')
+        finally:
+            zf.close()
+
+    def fake_zip_base_path(self, url, path):
+        import zipfile
+        zf = zipfile.ZipFile(path, 'w')
+        try:
+            zf.writestr('some/dir/.mrbob.ini', '[questions]\n')
+            zf.writestr('some/dir/test', 'test')
+        finally:
+            zf.close()
 
 
 class ConfiguratorTest(unittest.TestCase):

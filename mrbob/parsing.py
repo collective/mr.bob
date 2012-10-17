@@ -46,14 +46,14 @@ def parse_config(fs_config):
     return config
 
 
-def update_config(to_be_updated_config, new_config):
-    for k, v in new_config.items():
+def update_config(first_config, second_config):
+    for k, v in second_config.items():
         if isinstance(v, collections.Mapping):
-            r = update_config(to_be_updated_config.get(k, {}), v)
-            to_be_updated_config[k] = r
+            r = update_config(first_config.get(k, {}), v)
+            first_config[k] = r
         else:
-            to_be_updated_config[k] = new_config[k]
-    return to_be_updated_config
+            first_config[k] = second_config[k]
+    return first_config
 
 
 def pretty_format_config(config):
