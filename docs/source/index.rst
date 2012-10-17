@@ -13,10 +13,11 @@ Welcome to mr.bob's documentation!
 
     - provide questions needed to be answered for rendering structure
     - questions can be grouped by using a namespace
-    - render templates from a folder or Python egg
+    - render templates from a folder or Python egg or zip file
     - supports Python 2.6 - 3.3, pypy
     - 100% test coverage
     - uses Jinja2 as default rendering engine (can be replaced)
+    - multiple ways to specify variables to render templates
     - preserves permissions when rendering templates
 
 

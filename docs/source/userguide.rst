@@ -41,19 +41,21 @@ Once you install mr.bob, there is `mrbob` command available::
                             Dotted notation to a renderer function. Defaults to
                             mrbob.rendering:jinja2_renderer
 
-Most basic use case is rendering a template from a folder to current folder::
+By default target directory is current folder. Most basic use case is rendering a template from a relative folder::
 
-    $ mrbob template_folder/
+    $ mrbob ../template_folder/
 
 Or from a package::
 
     $ mrbob some.package:template_folder/
 
-    some.python.package:relative/path/to/template\n
-    relative/path/to/template\n
-    /absolute/path/to/template
+Or from a zip file::
+
     https://github.com/iElectric/mr.bob/zipball/master
-    https://github.com/iElectric/mr.bob/zipball/master#relative/path/to/template
+
+Or from a relative path in a zip file::
+
+    https://github.com/iElectric/mr.bob/zipball/master#mrbob/template_sample
 
 
 Sample template to try out
