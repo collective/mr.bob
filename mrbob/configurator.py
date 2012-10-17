@@ -4,6 +4,13 @@ import os
 import re
 import sys
 import readline
+try:  # pragma: no cover
+    from urllib import urlretrieve  # NOQA
+except ImportError:  # pragma: no cover
+    # PY3K
+    from urllib.request import urlretrieve  # NOQA
+import tempfile
+from zipfile import ZipFile, is_zipfile
 readline  # make pyflakes happy, readline makes interactive mode keep history
 
 import six
@@ -33,7 +40,7 @@ class ValidationError(MrBobError):
 
 
 def resolve_dotted_path(name):
-    module_name, dir_name = name.split(':')
+    module_name, dir_name = name.rsplit(':', 1)
     module = import_module(module_name)
     return os.path.join(os.path.dirname(module.__file__), dir_name)
 
@@ -65,6 +72,27 @@ def maybe_bool(value):
 
 
 def parse_template(template_name):
+    """Resolve template name into absolute path to the template
+    and boolean if absolute path is temporary directory.
+    """
+    if template_name.startswith('http'):
+        if '#' in template_name:
+            url, subpath = template_name.rsplit('#', 1)
+        else:
+            url = template_name
+            subpath = ''
+        with tempfile.NamedTemporaryFile() as tmpfile:
+            urlretrieve(url, tmpfile)
+            if not is_zipfile(tmpfile.name):
+                raise ConfigurationError("Not a zip file: %s" % tmpfile)
+            zf = ZipFile(tmpfile)
+            try:
+                path = tempfile.mkdtemp()
+                zf.extractall(path)
+                return os.path.join(path, subpath), True
+            finally:
+                zf.close()
+
     if ':' in template_name:
         path = resolve_dotted_path(template_name)
     else:
@@ -72,11 +100,18 @@ def parse_template(template_name):
 
     if not os.path.isdir(path):
         raise ConfigurationError('Template directory does not exist: %s' % path)
-    return path
+    return path, False
 
 
 class Configurator(object):
-    """"""
+    """Controller that figures out settings and renders file structure.
+
+    :param template: Template name
+    :param target_directory: Filesystem path to a output directory
+    :param bobconfig: Configuration for mr.bob behaviour
+    :param variables: Given variables
+
+    """
 
     def __init__(self,
                  template,
@@ -87,12 +122,12 @@ class Configurator(object):
             bobconfig = {}
         if not variables:
             variables = {}
-        self.template_dir = parse_template(template)
+        self.template_dir, self.is_tempdir = parse_template(template)
         template_config = os.path.join(self.template_dir, '.mrbob.ini')
         if not os.path.exists(template_config):
             raise TemplateConfigurationError('Config not found: %s' % template_config)
+        # TODO: also join other sections from template config
         self.raw_questions = parse_config(template_config)['questions']
-        # TODO: first aggregate all config, then generate questions
         self.questions = self.parse_questions(self.raw_questions)
         self.target_directory = os.path.realpath(target_directory)
         if not os.path.isdir(self.target_directory):
@@ -104,9 +139,13 @@ class Configurator(object):
         self.verbose = bobconfig.get('verbose', False)
 
     def render(self):
+        """Render file structure given instance configuration. Basically calls
+        :func:`mrbob.rendering.render_structure`.
+        """
         render_structure(self.template_dir,
                          self.target_directory,
                          self.variables,
+                         self.verbose,
                          self.renderer)
 
     def parse_questions(self, config):
@@ -137,6 +176,8 @@ class Configurator(object):
             # TODO: seperate questions with a newline
 
     def ask_questions(self):
+        """Loops through questions and asks for input if variable is not yet set.
+        """
         for question in self.questions:
             if question.name in self.variables:
                 pass  # TODO: pass to ask method to validate input?
@@ -146,7 +187,8 @@ class Configurator(object):
 
 
 class Question(object):
-    """"""
+    """Question configuration. Parameters are used to configure validation of the answer.
+    """
 
     def __init__(self,
                  name,
@@ -174,6 +216,8 @@ class Question(object):
         return six.u("<Question name=%(name)s question='%(question)s' default=%(default)s required=%(required)s>") % self.__dict__
 
     def ask(self):
+        """Eventually, ask the question.
+        """
         correct_answer = None
 
         try:

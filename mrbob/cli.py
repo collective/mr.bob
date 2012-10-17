@@ -3,6 +3,7 @@
 import pkg_resources
 import sys
 import os
+import shutil
 
 import six
 import argparse
@@ -10,7 +11,7 @@ import argparse
 from .configurator import Configurator
 from .configurator import ConfigurationError
 from .configurator import TemplateConfigurationError
-from .parsing import parse_config, update_config
+from .parsing import parse_config, update_config, pretty_format_config
 
 
 # http://docs.python.org/library/argparse.html
@@ -25,11 +26,10 @@ parser.add_argument('-O', '--target-directory',
                     default=".",
                     dest="target_directory",
                     help='Where to output rendered structure. Defaults to current directory.')
-# TODO: implement verbose mode
-#parser.add_argument('-v', '--verbose',
-#                    action="store_true",
-#                    default=False,
-#                    help='Print more output for debugging')
+parser.add_argument('-v', '--verbose',
+                    action="store_true",
+                    default=False,
+                    help='Print more output for debugging')
 parser.add_argument('-c', '--config',
                     action="store",
                     help='Configuration file to specify either [mr.bob] or [variables] sections.')
@@ -59,6 +59,8 @@ parser.add_argument('-r', '--renderer',
 
 
 def main(args=sys.argv[1:], quiet=False):
+    """Main function called by `mrbob` command.
+    """
     options = parser.parse_args(args=args)
 
     if options.version:
@@ -77,6 +79,9 @@ def main(args=sys.argv[1:], quiet=False):
         global_bobconfig = {}
         global_variables = {}
 
+    original_global_bobconfig = dict(global_bobconfig)
+    original_global_variables = dict(global_variables)
+
     if options.config:
         if not os.path.exists(options.config):
             parser.error(six.u('ConfigurationError: config file does not exist: %s') % options.config)
@@ -89,13 +94,37 @@ def main(args=sys.argv[1:], quiet=False):
 
     cli_variables = {}  # TODO: implement variables on cli
     cli_bobconfig = {
-        # TODO:    'verbose': options.verbose,
+        'verbose': options.verbose,
     }
     if options.renderer:
         cli_bobconfig['renderer'] = options.renderer
 
     bobconfig = update_config(update_config(global_bobconfig, file_bobconfig), cli_bobconfig)
     variables = update_config(update_config(global_variables, file_variables), cli_variables)
+
+    c = None
+    if bobconfig['verbose']:
+        print('Configuration provided:')
+        print('[variables] from ~/.mrbob')
+        for line in pretty_format_config(original_global_variables):
+            print(line)
+        print('[variables] from --config file')
+        for line in pretty_format_config(file_variables):
+            print(line)
+        # TODO: implement variables on cli
+        #print('[variables] from command line interface')
+        #for line in pretty_format_config(file_variables):
+        #    print(line)
+        print('[mr.bob] from ~/.mrbob')
+        for line in pretty_format_config(original_global_bobconfig):
+            print(line)
+        print('[mr.bob] from --config file')
+        for line in pretty_format_config(file_bobconfig):
+            print(line)
+        print('[mr.bob] from command line interface')
+        for line in pretty_format_config(cli_bobconfig):
+            print(line)
+        print('\n')
 
     try:
         c = Configurator(template=options.template,
@@ -113,12 +142,16 @@ def main(args=sys.argv[1:], quiet=False):
         print("\n")
         c.ask_questions()
         c.render()
+        print("")
         print("Generated file structure at %s" % os.path.realpath(options.target_directory))
         return
     except TemplateConfigurationError as e:
         parser.error(six.u('TemplateConfigurationError: %s') % e.args[0])
     except ConfigurationError as e:
         parser.error(six.u('ConfigurationError: %s') % e.args[0])
+    finally:
+        if c and c.is_tempdir:
+            shutil.rmtree(c.template_dir)
 
 
 if __name__ == '__main__':  # pragma: nocover

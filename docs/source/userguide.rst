@@ -19,8 +19,7 @@ Usage
 Once you install mr.bob, there is `mrbob` command available::
 
     $ mrbob --help
-    usage: mrbob [-h] [-O, --target-directory TARGET_DIRECTORY] [--verbose]
-                 [--version] [--list-questions]
+    usage: mrbob [-h] [-O TARGET_DIRECTORY] [-c CONFIG] [-V] [-l] [-r RENDERER]
                  [template]
 
     Filesystem template renderer
@@ -30,11 +29,17 @@ Once you install mr.bob, there is `mrbob` command available::
 
     optional arguments:
       -h, --help            show this help message and exit
-      -O, --target-directory TARGET_DIRECTORY
-                            Where to output rendered structure
-      --verbose             Print more output for debugging
-      --version             Display version number
-      --list-questions      List all questions needed for the template
+      -O TARGET_DIRECTORY, --target-directory TARGET_DIRECTORY
+                            Where to output rendered structure. Defaults to
+                            current directory.
+      -c CONFIG, --config CONFIG
+                            Configuration file to specify either [mr.bob] or
+                            [variables] sections.
+      -V, --version         Display version number
+      -l, --list-questions  List all questions needed for the template
+      -r RENDERER, --renderer RENDERER
+                            Dotted notation to a renderer function. Defaults to
+                            mrbob.rendering:jinja2_renderer
 
 Most basic use case is rendering a template from a folder to current folder::
 
@@ -45,12 +50,21 @@ Or from a package::
     $ mrbob some.package:template_folder/
 
 
-Using a sample template
------------------------
+Sample template to try out
+--------------------------
 
 ::
 
     $ mrbob mr.bob.templates:sample/
+    ... TODO: write this
+
+
+Listing all questions needed to have coresponding variable for a template
+-------------------------------------------------------------------------
+
+::
+
+    $ mrbob --list-questions template_folder/
     ...
 
 
@@ -64,21 +78,22 @@ mr.bob
 variables
     parameters that will be passed to templates for rendering
 
-Example of global config file `~/.mrbob` or command line parameter `mrbob --config foo-ini`.
+Example of global config file `~/.mrbob` or command line parameter `mrbob --config foo.ini`.
 
 .. code-block:: ini
 
     [mr.bob]
-    non-interactive = true
     renderer = moo.foo:render_mako
 
     [variables]
     author = Domen Kožar
-    author_email = domen@dev.si
-    foo.bar = something
+    author.email = domen@dev.si
+
+
+Configuration inheritance
+*************************
 
 Configuration can be specified in multiple ways. Here is a graph how settings are preferred (questions override any other configuration).
-
 ::
 
     Global config at ~/.mrbob
@@ -87,49 +102,31 @@ Configuration can be specified in multiple ways. Here is a graph how settings ar
     mrbob --config mrbob.ini
             ^
             |
-    mrbob --some-variable foobar
-            ^
-            |
-    questions answered in interactive mode
+    Questions answered in interactive mode
 
+
+Nesting variables into namespaces called groups
+***********************************************
 
 TODO: explain grouped variables
 
 
-Listing all questions needed to be answered for a template
-----------------------------------------------------------
+``mr.bob`` section reference
+****************************
 
-::
+============  ===========  ===============================================================
+  Parameter      Default     Explanation
+============  ===========  ===============================================================
+  renderer                  foo
+============  ===========  ===============================================================
 
-    $ mrbob --list-questions template_folder/
-    ...
+
 
 
 Collection of community managed templates
 -----------------------------------------
 
-You are encouraged to use `bobtemplates.*` Python egg namespace to write
-templates and contribute them to this list by making a pull request.
+You are encouraged to use `bobtemplates.something` Python egg namespace to write
+templates and contribute them to this list by making a `pull request <github.com/iElectric/mr.bob>`_.
 
 - `bobtemplates.ielectric <https://github.com/iElectric/bobtemplates.ielectric>`_ 
-
-
-Design goals
-------------
-
-- Cover 80% of use cases, don't become too complex  
-- Ability to use templates not only from eggs, but also folders and similar
-- Python 3 support
-- Jinja2 renderer by default, but replaceable
-- Ability to render multiple templates to the same target directory
-
-Why another tool
-----------------
-
-- PasteScript is a big package with lots of legacy code and noone seems to care about maintaining it (and porting it to python3)
-- a tool should do one thing and that thing good, which is where PasteScript fails
-- PasteScript works only with Python eggs, mr.bob can also render templates from folder and in future maybe from http links
-- PasteScript uses Cheetah which doesn't work on PyPy and has C extensions that need to be compiled
-- PasteScript in unmaintainable, with really dodgy code
-- PasteScript doesn't preserve permissions when copying/rendering files
-- mr.bob is just 200 lines of code with some extra features in mind that PasteScript cannot provide such as Python API to be used by higher level libraries
