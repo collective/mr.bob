@@ -98,10 +98,10 @@ def test_render_copy(examples):
 
 def test_render_template(examples):
     """if the source is a template, it is rendered and the target file drops
-    the `.tmpl` suffix."""
+    the `.bob` suffix."""
     target_dir, fs_examples = examples
     fs_rendered = render_template(path.join(fs_examples,
-            'unbound/usr/local/etc/unbound/unbound.conf.tmpl'),
+            'unbound/usr/local/etc/unbound/unbound.conf.bob'),
         target_dir,
         dict(ip_addr='192.168.0.1', access_control='10.0.1.0/16 allow'),
         False,
@@ -114,7 +114,7 @@ def test_render_missing_key(examples):
     target_dir, fs_examples = examples
     with raises(KeyError):
         render_template(path.join(fs_examples,
-                'unbound/usr/local/etc/unbound/unbound.conf.tmpl'),
+                'unbound/usr/local/etc/unbound/unbound.conf.bob'),
             target_dir,
             dict(),
             False,
@@ -124,7 +124,7 @@ def test_render_missing_key(examples):
 def test_rendered_permissions_preserved(examples):
     target_dir, fs_examples = examples
     fs_template = path.join(fs_examples,
-        'unbound/usr/local/etc/unbound/unbound.conf.tmpl')
+        'unbound/usr/local/etc/unbound/unbound.conf.bob')
     chmod(fs_template, 771)
     fs_rendered = render_template(fs_template,
         target_dir,

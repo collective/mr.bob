@@ -5,9 +5,7 @@ More: http://mrbob.readthedocs.org/
 TODO
 ====
 
-- [high] Rename .tmpl to .bob?
 - [high] Ignore .mrbob.ini by default when rendering
-- [high] Write more about templates in cli parser
 - [high] Write template for quickstarter to write new templates
 - [high] Write a sample template to start with (foobar template)
 - [high] Write usermanual/developermanual (diagram how it works)

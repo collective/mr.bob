@@ -22,11 +22,11 @@ python_formatting_renderer = lambda s, v: s % v
 def render_structure(fs_source_root, fs_target_root, context, verbose, renderer):
     """Recursively copies the given filesystem path `fs_source_root_ to a target directory `fs_target_root`.
 
-    Any files ending in `.tmpl` are rendered as templates using the given
-    renderer using the context dictionary, thereby losing the `.tmpl` suffix.
+    Any files ending in `.bob` are rendered as templates using the given
+    renderer using the context dictionary, thereby losing the `.bob` suffix.
 
     strings wrapped in `+` signs in file- or directory names will be replaced
-    with values from the context, i.e. a file named `+name+.py.tmpl` given a
+    with values from the context, i.e. a file named `+name+.py.bob` given a
     dictionary {'name': 'bar'} would be rendered as `bar.py`.
     """
     if not isinstance(fs_source_root, six.text_type):
@@ -51,8 +51,8 @@ def render_structure(fs_source_root, fs_target_root, context, verbose, renderer)
 
 def render_template(fs_source, fs_target_dir, context, verbose, renderer):
     filename = path.split(fs_source)[1]
-    if filename.endswith('.tmpl'):
-        filename = filename.split('.tmpl')[0]
+    if filename.endswith('.bob'):
+        filename = filename.split('.bob')[0]
         fs_target_path = path.join(fs_target_dir, render_filename(filename, context))
         if verbose:
             print(six.u("Rendering %s to %s") % (fs_source, fs_target_path))
