@@ -223,9 +223,9 @@ class Question(object):
         try:
             while correct_answer is None:
                 if self.default:
-                    question = "--> " + self.question + " [" + self.default + "]:"
+                    question = "--> " + self.question + " [" + self.default + "]: "
                 else:
-                    question = "--> " + self.question + ":"
+                    question = "--> " + self.question + ": "
                 answer = self.command_prompt(question).strip()
                 if answer == "?":
                     if self.help:
