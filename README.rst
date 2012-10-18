@@ -5,6 +5,10 @@ More: http://mrbob.readthedocs.org/
 TODO
 ====
 
+- [high] If required is False, don't require the variable
+- [medium] Check how one would implement multi-namespace python package with current mr.bob api
+- [medium] Questions have random order at the moment
+- [medium] Write boolean validator
 - [medium] Consider http://www.stat.washington.edu/~hoytak/code/treedict/overview.html#overview for variables storage
 - [medium] Ability to configure what to ignore when copying templates in bobconfig
 - [medium] validate questions being answered through config files
