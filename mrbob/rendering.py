@@ -2,6 +2,7 @@ import six
 import stat
 import os
 import re
+import codecs
 import collections
 from os import path
 from shutil import copy2
@@ -80,10 +81,10 @@ def render_template(fs_source, fs_target_dir, variables, verbose, renderer):
         if verbose:
             print(six.u("Rendering %s to %s") % (fs_source, fs_target_path))
         fs_source_mode = stat.S_IMODE(os.stat(fs_source).st_mode)
-        with open(fs_source) as f:
+        with codecs.open(fs_source, 'r', 'utf-8') as f:
             source_output = f.read()
             output = renderer(source_output, parse_variables(variables))
-        with open(fs_target_path, 'w') as fs_target:
+        with codecs.open(fs_target_path, 'w', 'utf-8') as fs_target:
             fs_target.write(output)
         os.chmod(fs_target_path, fs_source_mode)
     else:
