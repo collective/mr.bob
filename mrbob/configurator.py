@@ -4,6 +4,7 @@ import os
 import re
 import sys
 import readline
+import collections
 try:  # pragma: no cover
     from urllib import urlretrieve  # NOQA
 except ImportError:  # pragma: no cover
@@ -138,13 +139,32 @@ class Configurator(object):
             bobconfig.get('renderer', 'mrbob.rendering:jinja2_renderer'))
         self.verbose = bobconfig.get('verbose', False)
 
+    def parse_variables(self, variables):
+        # define recursive defaultdict
+        l = lambda: collections.defaultdict(l)
+        d = l()
+
+        for key, value in variables.items():
+            keys = key.split('.')
+            new_d = None
+            for k in keys[:-1]:
+                if new_d is None:
+                    new_d = d[k]
+                else:
+                    new_d = new_d[k]
+            if new_d is None:
+                d[keys[-1]] = value
+            else:
+                new_d[keys[-1]] = value
+        return d
+
     def render(self):
         """Render file structure given instance configuration. Basically calls
         :func:`mrbob.rendering.render_structure`.
         """
         render_structure(self.template_dir,
                          self.target_directory,
-                         self.variables,
+                         self.parse_variables(self.variables),
                          self.verbose,
                          self.renderer)
 

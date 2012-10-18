@@ -203,6 +203,19 @@ class ConfiguratorTest(unittest.TestCase):
         c.ask_questions()
         self.assertEquals(c.variables, {'foo.bar': 'answer', 'moo': 'moo.'})
 
+    def test_parse_variables(self):
+        c = self.call_FUT('mrbob.tests:templates/questions4',
+                          self.target_dir,
+                          {},
+                          {'author.name': 'foobar',
+                           'author.age': '23',
+                           'license': 'BSD',
+                           'foo.bar.zar.mar': 'foo'})
+        vars_ = c.parse_variables(c.variables)
+        self.assertEqual(set(vars_.keys()), set(['foo', 'license', 'author']))
+        self.assertEqual(set(vars_['author'].items()), set([('name', 'foobar'), ('age', '23')]))
+        self.assertEqual(set(vars_['foo']['bar']['zar'].items()), set([('mar', 'foo')]))
+
 
 class QuestionTest(unittest.TestCase):
 
