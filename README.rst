@@ -16,6 +16,7 @@ TODO
 - [medium] non-interactive support (disable last phase of configuration)
 - [medium] figure out how templates can depend on each other (bobconfig setting with a list of template names?)
 - [medium] ability to use multiple templates at the same time and depend on them (similar templer structures, but doesnt separate structures and templates)
+- [low] implement post_run_msg
 - [low] ability to have localcommands (maybe we dont need that because of multiple templates?)
 - [low] ability to specify pre/post functions when rendering templates
 - [low] ability to specify actions to answers, for example if one question was answered, another template may be triggered
