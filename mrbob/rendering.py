@@ -34,6 +34,8 @@ def render_structure(fs_source_root, fs_target_root, context, verbose, renderer)
     for fs_source_dir, local_directories, local_files in os.walk(fs_source_root):
         fs_target_dir = path.abspath(path.join(fs_target_root, path.relpath(fs_source_dir, fs_source_root)))
         for local_file in local_files:
+            if local_file == '.mrbob.ini':
+                continue
             render_template(
                 path.join(fs_source_dir, local_file),
                 render_filename(fs_target_dir, context),

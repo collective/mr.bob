@@ -5,9 +5,7 @@ More: http://mrbob.readthedocs.org/
 TODO
 ====
 
-- [high] Write template for quickstarter to write new templates
-- [high] Ignore .mrbob.ini by default when rendering
-- [high] Write a sample template to start with (foobar template)
+- [medium] Consider http://www.stat.washington.edu/~hoytak/code/treedict/overview.html#overview for variables storage
 - [medium] Ability to configure what to ignore when copying templates in bobconfig
 - [medium] validate questions being answered through config files
 - [medium] better format print questions output

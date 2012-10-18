@@ -12,6 +12,7 @@ import six
 from mrbob.rendering import (render_structure,
     render_template,
     python_formatting_renderer,
+    jinja2_renderer,
     render_filename)
 
 
@@ -42,6 +43,19 @@ def test_subdirectories_created(examples):
         python_formatting_renderer,
     )
     assert path.exists('%s/%s' % (target_dir, '/usr/local/etc'))
+
+
+def test_skip_mrbobini_copying(examples):
+    target_dir, fs_examples = examples
+    render_structure(
+        path.join(fs_examples, 'skip_mrbobini'),
+        target_dir,
+        dict(foo='123'),
+        True,
+        jinja2_renderer,
+    )
+    assert path.exists('%s/%s' % (target_dir, 'test'))
+    assert not path.exists('%s/%s' % (target_dir, '.mrbob.ini'))
 
 
 def test_encoding_is_utf_eight(examples):
