@@ -138,7 +138,7 @@ def main(args=sys.argv[1:], quiet=False):
         if options.list_questions:
             return c.print_questions()
 
-        print("Welcome to mr.bob interactive mode. Before we generate file structure, some questions need to be answered.")
+        print("Welcome to mr.bob interactive mode. Before we generate directory structure, some questions need to be answered.")
         print("")
         print("Answer with a question mark to display help.")
         print("Value in square brackets at the end of the questions present default value if there is no answer.")

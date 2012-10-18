@@ -1,0 +1,3 @@
+My name is {{{ author.name }}}. I am {{{ author.age }}} years old.
+ 
+This is my password to everything:  {{{ author.password }}}

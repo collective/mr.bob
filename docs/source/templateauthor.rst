@@ -9,7 +9,7 @@ Writing your own template is as easy as creating a `.mrbob.ini` that may contain
 Everything else is extra. To start quickly, use template starter that ships with `mr.bob`::
 
   $ mr.bob mrbob:template_starter/
-  Welcome to mr.bob interactive mode. Before we generate file structure, some questions need to be answered.
+  Welcome to mr.bob interactive mode. Before we generate directory structure, some questions need to be answered.
 
   Answer with a question mark to display help.
   Value in square brackets at the end of the questions present default value if there is no answer.

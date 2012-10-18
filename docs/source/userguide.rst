@@ -63,8 +63,21 @@ Sample template to try out
 
 ::
 
-    $ mrbob mr.bob.templates:sample/
-    ... TODO: write this
+    $ mrbob mrbob:template_sample/
+    Welcome to mr.bob interactive mode. Before we generate directory structure, some questions need to be answered.
+
+    Answer with a question mark to display help.
+    Value in square brackets at the end of the questions present default value if there is no answer.
+
+
+    --> How old are you? [24]: 
+
+    --> What is your name?: Foobar
+
+    --> Enter password: 
+
+
+    Generated file structure at /current/directory/
 
 
 Listing all questions needed to have corresponding variable for a template
@@ -72,8 +85,14 @@ Listing all questions needed to have corresponding variable for a template
 
 ::
 
-    $ mrbob --list-questions mr.bob.templates:sample/
-    ... TODO: write this
+    $ mrbob --list-questions mrbob:template_sample/
+    author.age.default = 24
+    author.age.help = We need your age information to render the template
+    author.age.question = How old are you?
+    author.name.question = What is your name?
+    author.name.required = True
+    author.password.command_prompt = getpass:getpass
+    author.password.question = Enter password
 
 
 Configuration
