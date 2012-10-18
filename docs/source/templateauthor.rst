@@ -9,15 +9,28 @@ Writing your own template is as easy as creating a `.mrbob.ini` that may contain
 Everything else is extra. To start quickly, use template starter that ships with `mr.bob`::
 
   $ mr.bob mrbob:template_starter/
-  ...
+  Welcome to mr.bob interactive mode. Before we generate file structure, some questions need to be answered.
 
-See `.mrbob.ini` for sample questions and `sample.bob` for sample rendering.
+  Answer with a question mark to display help.
+  Value in square brackets at the end of the questions present default value if there is no answer.
+
+
+  --> How old are you? [24]: 
+
+  --> What is your name?: Foobar
+
+  --> Enter password: 
+
+
+  Generated file structure at /home/ielectric/code/mr.bob
+
+See `.mrbob.ini` for sample questions and `sample.txt.bob` for sample rendering.
 
 
 Templating
 ----------
 
-Files inside structure can be just copied to destiantion or they can be suffixed with `.bob` and templating engine
+Files inside structure can be just copied to destination or they can be suffixed with `.bob` and templating engine
 will be used to render them.
 
 By default a little bit customized `Jinja2` templating is used. The big difference is that variables are referenced with `{{{ variable }}}` instead of `{{ variable }}` and blocks are `{{% if variable %}}` instead of `{% if variable %}`. To read more about templating see `Jinja2 documentation <http://jinja.pocoo.org/docs/templates/#variables>`_.
