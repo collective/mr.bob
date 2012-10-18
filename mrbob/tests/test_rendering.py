@@ -127,8 +127,10 @@ def test_render_template(examples):
 def test_render_missing_key(examples):
     target_dir, fs_examples = examples
     with raises(KeyError):
-        render_template(path.join(fs_examples,
-                'unbound/usr/local/etc/unbound/unbound.conf.bob'),
+        t = path.join(
+            fs_examples,
+            'unbound/usr/local/etc/unbound/unbound.conf.bob')
+        render_template(t,
             target_dir,
             dict(),
             False,
@@ -214,6 +216,19 @@ def test_rendered_file_is_renamed(examples):
     assert ('from blather import bar' in open(fs_rendered).read())
 
 
+def test_rendered_file_is_renamed_dotted_name(examples):
+    target_dir, fs_examples = examples
+    render_structure(
+        path.join(fs_examples, 'renamedtemplate2'),
+        target_dir,
+        {'author.name': 'foo'},
+        False,
+        python_formatting_renderer,
+    )
+    fs_rendered = '%s/%s' % (target_dir, '/foo_endpoint.py')
+    assert path.exists(fs_rendered)
+
+
 def test_compount_renaming(examples):
     """ all of the above edgecases in one fixture """
     target_dir, fs_examples = examples
@@ -228,4 +243,14 @@ def test_compount_renaming(examples):
     assert path.exists(fs_rendered)
     assert ('blather = blubber' in open(fs_rendered).read())
 
-# TODO: test namespaced rename
+
+def test_parse_variables():
+    from ..rendering import parse_variables
+    variables = {'author.name': 'foobar',
+                 'author.age': '23',
+                 'license': 'BSD',
+                 'foo.bar.zar.mar': 'foo'}
+    vars_ = parse_variables(variables)
+    assert set(vars_.keys()) == set(['foo', 'license', 'author'])
+    assert set(vars_['author'].items()) == set([('name', 'foobar'), ('age', '23')])
+    assert set(vars_['foo']['bar']['zar'].items()) == set([('mar', 'foo')])
