@@ -226,7 +226,10 @@ class Question(object):
                     question = "--> " + self.question + " [" + self.default + "]: "
                 else:
                     question = "--> " + self.question + ": "
-                answer = self.command_prompt(question).strip().decode('utf-8')
+                if six.PY3:
+                    answer = self.command_prompt(question).strip()
+                else:
+                    answer = self.command_prompt(question).strip().decode('utf-8')
                 if answer == "?":
                     if self.help:
                         print(self.help)
