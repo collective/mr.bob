@@ -248,7 +248,10 @@ class Question(object):
                 elif not answer and self.default is not None:
                     correct_answer = maybe_bool(self.default)
                 elif not answer and self.default is None:
-                    continue
+                    if self.required:
+                        continue
+                    else:
+                        correct_answer = answer
         except KeyboardInterrupt:  # pragma: no cover
             print('\nExiting...')
             sys.exit(0)

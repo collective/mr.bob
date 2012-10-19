@@ -5,7 +5,6 @@ More: http://mrbob.readthedocs.org/
 TODO
 ====
 
-- [high] If required is False, don't require the variable
 - [high] Questions have random order at the moment
 - [medium] Check how one would implement multi-namespace python package with current mr.bob api
 - [medium] Consider http://www.stat.washington.edu/~hoytak/code/treedict/overview.html#overview for variables storage

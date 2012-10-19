@@ -255,13 +255,25 @@ class QuestionTest(unittest.TestCase):
         answer = q.ask()
         self.assertEqual(answer, 'foo')
 
-    def test_ask_no_default(self):
+    def test_ask_no_default_and_not_required(self):
 
         def cmd(q, go=['foo', '']):
             return go.pop()
 
         q = self.call_FUT('foo',
                           'Why?',
+                          command_prompt=cmd)
+        answer = q.ask()
+        self.assertEqual(answer, '')
+
+    def test_ask_no_default_and_required(self):
+
+        def cmd(q, go=['foo', '']):
+            return go.pop()
+
+        q = self.call_FUT('foo',
+                          'Why?',
+                          required=True,
                           command_prompt=cmd)
         answer = q.ask()
         self.assertEqual(answer, 'foo')
