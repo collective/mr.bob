@@ -25,9 +25,7 @@ def read(*rnames):
 setup(name='mr.bob',
       version='0.1a2.dev0',
       description='Bob renders directory structure templates',
-      long_description=read('README.rst') +
-                       read('HISTORY.rst') +
-                       read('LICENSE'),
+      long_description=read('README.rst') + "\n" + read('HISTORY.rst'),
       classifiers=[
           "Programming Language :: Python",
           "Programming Language :: Python :: Implementation :: CPython",
