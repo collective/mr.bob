@@ -36,3 +36,11 @@ Source documentation
 .. automodule:: mrbob.rendering
    :members:
    :show-inheritance:
+
+
+:mod:`mrbob.validators` -- Useful validators for questions
+----------------------------------------------------------
+
+.. automodule:: mrbob.validators
+   :members:
+   :show-inheritance:

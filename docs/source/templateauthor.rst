@@ -78,3 +78,12 @@ validator       None              Validator can raise :exc:`mrbob.configurator.V
 command_prompt  :func:`raw_input` Function that accepts question and asks user for the answer
 help            ""                Extra help returned when user inputs a question mark
 =============== ================= =================================================================================================
+
+
+Validators
+----------
+
+Validators are functions with answer as only parameter. They may return value to be used as
+an answer and may raise :exc:`ValidationError` for question to be asked again.
+
+See :mod:`mrbob.validators` for validators that ship with `mr.bob`.
