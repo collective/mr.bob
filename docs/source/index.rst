@@ -56,6 +56,10 @@ Glossary
 dotted notation
    Importable Python function specified with dots as importing a module separated with a column
    to denote a function. For example *mrbob.rendering:render_structure*
+mr.bob
+    configures how `mrbob` behaves
+variables
+    answers to the questions that will be passed to templates for rendering
 
 
 Indices and tables

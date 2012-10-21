@@ -98,12 +98,7 @@ Listing all questions needed to have corresponding variable for a template
 Configuration
 -------------
 
-Configuration is done with `.ini` style files. There are two sections for configuration.
-
-mr.bob
-    configures how `mrbob` behaves
-variables
-    answers to the questions that will be passed to templates for rendering
+Configuration is done with `.ini` style files. There are two sections for configuration: :term:`mr.bob` and :term:`variables` section.
 
 Example of global config file `~/.mrbob` or command line parameter `mrbob --config foo.ini`.
 
@@ -120,16 +115,7 @@ Example of global config file `~/.mrbob` or command line parameter `mrbob --conf
 Configuration inheritance
 *************************
 
-Configuration can be specified in multiple ways. Here is a graph how settings are preferred (questions override any other configuration).
-::
-
-    Global config at ~/.mrbob
-            ^
-            |
-    mrbob --config mrbob.ini
-            ^
-            |
-    Questions answered in interactive mode
+Configuration can be specified in multiple ways. See flow of mr.bob on front page of documentation to know how options are preferred.
 
 
 Nesting variables into namespaces called groups
