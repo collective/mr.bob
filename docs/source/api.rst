@@ -25,7 +25,7 @@ Source documentation
 :mod:`mrbob.parsing` -- Parsing `.ini` files
 --------------------------------------------
 
-.. automodule:: mrbob.rendering
+.. automodule:: mrbob.parsing
    :members:
    :show-inheritance:
 

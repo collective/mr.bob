@@ -20,6 +20,11 @@ Welcome to mr.bob's documentation!
     - multiple ways to specify variables to render templates
     - preserves permissions when rendering templates
 
+   **Flow of mr.bob** 
+
+   .. import mr.bob_flow.xml to diagram.ly to export image as .jpg
+   .. image:: mr.bob_flow.jpg
+
 
 .. topic:: Introduction
 
@@ -32,6 +37,8 @@ Welcome to mr.bob's documentation!
    **mr.bob** is meant to deprecate previous tools such as
    `paster (PasteScript) <http://pythonpaste.org/script/>`_
    and `templer <http://templer-manual.readthedocs.org/en/latest/index.html>`_.
+
+
 
 
 .. toctree::
