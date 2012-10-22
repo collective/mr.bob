@@ -17,6 +17,11 @@ try:
 except ImportError:
     install_requires.append('importlib')
 
+try:
+    from collections import OrderedDict  # NOQA
+except ImportError:
+    install_requires.append('ordereddict')
+
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()

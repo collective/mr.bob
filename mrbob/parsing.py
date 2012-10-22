@@ -1,4 +1,8 @@
 import collections
+try:  # pragma: no cover
+    from collections import OrderedDict  # NOQA
+except ImportError:  # pragma: no cover
+    from ordereddict import OrderedDict  # NOQA
 from six.moves import configparser
 from six import PY3
 
@@ -24,7 +28,7 @@ def nest_variables(variables):
 
 
 def parse_config(fs_config):
-    parser = configparser.SafeConfigParser(dict_type=collections.OrderedDict)
+    parser = configparser.SafeConfigParser(dict_type=OrderedDict)
     parser.read(fs_config)
     config = dict()
     for section in ['variables', 'mr.bob', 'questions']:
