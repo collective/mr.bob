@@ -127,8 +127,9 @@ class Configurator(object):
         if not os.path.exists(template_config):
             raise TemplateConfigurationError('Config not found: %s' % template_config)
         # TODO: also join other sections from template config
-        self.raw_questions = parse_config(template_config)['questions']
-        self.questions = self.parse_questions(self.raw_questions)
+        self.config = parse_config(template_config)
+        self.raw_questions = self.config['questions']
+        self.questions = self.parse_questions(self.raw_questions, self.config['questions_order'])
         self.target_directory = os.path.realpath(target_directory)
         if not os.path.isdir(self.target_directory):
             os.makedirs(self.target_directory)
@@ -148,25 +149,23 @@ class Configurator(object):
                          self.verbose,
                          self.renderer)
 
-    def parse_questions(self, config):
+    def parse_questions(self, config, order):
         q = []
-        for line in pretty_format_config(config):
-            key, value = line.split(' = ')
-            key_parts = key.split('.')
-            if key_parts[-1] == 'question':
-                c = dict(config)
-                for k in key_parts[:-1]:
-                    c = c[k]
-                # filter out subnamespaces
-                c = dict([(k, value) for k, value in c.items() if not isinstance(value, dict)])
-                name = '.'.join(key_parts[:-1])
-                try:
-                    question = Question(name=name, **c)
-                except TypeError:
-                    raise TemplateConfigurationError(
-                        'Question "%s" got an unexpected argument. Arguments: %s' % (name, ', '.join(c)))
 
-                q.append(question)
+        for question_key in order:
+            key_parts = question_key.split('.')
+            c = dict(config)
+            for k in key_parts:
+                c = c[k]
+            # filter out subnamespaces
+            c = dict([(k, v) for k, v in c.items() if not isinstance(v, dict)])
+            try:
+                question = Question(name=question_key, **c)
+            except TypeError:
+                raise TemplateConfigurationError(
+                    'Question "%s" got an unexpected argument. Arguments: %s' % (question_key, ', '.join(c)))
+
+            q.append(question)
         return q
 
     def print_questions(self):  # pragma: no cover

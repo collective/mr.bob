@@ -6,7 +6,7 @@ TODO
 ====
 
 - gittip
-- [high] Questions have random order at the moment
+- add +var+ folder in template_sample
 - [medium] validate questions being answered through config files
 - [medium] figure out how templates can depend on each other (bobconfig setting with a list of template names?)
 - [medium] ability to use multiple templates at the same time and depend on them (similar templer structures, but doesnt separate structures and templates)

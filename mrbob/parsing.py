@@ -1,19 +1,6 @@
 import collections
-from six.moves import configparser as ConfigParser_
+from six.moves import configparser
 from six import PY3
-
-
-class ConfigParser(ConfigParser_.SafeConfigParser):
-    """ a ConfigParser that can provide its values as simple dictionary.
-    taken from http://stackoverflow.com/questions/3220670
-    """
-
-    def as_dict(self):
-        d = dict(self._sections)
-        for k in d:
-            d[k] = dict(self._defaults, **d[k])
-            d[k].pop('__name__', None)
-        return d
 
 
 def nest_variables(variables):
@@ -37,12 +24,17 @@ def nest_variables(variables):
 
 
 def parse_config(fs_config):
-    parser = ConfigParser()
+    parser = configparser.SafeConfigParser(dict_type=collections.OrderedDict)
     parser.read(fs_config)
-    config = parser.as_dict()
-    config['variables'] = nest_variables(config.get('variables', {}))
-    config['mr.bob'] = nest_variables(config.get('mr.bob', {}))
-    config['questions'] = nest_variables(config.get('questions', {}))
+    config = dict()
+    for section in ['variables', 'mr.bob', 'questions']:
+        if parser.has_section(section):
+            items = parser.items(section)
+            config[section] = nest_variables(dict(items))
+            if section == 'questions':
+                config[section + "_order"] = [key[:-9] for key, value in items if key.endswith('question')]
+        else:
+            config[section] = {}
     return config
 
 
