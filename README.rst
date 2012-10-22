@@ -22,16 +22,18 @@ TODO
 - [low] ability to remember answers for the rendered template (goes together with updating/overriding templates)
 
 
-- [high] parse mr.bob section in templates (determine how that goes into configuration chain):
+[high] parse mr.bob section in templates (determine how that goes into configuration chain):
 
-[mr.bob]
-post_render_msg = Balblablalba
-pre_render(all stuff passed to render())
-post_render
-pre_ask_question(question, questions, more?)
-post_ask_question
+::
 
-Add "advanced templating" docs section:
+    [mr.bob]
+    post_render_msg = Balblablalba
+    pre_render(all stuff passed to render())
+    post_render
+    pre_ask_question(question, questions, more?)
+    post_ask_question
+
+Add **advanced templating** docs section:
 
 - remove action in favor of post_ask_question
 - default may require input from previous answers (for example url of documentation may propose package.rtfd.org link for docs) -> use pre_ask_question to set default value
