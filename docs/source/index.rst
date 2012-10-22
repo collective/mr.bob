@@ -39,16 +39,15 @@ Welcome to mr.bob's documentation!
    and `templer <http://templer-manual.readthedocs.org/en/latest/index.html>`_.
 
 
-
-
 .. toctree::
    :maxdepth: 3
 
    userguide.rst
    templateauthor.rst
-   developer.rst
    other.rst
+   developer.rst
    api.rst
+
 
 Glossary
 ========
