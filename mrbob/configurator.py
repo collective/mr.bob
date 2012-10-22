@@ -225,9 +225,9 @@ class Question(object):
                     question = "--> " + self.question + " [" + self.default + "]: "
                 else:
                     question = "--> " + self.question + ": "
-                if six.PY3:
+                if six.PY3:  # pragma: no cover
                     answer = self.command_prompt(question).strip()
-                else:
+                else:  # pragma: no cover
                     answer = self.command_prompt(question).strip().decode('utf-8')
                 if answer == "?":
                     if self.help:
