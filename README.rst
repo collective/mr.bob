@@ -10,11 +10,11 @@ TODO
 - [medium] validate questions being answered through config files
 - [medium] figure out how templates can depend on each other (bobconfig setting with a list of template names?)
 - [medium] ability to use multiple templates at the same time and depend on them (similar templer structures, but doesnt separate structures and templates)
-- [medium] Ability to configure what to ignore when copying templates in bobconfig
-- [medium] better format print questions output
 - [medium] Check how one would implement multi-namespace python package with current mr.bob api
 - [medium] Consider http://www.stat.washington.edu/~hoytak/code/treedict/overview.html#overview for "variables" storage
-- [medium] non-interactive support (disable last phase of configuration) - what happens on missing variable?
+- [low] Ability to configure what to ignore when copying templates in bobconfig
+- [low] better format print questions output (keep order of questions)
+- [low] non-interactive support (disable last phase of configuration) - what happens on missing variable?
 - [low] ability to have localcommands (maybe we dont need them because you can just use another template on top of template) - document this
 - [low] ability to specify answers to questions from cli
 - [low] ability to simulate rendering (dry-run)
