@@ -2,7 +2,7 @@ Changelog
 =========
     
 
-0.1a2 (unreleased)
+0.1a2 (2012-11-29)
 ------------------
 
 - #12: Fix unicode errors when using non-ASCII in questions or defaults
