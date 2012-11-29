@@ -222,13 +222,13 @@ class Question(object):
         try:
             while correct_answer is None:
                 if self.default:
-                    question = "--> " + self.question + " [" + self.default + "]: "
+                    question = six.u("--> %s [%s]: ") % (self.question, self.default)
                 else:
-                    question = "--> " + self.question + ": "
+                    question = six.u("--> %s: ") % self.question
                 if six.PY3:  # pragma: no cover
                     answer = self.command_prompt(question).strip()
                 else:  # pragma: no cover
-                    answer = self.command_prompt(question).strip().decode('utf-8')
+                    answer = self.command_prompt(question.encode('utf-8')).strip().decode('utf-8')
                 if answer == "?":
                     if self.help:
                         print(self.help)

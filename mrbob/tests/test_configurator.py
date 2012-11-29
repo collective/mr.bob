@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import unittest
 import os
 import sys
@@ -233,6 +235,18 @@ class QuestionTest(unittest.TestCase):
         q = self.call_FUT('foo', 'Why?', command_prompt=cmd)
         answer = q.ask()
         self.assertEqual(answer, 'foo')
+
+    def test_ask_unicode(self):
+
+        def cmd(q):
+            if six.PY3:
+                self.assertTrue(isinstance(q, unicode))
+            else:
+                self.assertTrue(isinstance(q, str))
+            return 'foo'
+
+        q = self.call_FUT('foo', u'č?', command_prompt=cmd)
+        q.ask()
 
     def test_ask_default_empty(self):
         q = self.call_FUT('foo',
