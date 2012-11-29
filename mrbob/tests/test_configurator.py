@@ -239,10 +239,7 @@ class QuestionTest(unittest.TestCase):
     def test_ask_unicode(self):
 
         def cmd(q):
-            if six.PY3:
-                self.assertTrue(isinstance(q, unicode))
-            else:
-                self.assertTrue(isinstance(q, str))
+            self.assertTrue(isinstance(q, str))
             return 'foo'
 
         q = self.call_FUT('foo', six.u('č?'), command_prompt=cmd)
