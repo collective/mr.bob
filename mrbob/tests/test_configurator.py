@@ -245,7 +245,7 @@ class QuestionTest(unittest.TestCase):
                 self.assertTrue(isinstance(q, str))
             return 'foo'
 
-        q = self.call_FUT('foo', u'č?', command_prompt=cmd)
+        q = self.call_FUT('foo', six.u('č?'), command_prompt=cmd)
         q.ask()
 
     def test_ask_default_empty(self):
