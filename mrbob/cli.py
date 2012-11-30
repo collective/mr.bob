@@ -73,7 +73,7 @@ def main(args=sys.argv[1:], quiet=False):
     if not options.template:
         parser.error('You must specify what template to use.')
 
-    userconfig = os.path.expanduser('~/.mrbob.ini')
+    userconfig = os.path.expanduser('~/.mrbob')
     if os.path.exists(userconfig):
         global_config = parse_config(userconfig)
         global_bobconfig = global_config['mr.bob']
