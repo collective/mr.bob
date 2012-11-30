@@ -5,7 +5,8 @@ Changelog
 0.1a3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- #13: Read user config from ~/.mrbob (as stated in docs and inline comments).
+  [Andreas Kaiser]
 
 
 0.1a2 (2012-11-29)
