@@ -1,6 +1,9 @@
-Mister Bob the Builder renders directory skeleton to a target directory.
+**Mister Bob the Builder** creates directory skeletons.
 
-More: http://mrbob.readthedocs.org/
+Documentation
+=============
+
+http://mrbob.readthedocs.org/
 
 TODO
 ====
