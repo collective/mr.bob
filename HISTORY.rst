@@ -5,7 +5,8 @@ Changelog
 0.1a4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Suppress the interactive-mode welcome banner if there are no questions to ask
+  [Sasha Hart]
 
 
 0.1a3 (2012-11-30)
