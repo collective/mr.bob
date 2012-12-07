@@ -206,7 +206,7 @@ class Question(object):
         self.default = default
         self.required = maybe_bool(required)
         if maybe_bool(self.default) and self.required:
-            raise TemplateConfigurationError('Question %s is required but at the same time has defined default.' % self.name)
+            raise TemplateConfigurationError('Question %s is required but has also defined a default.' % self.name)
         self.validator = maybe_resolve_dotted_func(validator)
         self.action = maybe_resolve_dotted_func(action)
         self.command_prompt = maybe_resolve_dotted_func(command_prompt)

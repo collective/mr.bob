@@ -16,7 +16,7 @@ Usage
 -----
 
 
-Once you install mr.bob, there is `mrbob` command available::
+Once you install mr.bob, the `mrbob` command is available::
 
     $ mrbob --help
     usage: mrbob [-h] [-O TARGET_DIRECTORY] [-c CONFIG] [-V] [-l] [-r RENDERER]
@@ -41,7 +41,7 @@ Once you install mr.bob, there is `mrbob` command available::
                             Dotted notation to a renderer function. Defaults to
                             mrbob.rendering:jinja2_renderer
 
-By default target directory is current folder. Most basic use case is rendering a template from a relative folder::
+By default, the target directory is the current folder. The most basic use case is rendering a template from a relative folder::
 
     $ mrbob ../template_folder/
 
@@ -98,7 +98,7 @@ Listing all questions needed to have corresponding variable for a template
 Configuration
 -------------
 
-Configuration is done with `.ini` style files. There are two sections for configuration: :term:`mr.bob` and :term:`variables` section.
+Configuration is done with `.ini` style files. There are two sections for configuration: :term:`mr.bob` and :term:`variables`.
 
 Example of global config file `~/.mrbob` or command line parameter `mrbob --config foo.ini`.
 
@@ -115,7 +115,7 @@ Example of global config file `~/.mrbob` or command line parameter `mrbob --conf
 Configuration inheritance
 *************************
 
-Configuration can be specified in multiple ways. See flow of mr.bob on front page of documentation to know how options are preferred.
+Configuration can be specified in multiple ways. See flow of mr.bob on the documentation front page to know how options are preferred.
 
 
 Nesting variables into namespaces called groups
@@ -141,7 +141,7 @@ don't do anything special besides providing readability.
 Collection of community managed templates
 -----------------------------------------
 
-You are encouraged to use `bobtemplates.something` Python egg namespace to write
+You are encouraged to use the `bobtemplates.something` Python egg namespace to write
 templates and contribute them to this list by making a `pull request <github.com/iElectric/mr.bob>`_.
 
 - `bobtemplates.ielectric <https://github.com/iElectric/bobtemplates.ielectric>`_ 

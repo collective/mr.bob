@@ -21,8 +21,8 @@ parser = argparse.ArgumentParser(description='Filesystem template renderer')
 parser.add_argument('template',
                     nargs="?",
                     help="""Template name to use for rendering. See
-                    http://mrbob.readthedocs.org/en/latest/userguide.html#usage what
-                    syntax it recognizes.
+                    http://mrbob.readthedocs.org/en/latest/userguide.html#usage
+                    for a guide to template syntax.
 
                     """)
 parser.add_argument('-O', '--target-directory',
@@ -141,7 +141,7 @@ def main(args=sys.argv[1:], quiet=False):
         print("Welcome to mr.bob interactive mode. Before we generate directory structure, some questions need to be answered.")
         print("")
         print("Answer with a question mark to display help.")
-        print("Value in square brackets at the end of the questions present default value if there is no answer.")
+        print("Values in square brackets at the ends of questions show the default value used if there is no answer.")
         print("\n")
         c.ask_questions()
         c.render()

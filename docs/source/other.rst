@@ -16,4 +16,4 @@ Why another tool
 - PasteScript uses Cheetah which doesn't work on PyPy and has C extensions that need to be compiled
 - PasteScript in unmaintainable, with really dodgy code
 - PasteScript doesn't preserve permissions when copying/rendering files
-- mr.bob is just 200 lines of code with some extra features in mind that PasteScript cannot provide such as Python API to be used by higher level libraries
+- mr.bob is just 200 lines of code with some extra features in mind that PasteScript cannot provide, such as a Python API for use by higher level libraries
