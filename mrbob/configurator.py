@@ -174,6 +174,12 @@ class Configurator(object):
             # TODO: filter out lines without questions
             # TODO: seperate questions with a newline
 
+    def unanswered_questions(self):
+        """Returns a list of questions which need to be asked.
+        """
+        return [question for question in self.questions
+                if question.name not in self.variables]
+
     def ask_questions(self):
         """Loops through questions and asks for input if variable is not yet set.
         """
