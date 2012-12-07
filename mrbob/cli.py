@@ -47,6 +47,10 @@ parser.add_argument('-l', '--list-questions',
 parser.add_argument('-r', '--renderer',
                     action="store",
                     help='Dotted notation to a renderer function. Defaults to mrbob.rendering:jinja2_renderer')
+parser.add_argument('-n', '--dont-ask-questions',
+                    action="store_true",
+                    default=False,
+                    help='Disallow questions, aborting if any need to be asked')
 #parser.add_option('--simulate',
                   #dest='simulate',
                   #action='store_true',
@@ -137,6 +141,9 @@ def main(args=sys.argv[1:], quiet=False):
 
         if options.list_questions:
             return c.print_questions()
+
+        if options.dont_ask_questions and c.unanswered_questions():
+            parser.error('There are unanswered questions but --dont-ask-questions was specified')
 
         print("Welcome to mr.bob interactive mode. Before we generate directory structure, some questions need to be answered.")
         print("")

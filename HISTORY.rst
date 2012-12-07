@@ -5,7 +5,8 @@ Changelog
 0.1a4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add -n/--dont-ask-questions option to bail on unanswered questions (for non-interactive use)
+  [Sasha Hart]
 
 
 0.1a3 (2012-11-30)
