@@ -156,6 +156,12 @@ class ConfiguratorTest(unittest.TestCase):
                           {})
         self.assertEqual(len(c.questions), 0)
 
+    def test_parse_questions_no_questions_section(self):
+        # expected failure: KeyError: 'questions_order'
+        c = self.call_FUT('mrbob.tests:templates/empty2',
+                          self.target_dir,
+                          {})
+
     def test_parse_questions_extra_parameter(self):
         from ..configurator import TemplateConfigurationError
         self.assertRaises(TemplateConfigurationError,
