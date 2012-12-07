@@ -50,6 +50,16 @@ class TestCLI(unittest.TestCase):
         template_dir = os.path.join(os.path.dirname(__file__), 'templates', 'empty')
         self.call_FUT('--list-questions', template_dir)
 
+    @mock.patch('sys.stdin')
+    def test_dont_ask_questions(self, mock_stdin):
+        template_dir = os.path.join(os.path.dirname(__file__), 'templates', 'questions1')
+        mock_stdin.readline.return_value = 'failed'
+        mock_stdin.read.return_value = 'dontread'
+        self.assertRaises(SystemExit, self.call_FUT, '--dont-ask-questions',
+                template_dir)
+        self.assertFalse(mock_stdin.readline.called)
+        self.assertFalse(mock_stdin.read.called)
+
     def test_set_renderer(self):
         template_dir = os.path.join(os.path.dirname(__file__), 'templates', 'empty')
         self.call_FUT('--renderer', 'mrbob.rendering:python_formatting_renderer', template_dir)
