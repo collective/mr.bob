@@ -5,7 +5,8 @@ Changelog
 0.1a4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add -q/--quiet option to suppress output which isn't strictly necessary
+  [Sasha Hart]
 
 
 0.1a3 (2012-11-30)

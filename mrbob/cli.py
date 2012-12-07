@@ -47,7 +47,7 @@ parser.add_argument('-l', '--list-questions',
 parser.add_argument('-r', '--renderer',
                     action="store",
                     help='Dotted notation to a renderer function. Defaults to mrbob.rendering:jinja2_renderer')
-parser.add_argument('--quiet',
+parser.add_argument('-q', '--quiet',
                     action="store_true",
                     default=False,
                     help='Suppress all but necessary output')
