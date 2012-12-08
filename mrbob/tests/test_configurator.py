@@ -158,9 +158,9 @@ class ConfiguratorTest(unittest.TestCase):
 
     def test_parse_questions_no_questions_section(self):
         # expected failure: KeyError: 'questions_order'
-        c = self.call_FUT('mrbob.tests:templates/empty2',
-                          self.target_dir,
-                          {})
+        self.call_FUT('mrbob.tests:templates/empty2',
+                      self.target_dir,
+                      {})
 
     def test_parse_questions_extra_parameter(self):
         from ..configurator import TemplateConfigurationError
