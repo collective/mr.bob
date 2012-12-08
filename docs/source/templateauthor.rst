@@ -61,6 +61,8 @@ Example speaks for itself:
   author.password.question = Enter password
   author.password.command_prompt = getpass:getpass
 
+Questions will be asked in the order written in `.mrbob.ini`.
+
 
 ``questions`` section reference
 *******************************
