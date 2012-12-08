@@ -129,7 +129,10 @@ class Configurator(object):
         # TODO: also join other sections from template config
         self.config = parse_config(template_config)
         self.raw_questions = self.config['questions']
-        self.questions = self.parse_questions(self.raw_questions, self.config['questions_order'])
+        if self.raw_questions:
+            self.questions = self.parse_questions(self.raw_questions, self.config['questions_order'])
+        else:
+            self.questions = []
         self.target_directory = os.path.realpath(target_directory)
         if not os.path.isdir(self.target_directory):
             os.makedirs(self.target_directory)

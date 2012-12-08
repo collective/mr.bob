@@ -5,7 +5,8 @@ Changelog
 0.1a4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Don't raise KeyError: 'questions_order' if [questions] is missing in an ini
+  [Sasha Hart]
 
 
 0.1a3 (2012-11-30)
