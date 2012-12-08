@@ -5,6 +5,9 @@ Changelog
 0.1a4 (unreleased)
 ------------------
 
+- Add -q/--quiet option to suppress output which isn't strictly necessary
+  [Sasha Hart]
+
 - Suppress the interactive-mode welcome banner if there are no questions to ask
   [Sasha Hart]
 
