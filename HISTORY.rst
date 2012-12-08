@@ -5,6 +5,9 @@ Changelog
 0.1a4 (unreleased)
 ------------------
 
+- Suppress the interactive-mode welcome banner if there are no questions to ask
+  [Sasha Hart]
+
 - Don't raise KeyError: 'questions_order' if [questions] is missing in an ini
   [Sasha Hart]
 

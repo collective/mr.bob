@@ -138,14 +138,15 @@ def main(args=sys.argv[1:], quiet=False):
         if options.list_questions:
             return c.print_questions()
 
-        print("Welcome to mr.bob interactive mode. Before we generate directory structure, some questions need to be answered.")
-        print("")
-        print("Answer with a question mark to display help.")
-        print("Values in square brackets at the ends of questions show the default value used if there is no answer.")
-        print("\n")
-        c.ask_questions()
+        if c.questions:
+            print("Welcome to mr.bob interactive mode. Before we generate directory structure, some questions need to be answered.")
+            print("")
+            print("Answer with a question mark to display help.")
+            print("Values in square brackets at the end of the questions show the default value if there is no answer.")
+            print("\n")
+            c.ask_questions()
+            print("")
         c.render()
-        print("")
         print("Generated file structure at %s" % os.path.realpath(options.target_directory))
         return
     except TemplateConfigurationError as e:
