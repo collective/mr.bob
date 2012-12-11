@@ -5,6 +5,9 @@ Changelog
 0.1a4 (unreleased)
 ------------------
 
+- Fix MANIFEST.in so that template examples are also included with distribution
+  [Domen Kožar]
+
 - Add -q/--quiet option to suppress output which isn't strictly necessary
   [Sasha Hart]
 

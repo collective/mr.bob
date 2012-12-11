@@ -1,2 +1,2 @@
-graft mr.bob
+graft mrbob
 include *.cfg *.rst *.in LICENSE
