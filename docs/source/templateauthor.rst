@@ -15,11 +15,11 @@ Everything else is extra. To start quickly, use the template starter that ships 
   Value in square brackets at the end of the questions present default value if there is no answer.
 
 
-  --> How old are you? [24]: 
+  --> How old are you? [24]:
 
   --> What is your name?: Foobar
 
-  --> Enter password: 
+  --> Enter password:
 
 
   Generated file structure at /home/ielectric/code/mr.bob
@@ -89,7 +89,6 @@ an answer and may raise :exc:`ValidationError` for the question to be asked agai
 
 See :mod:`mrbob.validators` for validators that ship with `mr.bob`.
 
-
 Common needs for templating
 ---------------------------
 
@@ -120,3 +119,124 @@ use post_ask_question and add another question (is that possible if we are loopi
 
 TODO: mention post_render_msg can use python formatting to access variables
 TODO: mr.bob additional settings
+
+Preserve ``.mrbob.ini``
+***********************
+
+In some cases you want to render the ``.mrbob.ini`` in your result, for example
+to keep track of what you answered to bob's questions. You can achive this
+by setting ``preserve_mrbob_config`` to True:
+
+.. code-block:: ini
+
+    [mr.bob]
+    preserve_mrbob_config = True
+
+
+Hooks
+-----
+
+A list of places where you can hook into the process flow and provide your
+custom code.
+
+Post render message
+*******************
+
+If you want to display a message to the user when rendering is complete, you
+can use `post_render_msg` in your ``.mrbob.ini``:
+
+.. code-block:: ini
+
+    [mr.bob]
+    post_render_msg = Well done, %(author.name)s, your code is ready!
+
+As shown above, you can use standard Python formatting in ``post_render_msg``.
+
+.. _post-render-hook:
+
+Post render hook
+****************
+
+Similarly if you would like to execute a custom Python script after rendering
+is complete, you can use `post_render` hook in your ``.mrbob.ini``.
+
+.. code-block:: ini
+
+    [mr.bob]
+    post_render = bobtemplates.mytemplate.hooks:my_post_render_function
+
+This assumes you have a `bobtemplate.mytemplate` egg with a ``hooks.py``
+module. This module contains a ``my_post_render_hook`` function, which gets
+called after mr.bob has finished rendering your template.
+
+The function expects one argument (:class:`mrbob.configurator.Configurator`)
+and looks something like this:
+
+.. code-block:: python
+
+    def my_post_render_function(configurator):
+        if configurator.variables['author.email']:
+            # do some validation here or something
+
+.. _pre-render-hook:
+
+Pre render hook
+***************
+
+Much like the :ref:`post-render-hook` example above, you can use ``pre_render``
+variable in your ``.mrbob.ini`` to specify a funtion to call before rendering
+starts.
+
+.. code-block:: ini
+
+    [mr.bob]
+    pre_render = bobtemplates.mytemplate.hooks:my_pre_render_function
+
+
+.. _pre-question-hook:
+
+Pre question hook
+*****************
+
+To allow for flexibility, mr.bob allows you to set hooks to questions. Using
+``pre_ask_question`` variable in your ``.mrbob.ini`` allows you to run custom
+code before a certain question.
+
+.. code-block:: ini
+
+    [questions]
+    author.name.question = What's your name?
+    author.name.pre_ask_question = bobtemplates.mytemplate.hooks:pre_author.name_question
+
+See below for an example of a hook function.
+
+.. _post-question-hook:
+
+Post question hook
+******************
+
+Much like the :ref:`pre-question-hook` example above, you can use
+``post_ask_question`` variable in your ``.mrbob.ini`` to specify a funtion to
+call after a question has been asked.
+
+.. code-block:: ini
+
+    [questions]
+    author.firstname.question = What's your name?
+    author.lastname.question = What's your surname?
+    author.lastname.post_ask_question = bobtemplates.mytemplate.hooks:set_fullname
+
+.. code-block:: python
+
+    def set_fullname(question, configurator):
+        configurator.variables['author.fullname'] =
+            configurator.variables['author.firstname'] + ' ' +
+            configurator.variables['author.lastname']
+
+The function expects two arguments:
+ * :class:`mrbob.configurator.Question`
+ * :class:`mrbob.configurator.Configurator`
+
+ Note that `pre_ask_question` and `post_ask_question` are defined for questions
+in the ``[questions]`` section of ``.mrbob.ini``.
+
