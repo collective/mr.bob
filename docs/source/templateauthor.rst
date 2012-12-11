@@ -52,7 +52,7 @@ Example speaks for itself:
 
   [questions]
   author.name.question = What is your name?
-  author.required = True
+  author.name.required = True
 
   author.age.question = How old are you?
   author.age.help = We need your age information to render the template
