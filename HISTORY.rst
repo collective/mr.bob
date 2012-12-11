@@ -2,7 +2,7 @@ Changelog
 =========
     
 
-0.1a4 (unreleased)
+0.1a4 (2012-12-11)
 ------------------
 
 - Fix MANIFEST.in so that template examples are also included with distribution
