@@ -87,15 +87,15 @@ class parse_templateTest(unittest.TestCase):
     def test_zipfile(self, mock_urlretrieve):
         mock_urlretrieve.side_effect = self.fake_zip
         abs_path = self.call_FUT('http://foobar.com/bla.zip')
-        self.assertEqual(os.listdir(abs_path[0]),
-                         ['test', '.mrbob.ini'])
+        self.assertEqual(set(os.listdir(abs_path[0])),
+                         set(['test', '.mrbob.ini']))
 
     @mock.patch('mrbob.configurator.urlretrieve')
     def test_zipfile_base_path(self, mock_urlretrieve):
         mock_urlretrieve.side_effect = self.fake_zip_base_path
         abs_path = self.call_FUT('http://foobar.com/bla.zip#some/dir')
-        self.assertEqual(os.listdir(abs_path[0]),
-                         ['test', '.mrbob.ini'])
+        self.assertEqual(set(os.listdir(abs_path[0])),
+                         set(['test', '.mrbob.ini']))
 
     @mock.patch('mrbob.configurator.urlretrieve')
     def test_zipfile_not_zipfile(self, mock_urlretrieve):
