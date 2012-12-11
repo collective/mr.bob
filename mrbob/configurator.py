@@ -17,7 +17,7 @@ import six
 from importlib import import_module
 
 from .rendering import render_structure
-from .parsing import parse_config, pretty_format_config
+from .parsing import parse_config, update_config, pretty_format_config
 
 
 DOTTED_REGEX = re.compile(r'^[a-zA-Z_.]+:[a-zA-Z_.]+$')
@@ -111,6 +111,9 @@ class Configurator(object):
     :param bobconfig: Configuration for mr.bob behaviour
     :param variables: Given variables
 
+    TODO: describe what configurator does
+    TODO: display api variables
+
     """
 
     def __init__(self,
@@ -122,35 +125,58 @@ class Configurator(object):
             bobconfig = {}
         if not variables:
             variables = {}
+        self.variables = variables
+        self.target_directory = os.path.realpath(target_directory)
+        if not os.path.isdir(self.target_directory):
+            os.makedirs(self.target_directory)
+
+        # figure out template directory
         self.template_dir, self.is_tempdir = parse_template(template)
+
+        # parse template configuration file
         template_config = os.path.join(self.template_dir, '.mrbob.ini')
         if not os.path.exists(template_config):
             raise TemplateConfigurationError('Config not found: %s' % template_config)
-        # TODO: also join other sections from template config
         self.config = parse_config(template_config)
+
+        # parse questions from template configuration file
         self.raw_questions = self.config['questions']
         if self.raw_questions:
             self.questions = self.parse_questions(self.raw_questions, self.config['questions_order'])
         else:
             self.questions = []
-        self.target_directory = os.path.realpath(target_directory)
-        if not os.path.isdir(self.target_directory):
-            os.makedirs(self.target_directory)
-        self.bobconfig = bobconfig
-        self.variables = variables
+
+        # parse bobconfig settings
+        # TODO: move config resolution inside this function from cli.py
+        self.bobconfig = update_config(bobconfig, self.config['mr.bob'])
         self.renderer = resolve_dotted_func(
-            bobconfig.get('renderer', 'mrbob.rendering:jinja2_renderer'))
-        self.verbose = bobconfig.get('verbose', False)
+            self.bobconfig.get('renderer', 'mrbob.rendering:jinja2_renderer'))
+        self.verbose = self.bobconfig.get('verbose', False)
+        self.post_render_msg = self.bobconfig.get('post_render_msg', '')
+        self.preserve_mrbob_config = self.bobconfig.get('preserve_mrbob_config', False)
+        self.post_render = [resolve_dotted_func(f) for f in self.bobconfig.get('post_render', '').split()]
+        self.pre_render = [resolve_dotted_func(f) for f in self.bobconfig.get('pre_render', '').split()]
+        self.pre_ask_question = [resolve_dotted_func(f) for f in self.bobconfig.get('pre_ask_question', '').split()]
+        self.post_ask_question = [resolve_dotted_func(f) for f in self.bobconfig.get('post_ask_question', '').split()]
 
     def render(self):
         """Render file structure given instance configuration. Basically calls
         :func:`mrbob.rendering.render_structure`.
         """
+        if self.pre_render:
+            for f in self.pre_render:
+                f(self)
         render_structure(self.template_dir,
                          self.target_directory,
                          self.variables,
                          self.verbose,
-                         self.renderer)
+                         self.renderer,
+                         self.preserve_mrbob_config)
+        if self.post_render:
+            for f in self.post_render:
+                f(self)
+        if self.post_render_msg:
+            print self.post_render_msg % self.variables
 
     def parse_questions(self, config, order):
         q = []
@@ -176,16 +202,24 @@ class Configurator(object):
             print(line)
             # TODO: filter out lines without questions
             # TODO: seperate questions with a newline
+            # TODO: keep order
 
     def ask_questions(self):
         """Loops through questions and asks for input if variable is not yet set.
         """
+        # TODO: deepcopy + while loop + pop
         for question in self.questions:
+            if self.pre_ask_question:
+                for f in self.pre_ask_question:
+                    f(question, self)
             if question.name in self.variables:
                 pass  # TODO: pass to ask method to validate input?
             else:
                 answer = question.ask()
                 self.variables[question.name] = answer
+            if self.post_ask_question:
+                for f in self.post_ask_question:
+                    f(question, self)
 
 
 class Question(object):
