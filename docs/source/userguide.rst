@@ -95,6 +95,12 @@ Listing all questions needed to have corresponding variable for a template
     author.password.question = Enter password
 
 
+Dump answers to a file for later use
+------------------------------------
+
+# TODO: write this
+
+
 Configuration
 -------------
 
