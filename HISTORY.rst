@@ -12,6 +12,7 @@ Changelog
 ------------------
 
 - #26: Variables were not correctly parsed from config files
+  [Domen Kožar]
 
 
 0.1a4 (2012-12-11)
