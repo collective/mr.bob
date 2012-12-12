@@ -156,8 +156,6 @@ class Configurator(object):
         self.preserve_mrbob_config = self.bobconfig.get('preserve_mrbob_config', False)
         self.post_render = [resolve_dotted_func(f) for f in self.bobconfig.get('post_render', '').split()]
         self.pre_render = [resolve_dotted_func(f) for f in self.bobconfig.get('pre_render', '').split()]
-        self.pre_ask_question = [resolve_dotted_func(f) for f in self.bobconfig.get('pre_ask_question', '').split()]
-        self.post_ask_question = [resolve_dotted_func(f) for f in self.bobconfig.get('post_ask_question', '').split()]
 
     def render(self):
         """Render file structure given instance configuration. Basically calls
@@ -209,17 +207,15 @@ class Configurator(object):
         """
         # TODO: deepcopy + while loop + pop
         for question in self.questions:
-            if self.pre_ask_question:
-                for f in self.pre_ask_question:
-                    f(question, self)
+            for f in question.pre_ask_question:
+                f(self, question)
             if question.name in self.variables:
                 pass  # TODO: pass to ask method to validate input?
             else:
                 answer = question.ask()
                 self.variables[question.name] = answer
-            if self.post_ask_question:
-                for f in self.post_ask_question:
-                    f(question, self)
+            for f in question.post_ask_question:
+                f(self, question)
 
 
 class Question(object):
@@ -234,6 +230,8 @@ class Question(object):
                  action=lambda x: x,
                  validator=None,
                  command_prompt=six.moves.input,
+                 pre_ask_question='',
+                 post_ask_question='',
                  help=""):
         self.name = name
         self.question = question
@@ -245,6 +243,8 @@ class Question(object):
         self.action = maybe_resolve_dotted_func(action)
         self.command_prompt = maybe_resolve_dotted_func(command_prompt)
         self.help = help
+        self.pre_ask_question = [resolve_dotted_func(f) for f in pre_ask_question.split()]
+        self.post_ask_question = [resolve_dotted_func(f) for f in post_ask_question.split()]
         # TODO: provide basic validators
         # TODO: choice question?
 
