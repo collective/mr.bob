@@ -10,3 +10,5 @@ install:
   - easy_install mr.bob[test]
 script:
   - ./bin/test
+allow_failures:
+  - pypy
