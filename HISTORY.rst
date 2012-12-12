@@ -2,7 +2,7 @@ Changelog
 =========
     
 
-0.1a5 (unreleased)
+0.1a5 (2012-12-12)
 ------------------
 
 - #26: Variables were not correctly parsed from config files
