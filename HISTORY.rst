@@ -5,7 +5,7 @@ Changelog
 0.1a5 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- #26: Variables were not correctly parsed from config files
 
 
 0.1a4 (2012-12-11)

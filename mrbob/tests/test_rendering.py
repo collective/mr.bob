@@ -151,12 +151,20 @@ def test_rendered_permissions_preserved(examples):
 
 
 def test_filename_substitution():
-    assert render_filename('em0_+ip_addr+.conf',
+    assert render_filename(
+        'em0_+ip_addr+.conf',
         dict(ip_addr='127.0.0.1')) == 'em0_127.0.0.1.conf'
 
 
+def test_filename_nested():
+    assert render_filename(
+        'em0_+ip.addr+.conf',
+        {'ip.addr': '127.0.0.1'}) == 'em0_127.0.0.1.conf'
+
+
 def test_multiple_filename_substitution():
-    assert render_filename('+device+_+ip_addr+.conf',
+    assert render_filename(
+        '+device+_+ip_addr+.conf',
         dict(ip_addr='127.0.0.1',
             device='em0')) == 'em0_127.0.0.1.conf'
 

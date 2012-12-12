@@ -31,25 +31,26 @@ def test_parse_variable(parsed_config):
 
 
 def test_parse_nested_variable(parsed_config):
-    assert parsed_config['variables']['host']['ip_addr'] == '10.0.10.120'
+    assert parsed_config['variables']['host.ip_addr'] == '10.0.10.120'
 
 
 def test_parse_2nd_level_nested_variable(parsed_config):
-    assert parsed_config['variables']['webserver']['foo']['bar'] == 'barf'
+    assert parsed_config['variables']['webserver.foo.bar'] == 'barf'
 
 
 @config('example2.ini')
 def test_parse_nested_variable_out_of_order(parsed_config):
-    assert parsed_config['variables']['webserver']['foo']['bar'] == 'barf2'
-    assert parsed_config['variables']['webserver']['ip_addr'] == '127.0.0.3'
+    assert parsed_config['variables']['webserver.foo.bar'] == 'barf2'
+    assert parsed_config['variables']['webserver.ip_addr'] == '127.0.0.3'
 
 
 @config('example5.ini')
 def test_parse_deeply_nested_variables(parsed_config):
     expected_config = {
         'mr.bob': {},
-        'variables': {'a': {'b': {'c': {'d': 'foo', 'f': 'bar'}}}, 'name': 'Bob'},
-        'questions': {},
+        'variables': {'a.b.c.d': 'foo', 'a.b.c.f': 'bar', 'name': 'Bob'},
+        'questions': {'a': {'b': {'c': {'d': 'foo', 'f': 'bar'}}}, 'name': 'Bob'},
+        'questions_order': [],
     }
     assert parsed_config == expected_config
 
@@ -70,22 +71,11 @@ def test_overwrite_value_with_dict():
         parse_config(make_one('example4.ini'))
 
 
-@config('example5.ini')
-def test_parse_config_deeply_nested_structure(parsed_config):
-    from ..parsing import pretty_format_config
-    output = pretty_format_config(parsed_config['variables'])
-    expected_output = [
-        'a.b.c.d = foo',
-        'a.b.c.f = bar',
-        'name = Bob',
-    ]
-    assert output == expected_output
-
-
 @config('example6.ini')
 def test_parse_config_utf8(parsed_config):
     from ..parsing import pretty_format_config
-    output = pretty_format_config(parsed_config['variables'])
+    output_variables = pretty_format_config(parsed_config['variables'])
+    output_questions = pretty_format_config(parsed_config['questions'])
     if six.PY3:  # pragma: no cover
         expected_output = [
             'name = Čebula',
@@ -94,7 +84,8 @@ def test_parse_config_utf8(parsed_config):
         expected_output = [
             'name = Čebula'.decode('utf-8'),
         ]
-    assert output == expected_output
+    assert output_variables == expected_output
+    assert output_questions == expected_output
 
 
 def test_parse_config(parsed_config):

@@ -34,9 +34,15 @@ def parse_config(fs_config):
     for section in ['variables', 'mr.bob', 'questions']:
         if parser.has_section(section):
             items = parser.items(section)
-            config[section] = nest_variables(dict(items))
             if section == 'questions':
                 config[section + "_order"] = [key[:-9] for key, value in items if key.endswith('question')]
+            if section == 'variables':
+                if PY3:  # pragma: no cover
+                    config[section] = dict(items)
+                else:  # pragma: no cover
+                    config[section] = dict([(key, value.decode('utf-8')) for key, value in items])
+            else:
+                config[section] = nest_variables(dict(items))
         else:
             config[section] = {}
     return config
