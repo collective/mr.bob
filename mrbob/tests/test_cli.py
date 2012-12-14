@@ -50,11 +50,6 @@ class TestCLI(unittest.TestCase):
         template_dir = os.path.join(os.path.dirname(__file__), 'templates', 'empty')
         self.call_FUT('--list-questions', template_dir)
 
-    def test_set_renderer(self):
-        template_dir = os.path.join(os.path.dirname(__file__), 'templates', 'empty')
-        self.call_FUT('--renderer', 'mrbob.rendering:python_formatting_renderer', template_dir)
-        # TODO: assert renderer was used
-
     def test_missing_mrbobini_in_template(self):
         template_dir = os.path.join(os.path.dirname(__file__), 'templates', 'unbound', 'etc')
         self.assertRaises(SystemExit, self.call_FUT, '-O', self.output_dir, template_dir)

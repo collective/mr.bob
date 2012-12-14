@@ -3,6 +3,7 @@ try:  # pragma: no cover
     from collections import OrderedDict  # NOQA
 except ImportError:  # pragma: no cover
     from ordereddict import OrderedDict  # NOQA
+import six
 from six.moves import configparser
 from six import PY3
 
@@ -31,7 +32,7 @@ def parse_config(fs_config):
     parser = configparser.SafeConfigParser(dict_type=OrderedDict)
     parser.read(fs_config)
     config = dict()
-    for section in ['variables', 'mr.bob', 'questions']:
+    for section in ['variables', 'mr.bob', 'questions', 'template']:
         if parser.has_section(section):
             items = parser.items(section)
             if section == 'questions':
@@ -46,6 +47,14 @@ def parse_config(fs_config):
         else:
             config[section] = {}
     return config
+
+
+def write_config(fs_config, section, data):
+    parser = configparser.SafeConfigParser(dict_type=OrderedDict)
+    parser.add_section(section)
+    for key, value in data:
+        parser.set(section, key, six.u(value))
+    parser.write(fs_config)
 
 
 def update_config(first_config, second_config):

@@ -17,7 +17,12 @@ import six
 from importlib import import_module
 
 from .rendering import render_structure
-from .parsing import parse_config, update_config, pretty_format_config
+from .parsing import (
+    parse_config,
+    write_config,
+    update_config,
+    pretty_format_config,
+)
 
 
 DOTTED_REGEX = re.compile(r'^[a-zA-Z_.]+:[a-zA-Z_.]+$')
@@ -149,13 +154,15 @@ class Configurator(object):
         # parse bobconfig settings
         # TODO: move config resolution inside this function from cli.py
         self.bobconfig = update_config(bobconfig, self.config['mr.bob'])
-        self.renderer = resolve_dotted_func(
-            self.bobconfig.get('renderer', 'mrbob.rendering:jinja2_renderer'))
         self.verbose = self.bobconfig.get('verbose', False)
-        self.post_render_msg = self.bobconfig.get('post_render_msg', '')
-        self.preserve_mrbob_config = self.bobconfig.get('preserve_mrbob_config', False)
-        self.post_render = [resolve_dotted_func(f) for f in self.bobconfig.get('post_render', '').split()]
-        self.pre_render = [resolve_dotted_func(f) for f in self.bobconfig.get('pre_render', '').split()]
+
+        # parse template settings
+        template_config = self.config['template']
+        self.post_render_msg = template_config.get('post_render_msg', '')
+        self.post_render = [resolve_dotted_func(f) for f in template_config.get('post_render', '').split()]
+        self.pre_render = [resolve_dotted_func(f) for f in template_config.get('pre_render', '').split()]
+        self.renderer = resolve_dotted_func(
+            template_config.get('renderer', 'mrbob.rendering:jinja2_renderer'))
 
     def render(self):
         """Render file structure given instance configuration. Basically calls
@@ -168,12 +175,15 @@ class Configurator(object):
                          self.target_directory,
                          self.variables,
                          self.verbose,
-                         self.renderer,
-                         self.preserve_mrbob_config)
+                         self.renderer)
+        if maybe_bool(self.bobconfig['remember_answers']):
+            write_config(os.path.join(self.target_directory, '.mrbob.ini'),
+                         'variables',
+                         self.variables)
         if self.post_render:
             for f in self.post_render:
                 f(self)
-        if self.post_render_msg:
+        if not maybe_bool(self.bobconfig['quiet']) and self.post_render_msg:
             print self.post_render_msg % self.variables
 
     def parse_questions(self, config, order):
@@ -205,21 +215,15 @@ class Configurator(object):
     def ask_questions(self):
         """Loops through questions and asks for input if variable is not yet set.
         """
-        # TODO: deepcopy + while loop + pop
+        # TODO: if users want to manipulate questions order, this is curently not possible.
         for question in self.questions:
-            for f in question.pre_ask_question:
-                f(self, question)
-            if question.name in self.variables:
-                pass  # TODO: pass to ask method to validate input?
-            else:
-                answer = question.ask()
-                self.variables[question.name] = answer
-            for f in question.post_ask_question:
-                f(self, question)
+            self.variables[question.name] = question.ask(self)
 
 
 class Question(object):
     """Question configuration. Parameters are used to configure validation of the answer.
+
+    TODO: parameters
     """
 
     def __init__(self,
@@ -227,8 +231,6 @@ class Question(object):
                  question,
                  default=None,
                  required=False,
-                 action=lambda x: x,
-                 validator=None,
                  command_prompt=six.moves.input,
                  pre_ask_question='',
                  post_ask_question='',
@@ -237,63 +239,78 @@ class Question(object):
         self.question = question
         self.default = default
         self.required = maybe_bool(required)
-        if maybe_bool(self.default) and self.required:
-            raise TemplateConfigurationError('Question %s is required but has also defined a default.' % self.name)
-        self.validator = maybe_resolve_dotted_func(validator)
-        self.action = maybe_resolve_dotted_func(action)
         self.command_prompt = maybe_resolve_dotted_func(command_prompt)
         self.help = help
         self.pre_ask_question = [resolve_dotted_func(f) for f in pre_ask_question.split()]
         self.post_ask_question = [resolve_dotted_func(f) for f in post_ask_question.split()]
-        # TODO: provide basic validators
         # TODO: choice question?
 
     def __repr__(self):
-        return six.u("<Question name=%(name)s question='%(question)s' default=%(default)s required=%(required)s>") % self.__dict__
+        return six.u("<Question name=%(name)s question='%(question)s'"
+                     " default=%(default)s required=%(required)s>") % self.__dict__
 
-    def ask(self):
+    def ask(self, configurator):
         """Eventually, ask the question.
         """
         correct_answer = None
 
         try:
             while correct_answer is None:
-                if self.default:
-                    question = six.u("--> %s [%s]: ") % (self.question, self.default)
-                else:
-                    question = six.u("--> %s: ") % self.question
-                if six.PY3:  # pragma: no cover
-                    answer = self.command_prompt(question).strip()
-                else:  # pragma: no cover
-                    answer = self.command_prompt(question.encode('utf-8')).strip().decode('utf-8')
-                if answer == "?":
-                    if self.help:
-                        print(self.help)
-                    else:
-                        print("There is no additional help text.")
-                    continue
+                self.default = configurator.variables.get(self.name, self.default)
 
-                if self.validator and answer:
-                    try:
-                        _ = self.validator(answer)
-                        if _:
-                            answer = _
-                    except ValidationError as e:
-                        print('    Error:' + str(e))
+                # hook: pre ask question
+                for f in self.pre_ask_question:
+                    f(configurator, self)
+
+                if maybe_bool(configurator.bobconfig['non_interactive']):
+                    correct_answer = maybe_bool(self.defautl)
+                    if self.required and not correct_answer:
+                        print('ERROR: question %s is required but not answered.')
+                        print('Exiting (using non-interactive mode)...')
+                        sys.exit(0)
+                else:
+                    # prepare question
+                    if self.default:
+                        question = six.u("--> %s [%s]: ") % (self.question, self.default)
+                    else:
+                        question = six.u("--> %s: ") % self.question
+
+                    # ask question
+                    if six.PY3:  # pragma: no cover
+                        answer = self.command_prompt(question).strip()
+                    else:  # pragma: no cover
+                        answer = self.command_prompt(question.encode('utf-8')).strip().decode('utf-8')
+
+                    # display additional help
+                    if answer == "?":
+                        if self.help:
+                            print(self.help)
+                        else:
+                            print("There is no additional help text.")
                         continue
 
-                if answer:
-                    correct_answer = answer
-                elif not answer and self.default is not None:
-                    correct_answer = maybe_bool(self.default)
-                elif not answer and self.default is None:
-                    if self.required:
+                    # if we don't have an answer, take default
+                    if answer:
+                        correct_answer = answer
+                    elif not answer and self.default is not None:
+                        correct_answer = maybe_bool(self.default)
+
+                    # if we don't have an answer or default value and is required, reask
+                    if self.required and not correct_answer:
                         continue
                     else:
                         correct_answer = answer
+
+                # hook: post ask question + validation
+                for f in self.post_ask_question:
+                    try:
+                        correct_answer = f(configurator, self, correct_answer)
+                    except ValidationError:
+                        del self.variables[question.name]
+                        continue
         except KeyboardInterrupt:  # pragma: no cover
             print('\nExiting...')
             sys.exit(0)
 
         print('')
-        return self.action(correct_answer)
+        return correct_answer

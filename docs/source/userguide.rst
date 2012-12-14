@@ -37,9 +37,6 @@ Once you install mr.bob, the `mrbob` command is available::
                             [variables] sections.
       -V, --version         Display version number
       -l, --list-questions  List all questions needed for the template
-      -r RENDERER, --renderer RENDERER
-                            Dotted notation to a renderer function. Defaults to
-                            mrbob.rendering:jinja2_renderer
 
 By default, the target directory is the current folder. The most basic use case is rendering a template from a relative folder::
 
@@ -111,7 +108,7 @@ Example of global config file `~/.mrbob` or command line parameter `mrbob --conf
 .. code-block:: ini
 
     [mr.bob]
-    renderer = moo.foo:render_mako
+    verbose = True
 
     [variables]
     author.name = Domen Kožar
@@ -135,12 +132,14 @@ don't do anything special besides providing readability.
 ``mr.bob`` section reference
 ****************************
 
-============  ===============================  ===============================================================
-  Parameter      Default                          Explanation
-============  ===============================  ===============================================================
-  renderer    mrbob.rendering:jinja2_renderer  Function for rendering templates
-  verbose     False                            Output more information, useful for debugging
-============  ===============================  ===============================================================
+================  ===============================  =======================================================================
+  Parameter         Default                          Explanation
+================  ===============================  =======================================================================
+verbose           False                            Output more information, useful for debugging
+quiet             False                            Don't output anything except necessary
+remember_answers  False                            Write answers to `.mrbob.ini` file inside output directory
+non_interactive   False                            Don't prompt for input. Fail if questions are required but not answered
+================  ===============================  =======================================================================
 
 
 

@@ -41,7 +41,7 @@ def parse_variables(variables):
     return dict(d)
 
 
-def render_structure(fs_source_root, fs_target_root, variables, verbose, renderer, preserve_mrbob_config=False):
+def render_structure(fs_source_root, fs_target_root, variables, verbose, renderer):
     """Recursively copies the given filesystem path `fs_source_root_ to a target directory `fs_target_root`.
 
     Any files ending in `.bob` are rendered as templates using the given
@@ -56,9 +56,8 @@ def render_structure(fs_source_root, fs_target_root, variables, verbose, rendere
     for fs_source_dir, local_directories, local_files in os.walk(fs_source_root):
         fs_target_dir = path.abspath(path.join(fs_target_root, path.relpath(fs_source_dir, fs_source_root)))
         for local_file in local_files:
-            if not preserve_mrbob_config and local_file == '.mrbob.ini':
+            if local_file == '.mrbob.ini':
                 continue
-            # TODO: remember answers
             render_template(
                 path.join(fs_source_dir, local_file),
                 render_filename(fs_target_dir, variables),

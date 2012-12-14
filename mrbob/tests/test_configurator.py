@@ -9,14 +9,6 @@ import six
 import mock
 
 
-def dummy_validator(value):  # pragma: no cover
-    pass
-
-
-def dummy_action(value):  # pragma: no cover
-    pass
-
-
 def dummy_prompt(value):  # pragma: no cover
     pass
 
@@ -178,17 +170,8 @@ class ConfiguratorTest(unittest.TestCase):
         self.assertEqual(c.questions[0].name, six.u('foo'))
         self.assertEqual(c.questions[0].default, "True")
         self.assertEqual(c.questions[0].required, False)
-        self.assertEqual(c.questions[0].validator, dummy_validator)
         self.assertEqual(c.questions[0].help, six.u('Blabla blabal balasd a a sd'))
-        self.assertEqual(c.questions[0].action, dummy_action)
         self.assertEqual(c.questions[0].command_prompt, dummy_prompt)
-
-    def test_default_and_required(self):
-        from ..configurator import TemplateConfigurationError
-        args = ['mrbob.tests:templates/questions5',
-                self.target_dir,
-                {}]
-        self.assertRaises(TemplateConfigurationError, self.call_FUT, *args)
 
     def test_ask_questions_empty(self):
         args = ['mrbob.tests:templates/questions1',
@@ -225,7 +208,6 @@ class QuestionTest(unittest.TestCase):
         self.assertEqual(q.default, None)
         self.assertEqual(q.required, False)
         self.assertEqual(q.help, "")
-        self.assertEqual(q.validator, None)
         self.assertEqual(q.command_prompt, moves.input)
 
     def test_repr(self):
@@ -323,36 +305,3 @@ class QuestionTest(unittest.TestCase):
         q.ask()
         self.assertEqual(sys.stdout.getvalue(), 'foobar_help\n\n')
         sys.stdout = sys.__stdout__
-
-    def test_validator_no_return(self):
-        q = self.call_FUT('foo',
-                          'Why?',
-                          validator=dummy_validator,
-                          command_prompt=lambda x: 'foo')
-        answer = q.ask()
-        self.assertEqual(answer, 'foo')
-
-    def test_validator_return(self):
-        q = self.call_FUT('foo',
-                          'Why?',
-                          validator=lambda x: 'moo',
-                          command_prompt=lambda x: 'foo')
-        answer = q.ask()
-        self.assertEqual(answer, 'moo')
-
-    def test_validator_error(self):
-        from ..configurator import ValidationError
-
-        def cmd(q, go=['foo', 'moo']):
-            return go.pop()
-
-        def validator(value):
-            if value != 'foo':
-                raise ValidationError
-
-        q = self.call_FUT('foo',
-                          'Why?',
-                          validator=validator,
-                          command_prompt=cmd)
-        answer = q.ask()
-        self.assertEqual(answer, 'foo')

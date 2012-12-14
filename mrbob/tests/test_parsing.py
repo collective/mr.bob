@@ -50,6 +50,7 @@ def test_parse_deeply_nested_variables(parsed_config):
         'mr.bob': {},
         'variables': {'a.b.c.d': 'foo', 'a.b.c.f': 'bar', 'name': 'Bob'},
         'questions': {'a': {'b': {'c': {'d': 'foo', 'f': 'bar'}}}, 'name': 'Bob'},
+        'template': {},
         'questions_order': [],
     }
     assert parsed_config == expected_config

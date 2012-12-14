@@ -44,25 +44,27 @@ parser.add_argument('-l', '--list-questions',
                     action="store_true",
                     default=False,
                     help='List all questions needed for the template')
-parser.add_argument('-r', '--renderer',
-                    action="store",
-                    help='Dotted notation to a renderer function. Defaults to mrbob.rendering:jinja2_renderer')
+parser.add_argument('-w', '--remember-answers',
+                    action="store_true",
+                    default=False,
+                    help='Remember answers to .mrbob.ini file inside output directory')
+parser.add_argument('-n', '--non-interactive',
+                  dest='non_interactive',
+                  action='store_true',
+                  default=False,
+                  help="Don't prompt for input. Fail if questions are required but not answered.")
 parser.add_argument('-q', '--quiet',
                     action="store_true",
                     default=False,
                     help='Suppress all but necessary output')
-#parser.add_option('--simulate',
+#parser.add_argument('--dry-run',
                   #dest='simulate',
                   #action='store_true',
                   #help='Simulate but do no work')
-#parser.add_option('--overwrite',
+#parser.add_argument('--overwrite',
                   #dest='overwrite',
                   #action='store_true',
                   #help='Always overwrite')
-#parser.add_option('--interactive',
-                  #dest='interactive',
-                  #action='store_true',
-                  #help='When a file would be overwritten, interrogate')
 
 
 def main(args=sys.argv[1:], quiet=False):
@@ -102,9 +104,10 @@ def main(args=sys.argv[1:], quiet=False):
     cli_variables = {}  # TODO: implement variables on cli
     cli_bobconfig = {
         'verbose': options.verbose,
+        'quiet': options.quiet,
+        'remember_answers': options.remember_answers,
+        'non_interactive': options.non_interactive,
     }
-    if options.renderer:
-        cli_bobconfig['renderer'] = options.renderer
 
     bobconfig = update_config(update_config(global_bobconfig, file_bobconfig), cli_bobconfig)
     variables = update_config(update_config(global_variables, file_variables), cli_variables)
