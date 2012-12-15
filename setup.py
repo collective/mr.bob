@@ -49,10 +49,9 @@ setup(name='mr.bob',
       install_requires=install_requires,
       extras_require={
           'test': [
-              'pytest',
-              'pytest-cov',
+              'nose',
+              'coverage',
               'flake8',
-              'pytest',
               'mock',
           ],
           'development': [

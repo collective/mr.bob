@@ -5,7 +5,8 @@ Changelog
 0.1a6 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Rewrite all py.test stuff to nosetests, so we have unified testing now
+  [Domen Kožar]
 
 
 0.1a5 (2012-12-12)

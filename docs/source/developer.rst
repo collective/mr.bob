@@ -22,7 +22,7 @@ Running tests
 
 Easy as::
 
-    $ ./bin/test
+    $ run_tests.sh
 
 
 Making a Release
