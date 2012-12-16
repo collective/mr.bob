@@ -13,6 +13,18 @@ def dummy_prompt(value):  # pragma: no cover
     pass
 
 
+class DummyConfigurator(object):
+    def __init__(self, defaults=None, bobconfig=None):
+        if defaults is None:
+            self.defaults = {}
+        else:
+            self.defaults = defaults
+        if bobconfig is None:
+            self.bobconfig = {}
+        else:
+            self.bobconfig = bobconfig
+
+
 class resolve_dotted_pathTest(unittest.TestCase):
 
     def call_FUT(self, name):
@@ -149,7 +161,6 @@ class ConfiguratorTest(unittest.TestCase):
         self.assertEqual(len(c.questions), 0)
 
     def test_parse_questions_no_questions_section(self):
-        # expected failure: KeyError: 'questions_order'
         self.call_FUT('mrbob.tests:templates/empty2',
                       self.target_dir,
                       {})
@@ -221,7 +232,7 @@ class QuestionTest(unittest.TestCase):
             return 'foo'
 
         q = self.call_FUT('foo', 'Why?', command_prompt=cmd)
-        answer = q.ask()
+        answer = q.ask(DummyConfigurator())
         self.assertEqual(answer, 'foo')
 
     def test_ask_unicode(self):
@@ -231,14 +242,14 @@ class QuestionTest(unittest.TestCase):
             return 'foo'
 
         q = self.call_FUT('foo', six.u('č?'), command_prompt=cmd)
-        q.ask()
+        q.ask(DummyConfigurator())
 
     def test_ask_default_empty(self):
         q = self.call_FUT('foo',
                           'Why?',
                           default="moo",
                           command_prompt=lambda x: '')
-        answer = q.ask()
+        answer = q.ask(DummyConfigurator())
         self.assertEqual(answer, 'moo')
 
     def test_ask_default_not_empty(self):
@@ -251,7 +262,7 @@ class QuestionTest(unittest.TestCase):
                           'Why?',
                           default="moo",
                           command_prompt=cmd)
-        answer = q.ask()
+        answer = q.ask(DummyConfigurator())
         self.assertEqual(answer, 'foo')
 
     def test_ask_no_default_and_not_required(self):
@@ -262,7 +273,7 @@ class QuestionTest(unittest.TestCase):
         q = self.call_FUT('foo',
                           'Why?',
                           command_prompt=cmd)
-        answer = q.ask()
+        answer = q.ask(DummyConfigurator())
         self.assertEqual(answer, '')
 
     def test_ask_no_default_and_required(self):
@@ -274,7 +285,7 @@ class QuestionTest(unittest.TestCase):
                           'Why?',
                           required=True,
                           command_prompt=cmd)
-        answer = q.ask()
+        answer = q.ask(DummyConfigurator())
         self.assertEqual(answer, 'foo')
 
     def test_ask_no_help(self):
@@ -287,7 +298,7 @@ class QuestionTest(unittest.TestCase):
         q = self.call_FUT('foo',
                           'Why?',
                           command_prompt=cmd)
-        q.ask()
+        q.ask(DummyConfigurator())
         self.assertEqual(sys.stdout.getvalue(), 'There is no additional help text.\n\n')
         sys.stdout = sys.__stdout__
 
@@ -302,6 +313,6 @@ class QuestionTest(unittest.TestCase):
                           'Why?',
                           help="foobar_help",
                           command_prompt=cmd)
-        q.ask()
+        q.ask(DummyConfigurator())
         self.assertEqual(sys.stdout.getvalue(), 'foobar_help\n\n')
         sys.stdout = sys.__stdout__

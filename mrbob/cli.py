@@ -11,6 +11,7 @@ import argparse
 from .configurator import Configurator
 from .configurator import ConfigurationError
 from .configurator import TemplateConfigurationError
+from .configurator import maybe_bool
 from .parsing import parse_config, update_config, pretty_format_config
 
 
@@ -67,7 +68,7 @@ parser.add_argument('-q', '--quiet',
                   #help='Always overwrite')
 
 
-def main(args=sys.argv[1:], quiet=False):
+def main(args=sys.argv[1:]):
     """Main function called by `mrbob` command.
     """
     options = parser.parse_args(args=args)
@@ -84,12 +85,15 @@ def main(args=sys.argv[1:], quiet=False):
         global_config = parse_config(userconfig)
         global_bobconfig = global_config['mr.bob']
         global_variables = global_config['variables']
+        global_defaults = global_config['defaults']
     else:
         global_bobconfig = {}
         global_variables = {}
+        global_defaults = {}
 
     original_global_bobconfig = dict(global_bobconfig)
     original_global_variables = dict(global_variables)
+    original_global_defaults = dict(global_defaults)
 
     if options.config:
         if not os.path.exists(options.config):
@@ -97,11 +101,14 @@ def main(args=sys.argv[1:], quiet=False):
         file_config = parse_config(options.config)
         file_bobconfig = file_config['mr.bob']
         file_variables = file_config['variables']
+        file_defaults = file_config['defaults']
     else:
         file_bobconfig = {}
         file_variables = {}
+        file_defaults = {}
 
     cli_variables = {}  # TODO: implement variables on cli
+    cli_defaults = {}  # TODO: implement defaults on cli
     cli_bobconfig = {
         'verbose': options.verbose,
         'quiet': options.quiet,
@@ -111,6 +118,7 @@ def main(args=sys.argv[1:], quiet=False):
 
     bobconfig = update_config(update_config(global_bobconfig, file_bobconfig), cli_bobconfig)
     variables = update_config(update_config(global_variables, file_variables), cli_variables)
+    defaults = update_config(update_config(global_defaults, file_defaults), cli_defaults)
 
     c = None
     if bobconfig['verbose']:
@@ -124,6 +132,16 @@ def main(args=sys.argv[1:], quiet=False):
         # TODO: implement variables on cli
         #print('[variables] from command line interface')
         #for line in pretty_format_config(file_variables):
+        #    print(line)
+        print('[defaults] from ~/.mrbob')
+        for line in pretty_format_config(original_global_defaults):
+            print(line)
+        print('[defaults] from --config file')
+        for line in pretty_format_config(file_defaults):
+            print(line)
+        # TODO: implement defaults on cli
+        #print('[defaults] from command line interface')
+        #for line in pretty_format_config(file_defaults):
         #    print(line)
         print('[mr.bob] from ~/.mrbob')
         for line in pretty_format_config(original_global_bobconfig):
@@ -140,12 +158,13 @@ def main(args=sys.argv[1:], quiet=False):
         c = Configurator(template=options.template,
             target_directory=options.target_directory,
             bobconfig=bobconfig,
-            variables=variables)
+            variables=variables,
+            defaults=defaults)
 
         if options.list_questions:
             return c.print_questions()
 
-        if c.questions and not options.quiet:
+        if c.questions and not maybe_bool(bobconfig['quiet']):
             print("Welcome to mr.bob interactive mode. Before we generate directory structure, some questions need to be answered.")
             print("")
             print("Answer with a question mark to display help.")
@@ -154,7 +173,7 @@ def main(args=sys.argv[1:], quiet=False):
             c.ask_questions()
             print("")
         c.render()
-        if not options.quiet:
+        if not maybe_bool(bobconfig['quiet']):
             print("Generated file structure at %s" % os.path.realpath(options.target_directory))
         return
     except TemplateConfigurationError as e:

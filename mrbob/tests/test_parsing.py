@@ -39,6 +39,7 @@ class parse_configTest(unittest.TestCase):
             'variables': {'a.b.c.d': 'foo', 'a.b.c.f': 'bar', 'name': 'Bob'},
             'questions': {'a': {'b': {'c': {'d': 'foo', 'f': 'bar'}}}, 'name': 'Bob'},
             'template': {},
+            'defaults': {},
             'questions_order': [],
         }
         self.assertEqual(c, expected_config)

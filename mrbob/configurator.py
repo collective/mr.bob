@@ -125,12 +125,16 @@ class Configurator(object):
                  template,
                  target_directory,
                  bobconfig=None,
-                 variables=None):
+                 variables=None,
+                 defaults=None):
         if not bobconfig:
             bobconfig = {}
         if not variables:
             variables = {}
+        if not defaults:
+            defaults = {}
         self.variables = variables
+        self.defaults = defaults
         self.target_directory = os.path.realpath(target_directory)
         if not os.path.isdir(self.target_directory):
             os.makedirs(self.target_directory)
@@ -217,7 +221,8 @@ class Configurator(object):
         """
         # TODO: if users want to manipulate questions order, this is curently not possible.
         for question in self.questions:
-            self.variables[question.name] = question.ask(self)
+            if question.name not in self.variables:
+                self.variables[question.name] = question.ask(self)
 
 
 class Question(object):
@@ -253,60 +258,60 @@ class Question(object):
         """Eventually, ask the question.
         """
         correct_answer = None
+        self.default = configurator.defaults.get(self.name, self.default)
+        non_interactive = maybe_bool(configurator.bobconfig.get('non_interactive', False))
+        if non_interactive:
+            self.command_prompt = lambda x: None
 
         try:
             while correct_answer is None:
-                self.default = configurator.variables.get(self.name, self.default)
-
                 # hook: pre ask question
                 for f in self.pre_ask_question:
                     f(configurator, self)
 
-                if maybe_bool(configurator.bobconfig['non_interactive']):
-                    correct_answer = maybe_bool(self.defautl)
-                    if self.required and not correct_answer:
-                        print('ERROR: question %s is required but not answered.')
-                        print('Exiting (using non-interactive mode)...')
-                        sys.exit(0)
+                # prepare question
+                if self.default:
+                    question = six.u("--> %s [%s]: ") % (self.question, self.default)
                 else:
-                    # prepare question
-                    if self.default:
-                        question = six.u("--> %s [%s]: ") % (self.question, self.default)
+                    question = six.u("--> %s: ") % self.question
+
+                # ask question
+                if six.PY3:  # pragma: no cover
+                    answer = self.command_prompt(question).strip()
+                else:  # pragma: no cover
+                    answer = self.command_prompt(question.encode('utf-8')).strip().decode('utf-8')
+
+                # display additional help
+                if answer == "?":
+                    if self.help:
+                        print(self.help)
                     else:
-                        question = six.u("--> %s: ") % self.question
+                        print("There is no additional help text.")
+                    continue
 
-                    # ask question
-                    if six.PY3:  # pragma: no cover
-                        answer = self.command_prompt(question).strip()
-                    else:  # pragma: no cover
-                        answer = self.command_prompt(question.encode('utf-8')).strip().decode('utf-8')
-
-                    # display additional help
-                    if answer == "?":
-                        if self.help:
-                            print(self.help)
-                        else:
-                            print("There is no additional help text.")
-                        continue
-
-                    # if we don't have an answer, take default
-                    if answer:
-                        correct_answer = answer
-                    elif not answer and self.default is not None:
-                        correct_answer = maybe_bool(self.default)
-
-                    # if we don't have an answer or default value and is required, reask
-                    if self.required and not correct_answer:
-                        continue
+                # if we don't have an answer, take default
+                if answer:
+                    correct_answer = answer
+                elif self.default is not None:
+                    correct_answer = maybe_bool(self.default)
+                # if we don't have an answer or default value and is required, reask
+                elif self.required and not correct_answer:
+                    if non_interactive:
+                        raise ConfigurationError('non-interactive mode: question %s is required but not answered.' % self.name)
                     else:
-                        correct_answer = answer
+                        continue
+                else:
+                    correct_answer = answer
 
-                # hook: post ask question + validation
-                for f in self.post_ask_question:
-                    try:
-                        correct_answer = f(configurator, self, correct_answer)
-                    except ValidationError:
-                        del self.variables[question.name]
+            # hook: post ask question + validation
+            for f in self.post_ask_question:
+                try:
+                    correct_answer = f(configurator, self, correct_answer)
+                except ValidationError:
+                    del self.variables[question.name]
+                    if non_interactive:
+                        raise ConfigurationError('non-interactive mode: question %s failed validation.' % self.name)
+                    else:
                         continue
         except KeyboardInterrupt:  # pragma: no cover
             print('\nExiting...')
