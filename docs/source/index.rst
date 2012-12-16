@@ -47,6 +47,7 @@ Welcome to mr.bob's documentation!
    other.rst
    developer.rst
    api.rst
+   HISTORY.rst
 
 
 Glossary

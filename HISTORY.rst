@@ -5,6 +5,9 @@ Changelog
 0.1a6 (unreleased)
 ------------------
 
+- Include changelog in documentation
+  [Domen Kožar]
+
 - `Question` does no longer raise error if unknown parameter is passed from a
   config file. Instead those parameters are saved to `question.extra` that can
   be later inspected and validated. This is first step to have advanced question
