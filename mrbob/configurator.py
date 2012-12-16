@@ -200,12 +200,7 @@ class Configurator(object):
                 c = c[k]
             # filter out subnamespaces
             c = dict([(k, v) for k, v in c.items() if not isinstance(v, dict)])
-            try:
-                question = Question(name=question_key, **c)
-            except TypeError:
-                raise TemplateConfigurationError(
-                    'Question "%s" got an unexpected argument. Arguments: %s' % (question_key, ', '.join(c)))
-
+            question = Question(name=question_key, **c)
             q.append(question)
         return q
 
@@ -239,7 +234,8 @@ class Question(object):
                  command_prompt=six.moves.input,
                  pre_ask_question='',
                  post_ask_question='',
-                 help=""):
+                 help="",
+                 **extra):
         self.name = name
         self.question = question
         self.default = default
@@ -248,7 +244,7 @@ class Question(object):
         self.help = help
         self.pre_ask_question = [resolve_dotted_func(f) for f in pre_ask_question.split()]
         self.post_ask_question = [resolve_dotted_func(f) for f in post_ask_question.split()]
-        # TODO: choice question?
+        self.extra = extra
 
     def __repr__(self):
         return six.u("<Question name=%(name)s question='%(question)s'"

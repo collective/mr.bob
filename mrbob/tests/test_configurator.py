@@ -166,12 +166,11 @@ class ConfiguratorTest(unittest.TestCase):
                       {})
 
     def test_parse_questions_extra_parameter(self):
-        from ..configurator import TemplateConfigurationError
-        self.assertRaises(TemplateConfigurationError,
-                          self.call_FUT,
-                          'mrbob.tests:templates/questions3',
-                          self.target_dir,
-                          {})
+        c = self.call_FUT(
+            'mrbob.tests:templates/questions3',
+            self.target_dir,
+            {})
+        self.assertEqual(c.questions[0].extra, {'foobar': 'something'})
 
     def test_parse_questions_all(self):
         c = self.call_FUT('mrbob.tests:templates/questions4',

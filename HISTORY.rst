@@ -5,6 +5,12 @@ Changelog
 0.1a6 (unreleased)
 ------------------
 
+- `Question` does no longer raise error if unknown parameter is passed from a
+  config file. Instead those parameters are saved to `question.extra` that can
+  be later inspected and validated. This is first step to have advanced question
+  types such as question with a set of predefined answers.
+  [Domen Kožar]
+
 - Rewrite all py.test stuff to nosetests, so we have unified testing now
   [Domen Kožar]
 
