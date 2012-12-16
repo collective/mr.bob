@@ -188,7 +188,7 @@ class Configurator(object):
             for f in self.post_render:
                 f(self)
         if not maybe_bool(self.bobconfig['quiet']) and self.post_render_msg:
-            print self.post_render_msg % self.variables
+            print(self.post_render_msg % self.variables)
 
     def parse_questions(self, config, order):
         q = []
