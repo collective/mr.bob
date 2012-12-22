@@ -204,6 +204,27 @@ class ConfiguratorTest(unittest.TestCase):
         c.ask_questions()
         self.assertEquals(c.variables, {'foo.bar': 'answer', 'moo': 'moo.'})
 
+    @mock.patch('mrbob.configurator.render_structure')
+    def test_remember_answers(self, mock_render_structure):
+        args = ['mrbob.tests:templates/questions1',
+                self.target_dir,
+                {'remember_answers': 'True'},
+                {'foo.bar': '3'}]
+        c = self.call_FUT(*args)
+        c.render()
+        with open(os.path.join(self.target_dir, '.mrbob.ini')) as f:
+            self.assertEquals(f.read().strip(), """[variables]\nfoo.bar = 3""".strip())
+
+    @mock.patch('mrbob.configurator.render_structure')
+    def test_remember_answers_default(self, mock_render_structure):
+        c = self.call_FUT(
+            'mrbob.tests:templates/questions1',
+            self.target_dir,
+            variables={'foo.bar': '3'},
+        )
+        c.render()
+        self.assertFalse(os.path.exists(os.path.join(self.target_dir, '.mrbob.ini')))
+
 
 class QuestionTest(unittest.TestCase):
 

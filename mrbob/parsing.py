@@ -3,7 +3,6 @@ try:  # pragma: no cover
     from collections import OrderedDict  # NOQA
 except ImportError:  # pragma: no cover
     from ordereddict import OrderedDict  # NOQA
-import six
 from six.moves import configparser
 from six import PY3
 
@@ -52,9 +51,10 @@ def parse_config(fs_config):
 def write_config(fs_config, section, data):
     parser = configparser.SafeConfigParser(dict_type=OrderedDict)
     parser.add_section(section)
-    for key, value in data:
-        parser.set(section, key, six.u(value))
-    parser.write(fs_config)
+    for key, value in data.iteritems():
+        parser.set(section, key, value.encode('utf-8'))
+    with open(fs_config, 'wb') as f:
+        parser.write(f)
 
 
 def update_config(first_config, second_config):

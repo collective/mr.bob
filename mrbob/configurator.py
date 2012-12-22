@@ -159,6 +159,8 @@ class Configurator(object):
         # TODO: move config resolution inside this function from cli.py
         self.bobconfig = update_config(bobconfig, self.config['mr.bob'])
         self.verbose = maybe_bool(self.bobconfig.get('verbose', False))
+        self.quiet = maybe_bool(self.bobconfig.get('quiet', False))
+        self.remember_answers = maybe_bool(self.bobconfig.get('remember_answers', False))
 
         # parse template settings
         template_config = self.config['template']
@@ -180,14 +182,14 @@ class Configurator(object):
                          self.variables,
                          self.verbose,
                          self.renderer)
-        if maybe_bool(self.bobconfig['remember_answers']):
+        if self.remember_answers:
             write_config(os.path.join(self.target_directory, '.mrbob.ini'),
                          'variables',
                          self.variables)
         if self.post_render:
             for f in self.post_render:
                 f(self)
-        if not maybe_bool(self.bobconfig['quiet']) and self.post_render_msg:
+        if not self.quiet and self.post_render_msg:
             print(self.post_render_msg % self.variables)
 
     def parse_questions(self, config, order):

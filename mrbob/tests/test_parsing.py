@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
 import unittest
+import tempfile
+import codecs
 
 import six
 
@@ -138,3 +140,49 @@ class update_configTest(unittest.TestCase):
         }
 
         self.assertEqual(config, expected_config)
+
+
+class write_configTest(unittest.TestCase):
+
+    def setUp(self):
+        self.tmpfile = tempfile.mkstemp()[1]
+
+    def tearDown(self):
+        os.remove(self.tmpfile)
+
+    def call_FUT(self, section, data):
+        from ..parsing import write_config
+        return write_config(self.tmpfile, section, data)
+
+    def test_multiple_options(self):
+        self.call_FUT(
+            'variables',
+            {'foo.bar': 'a',
+             'foo.bar.moo': 'b'},
+        )
+
+        with open(self.tmpfile) as f:
+            self.assertEqual(f.read(), """[variables]\nfoo.bar = a\nfoo.bar.moo = b\n\n""")
+
+    def test_empty(self):
+        self.call_FUT(
+            'variables',
+            {},
+        )
+
+        with open(self.tmpfile) as f:
+            self.assertEqual(f.read(), """[variables]\n\n""")
+
+    def test_utf8(self):
+        if six.PY3:
+            var_ = 'č'
+        else:
+            var_ = 'č'.decode('utf-8')
+
+        self.call_FUT(
+            'variables',
+            {'foo.bar': var_},
+        )
+
+        with codecs.open(self.tmpfile, 'r', 'utf-8') as f:
+            self.assertEqual(f.read(), six.u("[variables]\nfoo.bar = %s\n\n") % var_)
