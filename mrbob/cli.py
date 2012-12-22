@@ -21,20 +21,20 @@ parser.add_argument('template',
                     nargs="?",
                     help="""Template name to use for rendering. See
                     http://mrbob.readthedocs.org/en/latest/userguide.html#usage
-                    for a guide to template syntax.
+                    for a guide to template syntax
 
                     """)
 parser.add_argument('-O', '--target-directory',
                     default=".",
                     dest="target_directory",
-                    help='Where to output rendered structure. Defaults to current directory.')
+                    help='Where to output rendered structure. Defaults to current directory')
 parser.add_argument('-v', '--verbose',
                     action="store_true",
                     default=False,
                     help='Print more output for debugging')
 parser.add_argument('-c', '--config',
                     action="store",
-                    help='Configuration file to specify either [mr.bob] or [variables] sections.')
+                    help='Configuration file to specify either [mr.bob] or [variables] sections')
 parser.add_argument('-V', '--version',
                     action="store_true",
                     default=False,
@@ -51,7 +51,7 @@ parser.add_argument('-n', '--non-interactive',
                   dest='non_interactive',
                   action='store_true',
                   default=False,
-                  help="Don't prompt for input. Fail if questions are required but not answered.")
+                  help="Don't prompt for input. Fail if questions are required but not answered")
 parser.add_argument('-q', '--quiet',
                     action="store_true",
                     default=False,
