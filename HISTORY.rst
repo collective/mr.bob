@@ -5,16 +5,52 @@ Changelog
 0.1a6 (unreleased)
 ------------------
 
+- Renamed `validators.py` to `hooks.py`
+  [Domen Kožar]
+
+- Removed `validators` and `action` settings from `[questions]` as it is
+  superseded by hooks
+  [Domen Kožar]
+
+- Added `pre_ask_question` and `post_ask_question` to `[questions]` section
+  [Domen Kožar]
+  
+- Added `pre_render`, `post_render` and  `post_render_msg` options
+  [Domen Kožar]
+
+- Added `[defaults]` section that will override template defaults. The only
+  difference to `[variables]` is that variables provide default answers
+  [Domen Kožar]
+
+- Moved `renderer` to `[template]` section
+  [Domen Kožar]
+
+- Added `[template]` section that is parsed only from `.mrbob.ini` inside a
+  template directory.
+  [Domen Kožar]
+
+- Correctly evaluate boolean of `quiet` and `verbose` settings
+  [Domen Kožar]
+
+- Added `non_interactive` setting that will not prompt for any input and fail
+  if any of required questions are not answered
+  [Domen Kožar]
+
+- Added `remember_answers` setting that will create `.mrbob.ini` file inside
+  rendered directory with all the answers written to `[variables]` section
+  [Domen Kožar]
+
 - Include changelog in documentation
   [Domen Kožar]
 
 - `Question` does no longer raise error if unknown parameter is passed from a
   config file. Instead those parameters are saved to `question.extra` that can
   be later inspected and validated. This is first step to have advanced question
-  types such as question with a set of predefined answers.
+  types such as question with a set of predefined answers
   [Domen Kožar]
 
-- Rewrite all py.test stuff to nosetests, so we have unified testing now
+- Rewrite all py.test stuff to nosetests, so we have unified testing now. This
+  also fixes flake8 segfaults on pypy
   [Domen Kožar]
 
 
