@@ -176,9 +176,9 @@ class write_configTest(unittest.TestCase):
             self.assertEqual(f.read(), """[variables]\n\n""")
 
     def test_utf8(self):
-        if six.PY3:
+        if six.PY3:  # pragma: nocover
             var_ = 'č'
-        else:
+        else:  # pragma: nocover
             var_ = 'č'.decode('utf-8')
 
         self.call_FUT(

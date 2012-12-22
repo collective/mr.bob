@@ -15,14 +15,8 @@ def dummy_prompt(value):  # pragma: no cover
 
 class DummyConfigurator(object):
     def __init__(self, defaults=None, bobconfig=None):
-        if defaults is None:
-            self.defaults = {}
-        else:
-            self.defaults = defaults
-        if bobconfig is None:
-            self.bobconfig = {}
-        else:
-            self.bobconfig = bobconfig
+        self.defaults = defaults or {}
+        self.bobconfig = bobconfig or {}
 
 
 class resolve_dotted_pathTest(unittest.TestCase):
