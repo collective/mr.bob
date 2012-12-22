@@ -51,7 +51,7 @@ def parse_config(fs_config):
 def write_config(fs_config, section, data):
     parser = configparser.SafeConfigParser(dict_type=OrderedDict)
     parser.add_section(section)
-    for key, value in data.iteritems():
+    for key, value in data.items():
         parser.set(section, key, value.encode('utf-8'))
     with open(fs_config, 'wb') as f:
         parser.write(f)
