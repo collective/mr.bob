@@ -52,7 +52,9 @@ def write_config(fs_config, section, data):
     parser = configparser.SafeConfigParser(dict_type=OrderedDict)
     parser.add_section(section)
     for key, value in data.items():
-        parser.set(section, key, value.encode('utf-8'))
+        if not PY3:  # pragma: no cover
+            value = value.encode('utf-8')
+        parser.set(section, key, value)
     with open(fs_config, 'wb') as f:
         parser.write(f)
 
