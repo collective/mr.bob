@@ -162,7 +162,9 @@ class write_configTest(unittest.TestCase):
         )
 
         with open(self.tmpfile) as f:
-            self.assertEqual(f.read(), """[variables]\nfoo.bar = a\nfoo.bar.moo = b\n\n""")
+            output = f.read()
+            self.assertTrue('\nfoo.bar = a\n' in output)
+            self.assertTrue('\nfoo.bar.moo = b\n' in output)
 
     def test_empty(self):
         self.call_FUT(
