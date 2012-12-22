@@ -55,7 +55,7 @@ def write_config(fs_config, section, data):
         if not PY3:  # pragma: no cover
             value = value.encode('utf-8')
         parser.set(section, key, value)
-    with open(fs_config, 'wb') as f:
+    with open(fs_config, 'w') as f:
         parser.write(f)
 
 
