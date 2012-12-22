@@ -16,9 +16,7 @@ from .parsing import parse_config, update_config, pretty_format_config
 
 
 # http://docs.python.org/library/argparse.html
-# TODO: split into sections for global and template related?
 parser = argparse.ArgumentParser(description='Filesystem template renderer')
-# TODO: write more about specifying templates
 parser.add_argument('template',
                     nargs="?",
                     help="""Template name to use for rendering. See
