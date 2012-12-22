@@ -158,7 +158,7 @@ class Configurator(object):
         # parse bobconfig settings
         # TODO: move config resolution inside this function from cli.py
         self.bobconfig = update_config(bobconfig, self.config['mr.bob'])
-        self.verbose = self.bobconfig.get('verbose', False)
+        self.verbose = maybe_bool(self.bobconfig.get('verbose', False))
 
         # parse template settings
         template_config = self.config['template']
