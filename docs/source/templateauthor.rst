@@ -247,7 +247,7 @@ The function expects three arguments:
  Note that `pre_ask_question` and `post_ask_question` are defined for questions
 in the ``[questions]`` section of ``.mrbob.ini``.
 
-:mod:`mrbob.validators` are functions provided by `mr.bob` that can be used as
+:mod:`mrbob.hooks` are functions provided by `mr.bob` that can be used as
 ``post_ask_question`` hook to validate the answer. Raise
 :exc:`mrbob.configurator.ValidationError` to re-ask the question.
 
