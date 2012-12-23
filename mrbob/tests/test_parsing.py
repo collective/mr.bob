@@ -11,7 +11,7 @@ class parse_configTest(unittest.TestCase):
 
     def call_FUT(self, configname='example.ini'):
         import mrbob
-        from mrbob.parsing import parse_config
+        from ..parsing import parse_config
 
         f = os.path.abspath(os.path.join(os.path.dirname(mrbob.__file__),
                           'tests', configname))
@@ -188,3 +188,25 @@ class write_configTest(unittest.TestCase):
 
         with codecs.open(self.tmpfile, 'r', 'utf-8') as f:
             self.assertEqual(f.read(), six.u("[variables]\nfoo.bar = %s\n\n") % var_)
+
+
+class pretty_format_configTest(unittest.TestCase):
+
+    def call_FUT(self, config):
+        from ..parsing import pretty_format_config
+        return pretty_format_config(config)
+
+    def test_complex(self):
+        c = self.call_FUT({
+            'foo': 'bar',
+            'bar': {'moo': '1', 'ma': '2'},
+            'z': 'z',
+            'a': 'b',
+        })
+        self.assertEqual(c, [
+            'a = b',
+            'bar.ma = 2',
+            'bar.moo = 1',
+            'foo = bar',
+            'z = z'],
+        )
