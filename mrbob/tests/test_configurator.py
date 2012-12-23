@@ -13,6 +13,10 @@ def dummy_prompt(value):  # pragma: no cover
     pass
 
 
+def dummy_renderer(value):  # pragma: no cover
+    pass
+
+
 class DummyConfigurator(object):
     def __init__(self, defaults=None, bobconfig=None):
         self.defaults = defaults or {}
@@ -218,6 +222,19 @@ class ConfiguratorTest(unittest.TestCase):
         )
         c.render()
         self.assertFalse(os.path.exists(os.path.join(self.target_dir, '.mrbob.ini')))
+
+    def test_renderer_default(self):
+        from ..rendering import jinja2_renderer
+        c = self.call_FUT('mrbob.tests:templates/empty',
+                      self.target_dir,
+                      {})
+        self.assertEqual(c.renderer, jinja2_renderer)
+
+    def test_renderer_set(self):
+        c = self.call_FUT('mrbob.tests:templates/renderer',
+                      self.target_dir,
+                      {})
+        self.assertEqual(c.renderer, dummy_renderer)
 
 
 class QuestionTest(unittest.TestCase):
