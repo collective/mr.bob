@@ -347,3 +347,15 @@ class QuestionTest(unittest.TestCase):
         q.ask(DummyConfigurator())
         self.assertEqual(sys.stdout.getvalue(), 'foobar_help\n\n')
         sys.stdout = sys.__stdout__
+
+    def test_non_interactive_required(self):
+        from ..configurator import ConfigurationError
+        q = self.call_FUT('foo', 'Why?', required=True)
+        c = DummyConfigurator(bobconfig={'non_interactive': 'True'})
+        self.assertRaises(ConfigurationError, q.ask, c)
+
+    def test_non_interactive_not_required(self):
+        q = self.call_FUT('foo', 'Why?')
+        c = DummyConfigurator(bobconfig={'non_interactive': 'True'})
+        answer = q.ask(c)
+        self.assertEquals(answer, '')

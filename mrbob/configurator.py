@@ -44,6 +44,10 @@ class ValidationError(MrBobError):
     """Raised during question validation"""
 
 
+class SkipQuestion(MrBobError):
+    """Raised during pre_ask_question if we should skip it"""
+
+
 def resolve_dotted_path(name):
     module_name, dir_name = name.rsplit(':', 1)
     module = import_module(module_name)
@@ -259,13 +263,16 @@ class Question(object):
         self.default = configurator.defaults.get(self.name, self.default)
         non_interactive = maybe_bool(configurator.bobconfig.get('non_interactive', False))
         if non_interactive:
-            self.command_prompt = lambda x: None
+            self.command_prompt = lambda x: ''
 
         try:
             while correct_answer is None:
                 # hook: pre ask question
                 for f in self.pre_ask_question:
-                    f(configurator, self)
+                    try:
+                        f(configurator, self)
+                    except SkipQuestion:
+                        continue
 
                 # prepare question
                 if self.default:
