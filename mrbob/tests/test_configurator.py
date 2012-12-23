@@ -359,3 +359,10 @@ class QuestionTest(unittest.TestCase):
         c = DummyConfigurator(bobconfig={'non_interactive': 'True'})
         answer = q.ask(c)
         self.assertEquals(answer, '')
+
+    def test_defaults_override(self):
+        q = self.call_FUT('foo', 'Why?', default="foo")
+        c = DummyConfigurator(bobconfig={'non_interactive': 'True'},
+                              defaults={'foo': 'moo'})
+        answer = q.ask(c)
+        self.assertEquals(answer, 'moo')

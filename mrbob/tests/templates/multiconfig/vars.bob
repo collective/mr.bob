@@ -1,3 +1,6 @@
 {{{ only_global }}}
 {{{ only_file }}}
 {{{ overriden_by_file }}}
+{{{ only_global_2 }}}
+{{{ only_file_2 }}}
+{{{ overriden_by_file_2 }}}
