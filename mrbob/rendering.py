@@ -52,7 +52,7 @@ def render_structure(fs_source_root, fs_target_root, variables, verbose, rendere
     with values from the variables, i.e. a file named `+name+.py.bob` given a
     dictionary {'name': 'bar'} would be rendered as `bar.py`.
     """
-    if not isinstance(fs_source_root, six.text_type):
+    if not isinstance(fs_source_root, six.text_type):  # pragma: no cover
         fs_source_root = six.u(fs_source_root)
     for fs_source_dir, local_directories, local_files in os.walk(fs_source_root):
         fs_target_dir = path.abspath(path.join(fs_target_root, path.relpath(fs_source_dir, fs_source_root)))
