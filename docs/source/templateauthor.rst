@@ -145,7 +145,7 @@ is complete, you can use `post_render` hook in your ``.mrbob.ini``.
 
 .. code-block:: ini
 
-    [mr.bob]
+    [template]
     post_render = bobtemplates.mytemplate.hooks:my_post_render_function
 
 This assumes you have a `bobtemplate.mytemplate` egg with a ``hooks.py``
@@ -172,7 +172,7 @@ starts.
 
 .. code-block:: ini
 
-    [mr.bob]
+    [template]
     pre_render = bobtemplates.mytemplate.hooks:my_pre_render_function
 
 
