@@ -14,10 +14,10 @@ Changelog
 - ``mrbob.validators.boolean`` renamed to ``mrbob.hooks.to_boolean``
   [Domen Kožar]
 
-- Renamed ``validators.py``` to ``hooks.py```
+- Renamed ``validators.py`` to ``hooks.py``
   [Domen Kožar]
 
-- Removed ``validators``` and ``action`` settings from ``[questions]``` as it is
+- Removed ``validators`` and ``action`` settings from ``[questions]`` as it is
   superseded by hooks
   [Domen Kožar]
 
