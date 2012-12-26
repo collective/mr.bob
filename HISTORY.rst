@@ -5,6 +5,12 @@ Changelog
 0.1a6 (unreleased)
 ------------------
 
+- Added hook `mrbob.hooks.post_render_msg`
+  [Domen Kožar]
+
+- `mrbob.validators.boolean` renamed to `mrbob.hooks.to_boolean`
+  [Domen Kožar]
+
 - Renamed `validators.py` to `hooks.py`
   [Domen Kožar]
 

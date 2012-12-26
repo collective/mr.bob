@@ -167,12 +167,11 @@ class Configurator(object):
         self.remember_answers = maybe_bool(self.bobconfig.get('remember_answers', False))
 
         # parse template settings
-        template_config = self.config['template']
-        self.post_render_msg = template_config.get('post_render_msg', '')
-        self.post_render = [resolve_dotted_func(f) for f in template_config.get('post_render', '').split()]
-        self.pre_render = [resolve_dotted_func(f) for f in template_config.get('pre_render', '').split()]
+        self.templateconfig = self.config['template']
+        self.post_render = [resolve_dotted_func(f) for f in self.templateconfig.get('post_render', '').split()]
+        self.pre_render = [resolve_dotted_func(f) for f in self.templateconfig.get('pre_render', '').split()]
         self.renderer = resolve_dotted_func(
-            template_config.get('renderer', 'mrbob.rendering:jinja2_renderer'))
+            self.templateconfig.get('renderer', 'mrbob.rendering:jinja2_renderer'))
 
     def render(self):
         """Render file structure given instance configuration. Basically calls
@@ -193,8 +192,6 @@ class Configurator(object):
         if self.post_render:
             for f in self.post_render:
                 f(self)
-        if not self.quiet and self.post_render_msg:
-            print(self.post_render_msg % self.variables)
 
     def parse_questions(self, config, order):
         q = []
@@ -272,7 +269,7 @@ class Question(object):
                     try:
                         f(configurator, self)
                     except SkipQuestion:
-                        continue
+                        return
 
                 # prepare question
                 if self.default:
@@ -294,9 +291,9 @@ class Question(object):
                         print("There is no additional help text.")
                     continue
 
-                # if we don't have an answer, take default
                 if answer:
                     correct_answer = answer
+                # if we don't have an answer, take default
                 elif self.default is not None:
                     correct_answer = maybe_bool(self.default)
                 # if we don't have an answer or default value and is required, reask
@@ -304,20 +301,21 @@ class Question(object):
                     if non_interactive:
                         raise ConfigurationError('non-interactive mode: question %s is required but not answered.' % self.name)
                     else:
-                        continue
+                        # TODO: we don't cover this as coverage seems to ignore it
+                        continue  # pragma: no cover
                 else:
                     correct_answer = answer
 
-            # hook: post ask question + validation
-            for f in self.post_ask_question:
-                try:
-                    correct_answer = f(configurator, self, correct_answer)
-                except ValidationError:
-                    del self.variables[question.name]
-                    if non_interactive:
-                        raise ConfigurationError('non-interactive mode: question %s failed validation.' % self.name)
-                    else:
-                        continue
+                # hook: post ask question + validation
+                for f in self.post_ask_question:
+                    try:
+                        correct_answer = f(configurator, self, correct_answer)
+                    except ValidationError:
+                        if non_interactive:
+                            raise ConfigurationError('non-interactive mode: question %s failed validation.' % self.name)
+                        else:
+                            correct_answer = None
+                            continue
         except KeyboardInterrupt:  # pragma: no cover
             print('\nExiting...')
             sys.exit(0)
