@@ -223,6 +223,46 @@ class render_templateTest(unittest.TestCase):
                           t,
                           dict())
 
+    def test_render_namespace(self):
+        t = os.path.join(self.fs_templates,
+            'missing_namespace_key/foo.bob')
+
+        filename = self.call_FUT(t, {'foo.bar': '1'})
+        with open(filename) as f:
+            self.assertEqual(f.read(), '1\n')
+
+    def test_render_namespace_jinja2(self):
+        from ..rendering import jinja2_renderer
+        t = os.path.join(self.fs_templates,
+            'missing_namespace_key/foo_jinja2.bob')
+
+        filename = self.call_FUT(t,
+                                 {'foo.bar': '2'},
+                                 renderer=jinja2_renderer)
+        with open(filename) as f:
+            self.assertEqual(f.read(), '2')
+
+    def test_render_namespace_missing_key(self):
+        t = os.path.join(self.fs_templates,
+            'missing_namespace_key/foo.bob')
+
+        self.assertRaises(KeyError,
+                          self.call_FUT,
+                          t,
+                          {})
+
+    def test_render_namespace_missing_key_jinja2(self):
+        from jinja2 import UndefinedError
+        from ..rendering import jinja2_renderer
+        t = os.path.join(self.fs_templates,
+            'missing_namespace_key/foo_jinja2.bob')
+
+        self.assertRaises(UndefinedError,
+                          self.call_FUT,
+                          t,
+                          {},
+                          renderer=jinja2_renderer)
+
 
 class render_filenameTest(unittest.TestCase):
 
@@ -278,3 +318,6 @@ class parse_variablesTest(unittest.TestCase):
             set(vars_['foo']['bar']['zar'].items()),
             set([('mar', 'foo')]),
         )
+
+        # there is no such key in this namespace
+        self.assertRaises(KeyError, lambda x: vars_['author'][x], 'foo')
