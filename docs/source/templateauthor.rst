@@ -27,8 +27,8 @@ Everything else is extra. To start quickly, use the template starter that ships 
 See `.mrbob.ini` for sample questions and `sample.txt.bob` for sample rendering.
 
 
-Templating
-----------
+How it works
+------------
 
 Files inside the structure can be just copied to destination, or they can be suffixed with `.bob` and the templating engine
 will be used to render them.
@@ -133,27 +133,14 @@ Hooks
 -----
 
 A list of places where you can hook into the process flow and provide your
-custom code.
-
-Post render message
-*******************
-
-If you want to display a message to the user when rendering is complete, you
-can use `post_render_msg` in your ``.mrbob.ini``:
-
-.. code-block:: ini
-
-    [mr.bob]
-    post_render_msg = Well done, %(author.name)s, your code is ready!
-
-As shown above, you can use standard Python formatting in ``post_render_msg``.
+custom code. All hooks can have multiple entries limited by whitespace.
 
 .. _post-render-hook:
 
 Post render hook
 ****************
 
-Similarly if you would like to execute a custom Python script after rendering
+If you would like to execute a custom Python script after rendering
 is complete, you can use `post_render` hook in your ``.mrbob.ini``.
 
 .. code-block:: ini
@@ -180,7 +167,7 @@ Pre render hook
 ***************
 
 Much like the :ref:`post-render-hook` example above, you can use ``pre_render``
-variable in your ``.mrbob.ini`` to specify a funtion to call before rendering
+variable in your ``.mrbob.ini`` to specify a function to call before rendering
 starts.
 
 .. code-block:: ini
@@ -194,8 +181,8 @@ starts.
 Pre question hook
 *****************
 
-To allow for flexibility, mr.bob allows you to set hooks to questions. Using
-``pre_ask_question`` variable in your ``.mrbob.ini`` allows you to run custom
+For maximum flexibility, `mr.bob` allows you to set hooks to questions. Using
+``pre_ask_question`` in your ``.mrbob.ini`` allows you to run custom
 code before a certain question.
 
 The function expects two arguments:
@@ -213,14 +200,17 @@ The function expects two arguments:
     def set_fullname(configurator, question):
         question.default = 'foobar'
 
+If you want question to be skipped, simply raise :exc:`mrbob.configurator.SkipQuestion` inside
+your hook.
+
 .. _post-question-hook:
 
 Post question hook
 ******************
 
-Much like the :ref:`pre-question-hook` example above, you can use
+Similar to :ref:`pre-question-hook` example above, you can use
 ``post_ask_question`` variable in your ``.mrbob.ini`` to specify a function to
-call after a question has been asked. :ref:`post-question-hook` must return
+call after a question has been asked. :ref:`post-question-hook` **must** return
 the answer of the question.
 
 The function expects three arguments:
@@ -243,13 +233,13 @@ The function expects three arguments:
             answer
         return answer
 
+Raise :exc:`mrbob.configurator.ValidationError` to re-ask the question.
 
- Note that `pre_ask_question` and `post_ask_question` are defined for questions
-in the ``[questions]`` section of ``.mrbob.ini``.
 
-:mod:`mrbob.hooks` are functions provided by `mr.bob` that can be used as
-``post_ask_question`` hook to validate the answer. Raise
-:exc:`mrbob.configurator.ValidationError` to re-ask the question.
+Hooks shipped with `mr.bob`
+***************************
+
+See :mod:`mrbob.hooks`.
 
 
 ``template`` section reference
@@ -261,5 +251,4 @@ Parameter             Default                         Explanation
 renderer              mrbob.rendering:jinja2_renderer Function for rendering templates in :term:`dotted notation`
 pre_render            None                            :term:`dotted notation` function to run before rendering the templates
 post_render           None                            :term:`dotted notation` function to run after rendering the templates
-post_render_msg       ''                              Print help text to terminal after rendering is done
 ===================== =============================== ======================================================================================

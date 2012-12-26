@@ -1,9 +1,20 @@
+"""Use any of hooks below or write your own."""
+
 from .configurator import ValidationError
 
 
 def to_boolean(configurator, question, answer):
-    """Converts value to Python boolean given values:
-    y, n, yes, no, true, false, 1, 0
+    """
+    If you want to convert an answer to Python boolean, you can
+    use this function as :ref:`post-question-hook`:
+
+    .. code-block:: ini
+
+        [questions]
+        idiot.question = Are you young?
+        idiot.post_ask_question = mrbob.hooks:to_boolean
+
+    Following variables can be converted to a boolean: **y, n, yes, no, true, false, 1, 0**
     """
     value = answer.lower()
     if value in ['y', 'yes', 'true', '1']:
@@ -14,8 +25,19 @@ def to_boolean(configurator, question, answer):
         raise ValidationError('Value must be a boolean (y/n)')
 
 
-def post_render_msg(configurator):
-    """TODO:docs"""
-    post_render_msg = configurator.templateconfig.get('post_render_msg', '')
-    if not configurator.quiet and post_render_msg:
-        print(post_render_msg % configurator.variables)
+def show_message(configurator):
+    """
+    If you want to display a message to the user when rendering is complete, you
+    can use this function as :ref:`post-render-hook`:
+
+    .. code-block:: ini
+
+        [template]
+        post_render = mrbob.hooks:show_message
+        message = Well done, %(author.name)s, your code is ready!
+
+    As shown above, you can use standard Python formatting in ``post_render_msg``.
+    """
+    message = configurator.templateconfig.get('message', '')
+    if not configurator.quiet and message:
+        print(message % configurator.variables)

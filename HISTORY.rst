@@ -8,7 +8,7 @@ Changelog
 - If a key in a namespace was missing while rendering, no error was raised
   [Domen Kožar]
 
-- Added hook ``mrbob.hooks.post_render_msg``
+- Added hook ``mrbob.hooks.show_message``
   [Domen Kožar]
 
 - ``mrbob.validators.boolean`` renamed to ``mrbob.hooks.to_boolean``

@@ -43,4 +43,3 @@ Source documentation
 
 .. automodule:: mrbob.hooks
    :members:
-   :show-inheritance:

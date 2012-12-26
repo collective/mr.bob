@@ -19,6 +19,9 @@ Welcome to mr.bob's documentation!
     - uses Jinja2 as the default rendering engine (can be replaced)
     - multiple ways to specify variables to render templates
     - preserves permissions when rendering templates
+    - provides hooks before/after asking a question
+    - provides hooks before/after rendering structure
+    - can remember given answers for rendered structure
 
    **Flow of mr.bob** 
 
@@ -29,8 +32,8 @@ Welcome to mr.bob's documentation!
 .. topic:: Introduction
 
    **mr.bob** is a tool that takes a directory skeleton, copies over
-   its directory structure to a target folder, and can use the `Jinja2
-   <http://jinja.pocoo.org/>`_ (or some other) rendering engine to dynamically
+   its directory structure to a target folder and can use the `Jinja2
+   <http://jinja.pocoo.org/>`_ (or some other) templating engine to dynamically
    generate the files. Additionally, it can ask you questions needed
    to render the structure, or provide a config file to answer them.
 
@@ -53,12 +56,14 @@ Welcome to mr.bob's documentation!
 Glossary
 ========
 
-dotted notation
+.. glossary::
+
+`dotted notation`
    Importable Python function specified with dots as importing a module separated with a column
    to denote a function. For example *mrbob.rendering:render_structure*
-mr.bob
+`mr.bob`
    This section configures how `mrbob` behaves
-variables
+`variables`
    This section answers to the questions that will be passed to templates for rendering
 
 

@@ -22,11 +22,11 @@ class to_booleanTest(TestCase):
         self.assertRaises(ValidationError, self.call_FUT, 'foo')
 
 
-class post_render_msgTest(TestCase):
+class show_messageTest(TestCase):
 
     def call_FUT(self, configurator=None):
-        from ..hooks import post_render_msg
-        return post_render_msg(configurator)
+        from ..hooks import show_message
+        return show_message(configurator)
 
     @mock.patch('sys.stdout')
     def test_hook_no_msg(self, mock_stdout):
@@ -37,7 +37,7 @@ class post_render_msgTest(TestCase):
     @mock.patch('sys.stdout')
     def test_hook_msg_formatting(self, mock_stdout):
         c = DummyConfigurator(variables={'foo': 'bar'},
-                              templateconfig={'post_render_msg': 'Hello %(foo)s!'})
+                              templateconfig={'message': 'Hello %(foo)s!'})
         self.call_FUT(c)
         self.assertEquals(mock_stdout.mock_calls, [mock.call.write('Hello bar!'), mock.call.write('\n')])
 
@@ -45,6 +45,6 @@ class post_render_msgTest(TestCase):
     def test_hook_quiet(self, mock_stdout):
         c = DummyConfigurator(variables={'foo': 'bar'},
                               quiet=True,
-                              templateconfig={'post_render_msg': 'Hello %(foo)s!'})
+                              templateconfig={'message': 'Hello %(foo)s!'})
         self.call_FUT(c)
         self.assertEquals(mock_stdout.mock_calls, [])
