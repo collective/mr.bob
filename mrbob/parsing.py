@@ -31,12 +31,12 @@ def parse_config(fs_config):
     parser = configparser.SafeConfigParser(dict_type=OrderedDict)
     parser.read(fs_config)
     config = dict()
-    for section in ['variables', 'mr.bob', 'questions']:
+    for section in ['variables', 'defaults', 'mr.bob', 'questions', 'template']:
         if parser.has_section(section):
             items = parser.items(section)
             if section == 'questions':
                 config[section + "_order"] = [key[:-9] for key, value in items if key.endswith('question')]
-            if section == 'variables':
+            if section in ['variables', 'defaults']:
                 if PY3:  # pragma: no cover
                     config[section] = dict(items)
                 else:  # pragma: no cover
@@ -46,6 +46,17 @@ def parse_config(fs_config):
         else:
             config[section] = {}
     return config
+
+
+def write_config(fs_config, section, data):
+    parser = configparser.SafeConfigParser(dict_type=OrderedDict)
+    parser.add_section(section)
+    for key, value in data.items():
+        if not PY3:  # pragma: no cover
+            value = value.encode('utf-8')
+        parser.set(section, key, value)
+    with open(fs_config, 'w') as f:
+        parser.write(f)
 
 
 def update_config(first_config, second_config):

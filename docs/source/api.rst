@@ -38,9 +38,8 @@ Source documentation
    :show-inheritance:
 
 
-:mod:`mrbob.validators` -- Useful validators for questions
-----------------------------------------------------------
+:mod:`mrbob.hooks` -- Included hooks
+------------------------------------
 
-.. automodule:: mrbob.validators
+.. automodule:: mrbob.hooks
    :members:
-   :show-inheritance:

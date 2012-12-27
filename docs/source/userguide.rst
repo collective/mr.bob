@@ -19,27 +19,35 @@ Usage
 Once you install mr.bob, the `mrbob` command is available::
 
     $ mrbob --help
-    usage: mrbob [-h] [-O TARGET_DIRECTORY] [-c CONFIG] [-V] [-l] [-r RENDERER]
+    usage: mrbob [-h] [-O TARGET_DIRECTORY] [-v] [-c CONFIG] [-V] [-l] [-w] [-n]
+                 [-q]
                  [template]
 
     Filesystem template renderer
 
     positional arguments:
-      template              Template to use for rendering
+      template              Template name to use for rendering. See http://mrbob.r
+                            eadthedocs.org/en/latest/userguide.html#usage for a
+                            guide to template syntax
 
     optional arguments:
       -h, --help            show this help message and exit
       -O TARGET_DIRECTORY, --target-directory TARGET_DIRECTORY
                             Where to output rendered structure. Defaults to
-                            current directory.
+                            current directory
+      -v, --verbose         Print more output for debugging
       -c CONFIG, --config CONFIG
                             Configuration file to specify either [mr.bob] or
-                            [variables] sections.
+                            [variables] sections
       -V, --version         Display version number
       -l, --list-questions  List all questions needed for the template
-      -r RENDERER, --renderer RENDERER
-                            Dotted notation to a renderer function. Defaults to
-                            mrbob.rendering:jinja2_renderer
+      -w, --remember-answers
+                            Remember answers to .mrbob.ini file inside output
+                            directory
+      -n, --non-interactive
+                            Don't prompt for input. Fail if questions are required
+                            but not answered
+      -q, --quiet           Suppress all but necessary output
 
 By default, the target directory is the current folder. The most basic use case is rendering a template from a relative folder::
 
@@ -95,6 +103,29 @@ Listing all questions needed to have corresponding variable for a template
     author.password.question = Enter password
 
 
+Remember answers to a config file
+------------------------------------
+
+Running::
+
+    $ mrbob --remember-answers -O new_dir mrbob:template_sample/
+    ...
+
+When everything is done, all answers are stored in **new_dir/.mrbob.ini**
+so later you reuse them::
+
+    $ mrbob --config new_dir/.mrbob.ini -O new_dir another_template/
+    ...
+
+
+Using `non-interactive` mode
+----------------------------
+
+Sometimes you might want to automate a script and use `mrbob`. It
+is wise to tell `mrbob` to not prompt for any input. `mrbob` will use
+given answers and defaults if answers are missing. In case a question
+is required and doesn't have a default, error will be thrown.
+
 Configuration
 -------------
 
@@ -105,11 +136,45 @@ Example of global config file `~/.mrbob` or command line parameter `mrbob --conf
 .. code-block:: ini
 
     [mr.bob]
-    renderer = moo.foo:render_mako
+    verbose = True
 
     [variables]
     author.name = Domen Kožar
     author.email = domen@dev.si
+
+Specifying answers
+******************
+
+To answer some questions from a config file instead of interactively. Given `me.ini`:
+
+.. code-block:: ini
+
+    [variables]
+    author.name = Domen Kožar
+    author.email = domen@dev.si
+    author.age = 24
+
+do::
+
+  $ mrbob --config me.ini mrbob:template_sample/
+
+Specifying defaults
+*******************
+
+Sometimes you might want to override defaults for a template. Given `me.ini`:
+
+.. code-block:: ini
+
+    [defaults]
+    author.name = Domen Kožar
+    author.email = domen@dev.si
+    author.age = 24
+
+do::
+
+  $ mrbob --config me.ini mrbob:template_sample/
+
+`mrbob` will as you questions but default values will be also taken from config file.
 
 
 Configuration inheritance
@@ -129,12 +194,14 @@ don't do anything special besides providing readability.
 ``mr.bob`` section reference
 ****************************
 
-============  ===============================  ===============================================================
-  Parameter      Default                          Explanation
-============  ===============================  ===============================================================
-  renderer    mrbob.rendering:jinja2_renderer  Function for rendering templates
-  verbose     False                            Output more information, useful for debugging
-============  ===============================  ===============================================================
+================  ===============================  =======================================================================
+  Parameter         Default                          Explanation
+================  ===============================  =======================================================================
+verbose           False                            Output more information, useful for debugging
+quiet             False                            Don't output anything except necessary
+remember_answers  False                            Write answers to `.mrbob.ini` file inside output directory
+non_interactive   False                            Don't prompt for input. Fail if questions are required but not answered
+================  ===============================  =======================================================================
 
 
 
@@ -145,3 +212,4 @@ You are encouraged to use the `bobtemplates.something` Python egg namespace to w
 templates and contribute them to this list by making a `pull request <github.com/iElectric/mr.bob>`_.
 
 - `bobtemplates.ielectric <https://github.com/iElectric/bobtemplates.ielectric>`_ 
+- `bobtemplates.kotti <https://github.com/Kotti/bobtemplates.kotti>`_ 

@@ -9,16 +9,50 @@ import six
 import mock
 
 
-def dummy_validator(value):  # pragma: no cover
-    pass
-
-
-def dummy_action(value):  # pragma: no cover
-    pass
+mocked_pre_ask_question = mock.Mock()
+mocked_post_ask_question = mock.Mock()
+mocked_post_ask_question_validationerror = mock.Mock()
+mocked_post_ask_question_validationerror_non_interactive = mock.Mock()
+mocked_render_hook = mock.Mock()
 
 
 def dummy_prompt(value):  # pragma: no cover
     pass
+
+
+def dummy_renderer(value):  # pragma: no cover
+    pass
+
+
+def dummy_question_hook(configurator, question):  # pragma: no cover
+    return
+
+
+def dummy_question_hook2(configurator, question):  # pragma: no cover
+    return
+
+
+def dummy_render_hook(configurator):  # pragma: no cover
+    return
+
+
+def dummy_question_hook_skipquestion(configurator, question):  # pragma: no cover
+    from ..configurator import SkipQuestion
+    raise SkipQuestion
+
+
+class DummyConfigurator(object):
+    def __init__(self,
+                 defaults=None,
+                 bobconfig=None,
+                 templateconfig=None,
+                 variables=None,
+                 quiet=False):
+        self.defaults = defaults or {}
+        self.bobconfig = bobconfig or {}
+        self.variables = variables or {}
+        self.quiet = quiet
+        self.templateconfig = templateconfig or {}
 
 
 class resolve_dotted_pathTest(unittest.TestCase):
@@ -157,18 +191,16 @@ class ConfiguratorTest(unittest.TestCase):
         self.assertEqual(len(c.questions), 0)
 
     def test_parse_questions_no_questions_section(self):
-        # expected failure: KeyError: 'questions_order'
         self.call_FUT('mrbob.tests:templates/empty2',
                       self.target_dir,
                       {})
 
     def test_parse_questions_extra_parameter(self):
-        from ..configurator import TemplateConfigurationError
-        self.assertRaises(TemplateConfigurationError,
-                          self.call_FUT,
-                          'mrbob.tests:templates/questions3',
-                          self.target_dir,
-                          {})
+        c = self.call_FUT(
+            'mrbob.tests:templates/questions3',
+            self.target_dir,
+            {})
+        self.assertEqual(c.questions[0].extra, {'foobar': 'something'})
 
     def test_parse_questions_all(self):
         c = self.call_FUT('mrbob.tests:templates/questions4',
@@ -178,17 +210,8 @@ class ConfiguratorTest(unittest.TestCase):
         self.assertEqual(c.questions[0].name, six.u('foo'))
         self.assertEqual(c.questions[0].default, "True")
         self.assertEqual(c.questions[0].required, False)
-        self.assertEqual(c.questions[0].validator, dummy_validator)
         self.assertEqual(c.questions[0].help, six.u('Blabla blabal balasd a a sd'))
-        self.assertEqual(c.questions[0].action, dummy_action)
         self.assertEqual(c.questions[0].command_prompt, dummy_prompt)
-
-    def test_default_and_required(self):
-        from ..configurator import TemplateConfigurationError
-        args = ['mrbob.tests:templates/questions5',
-                self.target_dir,
-                {}]
-        self.assertRaises(TemplateConfigurationError, self.call_FUT, *args)
 
     def test_ask_questions_empty(self):
         args = ['mrbob.tests:templates/questions1',
@@ -211,6 +234,51 @@ class ConfiguratorTest(unittest.TestCase):
         c.ask_questions()
         self.assertEquals(c.variables, {'foo.bar': 'answer', 'moo': 'moo.'})
 
+    @mock.patch('mrbob.configurator.render_structure')
+    def test_remember_answers(self, mock_render_structure):
+        args = ['mrbob.tests:templates/questions1',
+                self.target_dir,
+                {'remember_answers': 'True'},
+                {'foo.bar': '3'}]
+        c = self.call_FUT(*args)
+        c.render()
+        with open(os.path.join(self.target_dir, '.mrbob.ini')) as f:
+            self.assertEquals(f.read().strip(), """[variables]\nfoo.bar = 3""".strip())
+
+    @mock.patch('mrbob.configurator.render_structure')
+    def test_remember_answers_default(self, mock_render_structure):
+        c = self.call_FUT(
+            'mrbob.tests:templates/questions1',
+            self.target_dir,
+            variables={'foo.bar': '3'},
+        )
+        c.render()
+        self.assertFalse(os.path.exists(os.path.join(self.target_dir, '.mrbob.ini')))
+
+    def test_renderer_default(self):
+        from ..rendering import jinja2_renderer
+        c = self.call_FUT('mrbob.tests:templates/empty',
+                      self.target_dir,
+                      {})
+        self.assertEqual(c.renderer, jinja2_renderer)
+
+    def test_renderer_set(self):
+        c = self.call_FUT('mrbob.tests:templates/renderer',
+                      self.target_dir,
+                      {})
+        self.assertEqual(c.renderer, dummy_renderer)
+
+    def test_pre_post_render_hooks_multiple(self):
+        c = self.call_FUT(
+            'mrbob.tests:templates/render_hooks',
+            self.target_dir,
+            {},
+        )
+        self.assertEqual(c.pre_render, [dummy_render_hook, mocked_render_hook])
+        self.assertEqual(c.post_render, [dummy_render_hook, mocked_render_hook])
+        c.render()
+        self.assertEqual(mocked_render_hook.mock_calls, [mock.call(c), mock.call(c)])
+
 
 class QuestionTest(unittest.TestCase):
 
@@ -225,7 +293,6 @@ class QuestionTest(unittest.TestCase):
         self.assertEqual(q.default, None)
         self.assertEqual(q.required, False)
         self.assertEqual(q.help, "")
-        self.assertEqual(q.validator, None)
         self.assertEqual(q.command_prompt, moves.input)
 
     def test_repr(self):
@@ -239,7 +306,7 @@ class QuestionTest(unittest.TestCase):
             return 'foo'
 
         q = self.call_FUT('foo', 'Why?', command_prompt=cmd)
-        answer = q.ask()
+        answer = q.ask(DummyConfigurator())
         self.assertEqual(answer, 'foo')
 
     def test_ask_unicode(self):
@@ -249,14 +316,14 @@ class QuestionTest(unittest.TestCase):
             return 'foo'
 
         q = self.call_FUT('foo', six.u('č?'), command_prompt=cmd)
-        q.ask()
+        q.ask(DummyConfigurator())
 
     def test_ask_default_empty(self):
         q = self.call_FUT('foo',
                           'Why?',
                           default="moo",
                           command_prompt=lambda x: '')
-        answer = q.ask()
+        answer = q.ask(DummyConfigurator())
         self.assertEqual(answer, 'moo')
 
     def test_ask_default_not_empty(self):
@@ -269,7 +336,7 @@ class QuestionTest(unittest.TestCase):
                           'Why?',
                           default="moo",
                           command_prompt=cmd)
-        answer = q.ask()
+        answer = q.ask(DummyConfigurator())
         self.assertEqual(answer, 'foo')
 
     def test_ask_no_default_and_not_required(self):
@@ -280,7 +347,7 @@ class QuestionTest(unittest.TestCase):
         q = self.call_FUT('foo',
                           'Why?',
                           command_prompt=cmd)
-        answer = q.ask()
+        answer = q.ask(DummyConfigurator())
         self.assertEqual(answer, '')
 
     def test_ask_no_default_and_required(self):
@@ -292,7 +359,7 @@ class QuestionTest(unittest.TestCase):
                           'Why?',
                           required=True,
                           command_prompt=cmd)
-        answer = q.ask()
+        answer = q.ask(DummyConfigurator())
         self.assertEqual(answer, 'foo')
 
     def test_ask_no_help(self):
@@ -305,7 +372,7 @@ class QuestionTest(unittest.TestCase):
         q = self.call_FUT('foo',
                           'Why?',
                           command_prompt=cmd)
-        q.ask()
+        q.ask(DummyConfigurator())
         self.assertEqual(sys.stdout.getvalue(), 'There is no additional help text.\n\n')
         sys.stdout = sys.__stdout__
 
@@ -320,39 +387,91 @@ class QuestionTest(unittest.TestCase):
                           'Why?',
                           help="foobar_help",
                           command_prompt=cmd)
-        q.ask()
+        q.ask(DummyConfigurator())
         self.assertEqual(sys.stdout.getvalue(), 'foobar_help\n\n')
         sys.stdout = sys.__stdout__
 
-    def test_validator_no_return(self):
+    def test_non_interactive_required(self):
+        from ..configurator import ConfigurationError
+        q = self.call_FUT('foo', 'Why?', required=True)
+        c = DummyConfigurator(bobconfig={'non_interactive': 'True'})
+        self.assertRaises(ConfigurationError, q.ask, c)
+
+    def test_non_interactive_not_required(self):
+        q = self.call_FUT('foo', 'Why?')
+        c = DummyConfigurator(bobconfig={'non_interactive': 'True'})
+        answer = q.ask(c)
+        self.assertEquals(answer, '')
+
+    def test_defaults_override(self):
+        q = self.call_FUT('foo', 'Why?', default="foo")
+        c = DummyConfigurator(bobconfig={'non_interactive': 'True'},
+                              defaults={'foo': 'moo'})
+        answer = q.ask(c)
+        self.assertEquals(answer, 'moo')
+
+    def test_pre_ask_question(self):
         q = self.call_FUT('foo',
                           'Why?',
-                          validator=dummy_validator,
-                          command_prompt=lambda x: 'foo')
-        answer = q.ask()
-        self.assertEqual(answer, 'foo')
+                          command_prompt=lambda x: '',
+                          pre_ask_question="mrbob.tests.test_configurator:mocked_pre_ask_question")
+        c = DummyConfigurator()
+        q.ask(c)
+        mocked_pre_ask_question.assert_called_with(c, q)
 
-    def test_validator_return(self):
+    def test_pre_ask_question_multiple(self):
+        q = self.call_FUT('foo', 'Why?', pre_ask_question="mrbob.tests.test_configurator:dummy_question_hook mrbob.tests.test_configurator:dummy_question_hook2")
+        self.assertEqual(q.pre_ask_question, [dummy_question_hook, dummy_question_hook2])
+
+    def test_pre_ask_question_skipquestion(self):
+        q = self.call_FUT('foo', 'Why?', pre_ask_question="mrbob.tests.test_configurator:dummy_question_hook_skipquestion")
+        self.assertEquals(q.ask(DummyConfigurator()), None)
+
+    def test_post_ask_question(self):
         q = self.call_FUT('foo',
                           'Why?',
-                          validator=lambda x: 'moo',
-                          command_prompt=lambda x: 'foo')
-        answer = q.ask()
-        self.assertEqual(answer, 'moo')
+                          command_prompt=lambda x: '',
+                          post_ask_question="mrbob.tests.test_configurator:mocked_post_ask_question")
+        c = DummyConfigurator()
+        answer = q.ask(c)
+        mocked_post_ask_question.assert_called_with(c, q, '')
+        self.assertEquals(mocked_post_ask_question(), answer)
 
-    def test_validator_error(self):
-        from ..configurator import ValidationError
+    def test_post_ask_question_multiple(self):
+        q = self.call_FUT('foo',
+                          'Why?',
+                          post_ask_question="mrbob.tests.test_configurator:dummy_question_hook mrbob.tests.test_configurator:dummy_question_hook2")
+        self.assertEqual(q.post_ask_question,
+                         [dummy_question_hook, dummy_question_hook2])
 
-        def cmd(q, go=['foo', 'moo']):
+    def test_post_ask_question_validationerror(self):
+        def cmd(q, go=['bar', 'foo']):
             return go.pop()
 
-        def validator(value):
-            if value != 'foo':
+        def side_effect(configurator, question, answer):
+            from ..configurator import ValidationError
+            if answer == 'foo':
                 raise ValidationError
+            elif answer == 'bar':
+                return 'moo'
+
+        mocked_post_ask_question_validationerror.side_effect = side_effect
 
         q = self.call_FUT('foo',
                           'Why?',
-                          validator=validator,
-                          command_prompt=cmd)
-        answer = q.ask()
-        self.assertEqual(answer, 'foo')
+                          command_prompt=cmd,
+                          post_ask_question="mrbob.tests.test_configurator:mocked_post_ask_question_validationerror")
+        c = DummyConfigurator()
+        self.assertEqual(q.ask(c), 'moo')
+
+    def test_post_ask_question_validationerror_non_interactive(self):
+        from ..configurator import ValidationError, ConfigurationError
+
+        mocked_post_ask_question_validationerror_non_interactive.side_effect = ValidationError
+
+        q = self.call_FUT('foo',
+                          'Why?',
+                          command_prompt=lambda x: '',
+                          post_ask_question="mrbob.tests.test_configurator:mocked_post_ask_question_validationerror_non_interactive")
+        c = DummyConfigurator(bobconfig={'non_interactive': 'True'})
+        self.assertRaises(ConfigurationError, q.ask, c)

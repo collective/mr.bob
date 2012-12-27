@@ -50,11 +50,6 @@ class TestCLI(unittest.TestCase):
         template_dir = os.path.join(os.path.dirname(__file__), 'templates', 'empty')
         self.call_FUT('--list-questions', template_dir)
 
-    def test_set_renderer(self):
-        template_dir = os.path.join(os.path.dirname(__file__), 'templates', 'empty')
-        self.call_FUT('--renderer', 'mrbob.rendering:python_formatting_renderer', template_dir)
-        # TODO: assert renderer was used
-
     def test_missing_mrbobini_in_template(self):
         template_dir = os.path.join(os.path.dirname(__file__), 'templates', 'unbound', 'etc')
         self.assertRaises(SystemExit, self.call_FUT, '-O', self.output_dir, template_dir)
@@ -78,6 +73,10 @@ overriden_by_file = foo
 only_global = glob
 overriden_by_file = file
 
+[defaults]
+only_global_2 = glob2
+overriden_by_file_2 = file1
+
                     """)
 
         # config file
@@ -91,17 +90,21 @@ overriden_by_file = file1
 [variables]
 only_file = file
 overriden_by_file = file1
+
+[defaults]
+only_file_2 = file1
+overriden_by_file_2 = file2
                     """)
 
-        # TODO: also test cli parameters when it's implemented
         template_dir = os.path.join(os.path.dirname(__file__), 'templates', 'multiconfig')
         self.call_FUT('-v',
+                      '-n',
                       '-O', self.output_dir,
                       '-c', tempconfig,
                       template_dir)
         with open(os.path.join(self.output_dir, 'vars')) as f:
             output = f.read()
-            self.assertEquals(output, "glob\nfile\nfile1")
+            self.assertEquals(output, "glob\nfile\nfile1\nglob2\nfile1\nfile2")
 
         # cleanup
         os.remove(tempconfig)

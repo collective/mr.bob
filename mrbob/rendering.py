@@ -3,7 +3,6 @@ import stat
 import os
 import re
 import codecs
-import collections
 from os import path
 from shutil import copy2
 from jinja2 import Environment
@@ -17,22 +16,24 @@ jinja2_env = Environment(
     trim_blocks=True,
 )
 
-jinja2_renderer = lambda s, v: jinja2_env.from_string(s).render(v)
+jinja2_renderer = lambda s, v: jinja2_env.from_string(s).render(parse_variables(v))
 python_formatting_renderer = lambda s, v: s % v
 
 
 def parse_variables(variables):
-    # define recursive defaultdict
-    l = lambda: collections.defaultdict(l)
-    d = l()
+    d = dict()
 
     for key, value in variables.items():
         keys = key.split('.')
         new_d = None
         for k in keys[:-1]:
             if new_d is None:
+                if k not in d:
+                    d[k] = dict()
                 new_d = d[k]
             else:
+                if k not in new_d:
+                    new_d[k] = dict()
                 new_d = new_d[k]
         if new_d is None:
             d[keys[-1]] = value
@@ -51,7 +52,7 @@ def render_structure(fs_source_root, fs_target_root, variables, verbose, rendere
     with values from the variables, i.e. a file named `+name+.py.bob` given a
     dictionary {'name': 'bar'} would be rendered as `bar.py`.
     """
-    if not isinstance(fs_source_root, six.text_type):
+    if not isinstance(fs_source_root, six.text_type):  # pragma: no cover
         fs_source_root = six.u(fs_source_root)
     for fs_source_dir, local_directories, local_files in os.walk(fs_source_root):
         fs_target_dir = path.abspath(path.join(fs_target_root, path.relpath(fs_source_dir, fs_source_root)))
@@ -83,7 +84,7 @@ def render_template(fs_source, fs_target_dir, variables, verbose, renderer):
         fs_source_mode = stat.S_IMODE(os.stat(fs_source).st_mode)
         with codecs.open(fs_source, 'r', 'utf-8') as f:
             source_output = f.read()
-            output = renderer(source_output, parse_variables(variables))
+            output = renderer(source_output, variables)
         with codecs.open(fs_target_path, 'w', 'utf-8') as fs_target:
             fs_target.write(output)
         os.chmod(fs_target_path, fs_source_mode)

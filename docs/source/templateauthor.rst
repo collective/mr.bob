@@ -15,11 +15,11 @@ Everything else is extra. To start quickly, use the template starter that ships 
   Value in square brackets at the end of the questions present default value if there is no answer.
 
 
-  --> How old are you? [24]: 
+  --> How old are you? [24]:
 
   --> What is your name?: Foobar
 
-  --> Enter password: 
+  --> Enter password:
 
 
   Generated file structure at /home/ielectric/code/mr.bob
@@ -27,8 +27,8 @@ Everything else is extra. To start quickly, use the template starter that ships 
 See `.mrbob.ini` for sample questions and `sample.txt.bob` for sample rendering.
 
 
-Templating
-----------
+How it works
+------------
 
 Files inside the structure can be just copied to destination, or they can be suffixed with `.bob` and the templating engine
 will be used to render them.
@@ -68,24 +68,187 @@ Questions will be asked in the order written in `.mrbob.ini`.
 *******************************
 
 
-=============== ================= =================================================================================================
+================= ================= =================================================================================================
   Parameter         Default          Explanation
-=============== ================= =================================================================================================
-name                              Required. Unique identifier for the question
-question                          Required. Question given interactively to a user when generating structure
-default         None              Default value when no answer is given. Can be a `dotted notation`
-required        False             Specify if question must be answered
-action          lambda x: x       Extra action to be taken except returning value to be used stored in variables
-validator       None              Validator can raise :exc:`mrbob.configurator.ValidationError` and question will be asked again
-command_prompt  :func:`raw_input` Function that accepts a question and asks user for the answer
-help            ""                Extra help returned when user inputs a question mark
-=============== ================= =================================================================================================
+================= ================= =================================================================================================
+name                                Required. Unique identifier for the question
+question                            Required. Question given interactively to a user when generating structure
+default           None              Default value when no answer is given. Can be a `dotted notation`
+required          False             Specify if question must be answered
+command_prompt    :func:`raw_input` Function that accepts a question and asks user for the answer
+help              ""                Extra help returned when user inputs a question mark
+pre_ask_question  None              :term:`dotted notation` function to run before asking the question
+post_ask_question None              :term:`dotted notation` function to run after asking the question (also does validation)
+================= ================= =================================================================================================
+
+Common needs for templating
+---------------------------
+
+Default value of the question is dynamic
+****************************************
+
+Use something like:
+
+.. code-block:: ini
+
+    [questions]
+    author.name.question = What's your name?
+    author.name.pre_ask_question = bobtemplates.mytemplate.hooks:pre_author
+
+Where `pre_author` function will modify the question and provide new :attr:`mrbob.configurator.Question.default`.
+
+Conditionally render a file
+***************************
+
+Use something like:
+
+.. code-block:: ini
+
+    [template]
+    post_render = bobtemplates.mytemplate.hooks:delete_readme
+
+And based on `mrbob.Configurator.variables` answers, delete a file or add one.
 
 
-Validators
-----------
+Based on the answer of the question do something
+************************************************
 
-Validators are functions with an answer as the only parameter. They may return a value to be used as
-an answer and may raise :exc:`ValidationError` for the question to be asked again.
+Use something like:
 
-See :mod:`mrbob.validators` for validators that ship with `mr.bob`.
+.. code-block:: ini
+
+    [questions]
+    author.name.question = What's your name?
+    author.name.post_ask_question = bobtemplates.mytemplate.hooks:post_author
+
+Where `post_author` function will take :class:`mrbob.configurator.Configurator`, question and it's answer. 
+
+Ask a question based on answer of previous question
+***************************************************
+
+use post_ask_question and add another question (is that possible if we are looping through questions? -> While questions: questions.pop())
+
+
+Hooks
+-----
+
+A list of places where you can hook into the process flow and provide your
+custom code. All hooks can have multiple entries limited by whitespace.
+
+.. _post-render-hook:
+
+Post render hook
+****************
+
+If you would like to execute a custom Python script after rendering
+is complete, you can use `post_render` hook in your ``.mrbob.ini``.
+
+.. code-block:: ini
+
+    [template]
+    post_render = bobtemplates.mytemplate.hooks:my_post_render_function
+
+This assumes you have a `bobtemplate.mytemplate` egg with a ``hooks.py``
+module. This module contains a ``my_post_render_hook`` function, which gets
+called after mr.bob has finished rendering your template.
+
+The function expects one argument (:class:`mrbob.configurator.Configurator`)
+and looks something like this:
+
+.. code-block:: python
+
+    def my_post_render_function(configurator):
+        if configurator.variables['author.email']:
+            # do something here
+
+.. _pre-render-hook:
+
+Pre render hook
+***************
+
+Much like the :ref:`post-render-hook` example above, you can use ``pre_render``
+variable in your ``.mrbob.ini`` to specify a function to call before rendering
+starts.
+
+.. code-block:: ini
+
+    [template]
+    pre_render = bobtemplates.mytemplate.hooks:my_pre_render_function
+
+
+.. _pre-question-hook:
+
+Pre question hook
+*****************
+
+For maximum flexibility, `mr.bob` allows you to set hooks to questions. Using
+``pre_ask_question`` in your ``.mrbob.ini`` allows you to run custom
+code before a certain question.
+
+The function expects two arguments:
+ * :class:`mrbob.configurator.Question`
+ * :class:`mrbob.configurator.Configurator`
+
+.. code-block:: ini
+
+    [questions]
+    author.name.question = What's your name?
+    author.name.pre_ask_question = bobtemplates.mytemplate.hooks:pre_author
+
+.. code-block:: python
+
+    def set_fullname(configurator, question):
+        question.default = 'foobar'
+
+If you want question to be skipped, simply raise :exc:`mrbob.configurator.SkipQuestion` inside
+your hook.
+
+.. _post-question-hook:
+
+Post question hook
+******************
+
+Similar to :ref:`pre-question-hook` example above, you can use
+``post_ask_question`` variable in your ``.mrbob.ini`` to specify a function to
+call after a question has been asked. :ref:`post-question-hook` **must** return
+the answer of the question.
+
+The function expects three arguments:
+ * :class:`mrbob.configurator.Question`
+ * :class:`mrbob.configurator.Configurator`
+ * answer from the question
+
+.. code-block:: ini
+
+    [questions]
+    author.firstname.question = What's your name?
+    author.lastname.question = What's your surname?
+    author.lastname.post_ask_question = bobtemplates.mytemplate.hooks:set_fullname
+
+.. code-block:: python
+
+    def set_fullname(configurator, question, answer):
+        configurator.variables['author.fullname'] =
+            configurator.variables['author.firstname'] + ' ' +
+            answer
+        return answer
+
+Raise :exc:`mrbob.configurator.ValidationError` to re-ask the question.
+
+
+Hooks shipped with `mr.bob`
+***************************
+
+See :mod:`mrbob.hooks`.
+
+
+``template`` section reference
+------------------------------
+
+===================== =============================== ======================================================================================
+Parameter             Default                         Explanation
+===================== =============================== ======================================================================================
+renderer              mrbob.rendering:jinja2_renderer Function for rendering templates in :term:`dotted notation`
+pre_render            None                            :term:`dotted notation` function to run before rendering the templates
+post_render           None                            :term:`dotted notation` function to run after rendering the templates
+===================== =============================== ======================================================================================
