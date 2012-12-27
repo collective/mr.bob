@@ -18,6 +18,8 @@ from .parsing import parse_config, update_config, pretty_format_config
 # TODO: split into sections for global and template related?
 parser = argparse.ArgumentParser(description='Filesystem template renderer')
 # TODO: write more about specifying templates
+
+#tpl_group = parser.add_mutually_exclusive_group(required=True)
 parser.add_argument('template',
                     nargs="?",
                     help="""Template name to use for rendering. See
@@ -51,6 +53,13 @@ parser.add_argument('-q', '--quiet',
                     action="store_true",
                     default=False,
                     help='Suppress all but necessary output')
+parser.add_argument('--list-templates',
+                    action="store_true",
+                    default=False,
+                    help="Lists detailed registered templates and exits")
+parser.add_argument('-t', '--template', nargs=1,
+                    help="Use the named template TEMPLATE. See --list-templates option")
+
 #parser.add_option('--simulate',
                   #dest='simulate',
                   #action='store_true',
@@ -71,6 +80,7 @@ def main(args=sys.argv[1:], quiet=False):
     options = parser.parse_args(args=args)
 
     if options.version:
+        import pdb; pdb.set_trace()
         version = pkg_resources.get_distribution('mr.bob').version
         return version
 
