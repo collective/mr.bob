@@ -50,7 +50,7 @@ setup(name='mr.bob',
       extras_require={
           'test': [
               'nose',
-              'coverage',
+              'coverage<3.6dev',
               'flake8',
               'mock',
           ],
