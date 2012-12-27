@@ -39,7 +39,7 @@ class show_messageTest(TestCase):
         c = DummyConfigurator(variables={'foo': 'bar'},
                               templateconfig={'message': 'Hello %(foo)s!'})
         self.call_FUT(c)
-        self.assertEquals(mock_stdout.mock_calls, [mock.call.write('Hello bar!'), mock.call.write('\n')])
+        mock_stdout.write.assert_any_call('Hello bar!')
 
     @mock.patch('sys.stdout')
     def test_hook_quiet(self, mock_stdout):
