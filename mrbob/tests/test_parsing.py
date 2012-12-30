@@ -3,6 +3,7 @@ import os
 import unittest
 import tempfile
 import codecs
+import collections
 
 import six
 
@@ -45,18 +46,6 @@ class parse_configTest(unittest.TestCase):
             'questions_order': [],
         }
         self.assertEqual(c, expected_config)
-
-    def test_overwrite_dict_with_value(self):
-        """ providing a value for a key that already contains a
-        dictionary raises a ConfigurationError """
-        from ..configurator import ConfigurationError
-        self.assertRaises(ConfigurationError, self.call_FUT, 'example3.ini')
-
-    def test_overwrite_value_with_dict(self):
-        """ providing a dict for a key that already contains a
-        string raises a ConfigurationError """
-        from ..configurator import ConfigurationError
-        self.assertRaises(ConfigurationError, self.call_FUT, 'example4.ini')
 
     def test_parse_config_utf8(self):
         from ..parsing import pretty_format_config
@@ -210,3 +199,24 @@ class pretty_format_configTest(unittest.TestCase):
             'foo = bar',
             'z = z'],
         )
+
+
+class nest_variablesTest(unittest.TestCase):
+
+    def call_FUT(self, d):
+        from ..parsing import nest_variables
+        return nest_variables(d)
+
+    def test_overwrite_dict_with_value(self):
+        """ providing a value for a key that already contains a
+        dictionary raises a ConfigurationError """
+        from ..configurator import ConfigurationError
+        d = collections.OrderedDict([('foo.bar', '1'), ('foo', '2')])
+        self.assertRaises(ConfigurationError, self.call_FUT, d)
+
+    def test_overwrite_value_with_dict(self):
+        """ providing a dict for a key that already contains a
+        string raises a ConfigurationError """
+        from ..configurator import ConfigurationError
+        d = collections.OrderedDict([('foo', '2'), ('foo.bar', '1')])
+        self.assertRaises(ConfigurationError, self.call_FUT, d)
