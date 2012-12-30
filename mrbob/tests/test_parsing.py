@@ -3,7 +3,10 @@ import os
 import unittest
 import tempfile
 import codecs
-import collections
+try:  # pragma: no cover
+    from collections import OrderedDict  # NOQA
+except ImportError:  # pragma: no cover
+    from ordereddict import OrderedDict  # NOQA
 
 import six
 
@@ -211,12 +214,12 @@ class nest_variablesTest(unittest.TestCase):
         """ providing a value for a key that already contains a
         dictionary raises a ConfigurationError """
         from ..configurator import ConfigurationError
-        d = collections.OrderedDict([('foo.bar', '1'), ('foo', '2')])
+        d = OrderedDict([('foo.bar', '1'), ('foo', '2')])
         self.assertRaises(ConfigurationError, self.call_FUT, d)
 
     def test_overwrite_value_with_dict(self):
         """ providing a dict for a key that already contains a
         string raises a ConfigurationError """
         from ..configurator import ConfigurationError
-        d = collections.OrderedDict([('foo', '2'), ('foo.bar', '1')])
+        d = OrderedDict([('foo', '2'), ('foo.bar', '1')])
         self.assertRaises(ConfigurationError, self.call_FUT, d)
