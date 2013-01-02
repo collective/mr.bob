@@ -1,8 +1,9 @@
-# TODO: make sure all commands run even if they exit with non-zero
+test: nosetests flake8
 
-test:
+nosetests:
 	@echo "==== Running nosetests ===="
 	@nosetests
+
+flake8:
 	@echo "==== Running Flake8 ===="
-	@flake8 *.py
-	@flake8 mrbob
+	@flake8 mrbob *.py
