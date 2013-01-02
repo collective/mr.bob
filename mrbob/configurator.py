@@ -113,15 +113,22 @@ def parse_template(template_name):
 
 
 class Configurator(object):
-    """Controller that figures out settings and renders file structure.
+    """Controller that figures out settings, asks questions and renders
+    the directory structure.
 
     :param template: Template name
     :param target_directory: Filesystem path to a output directory
     :param bobconfig: Configuration for mr.bob behaviour
-    :param variables: Given variables
+    :param variables: Given variables to questions
+    :param defaults: Overriden defaults of the questions
 
-    TODO: describe what configurator does
-    TODO: display api variables
+    Additional to above settings, `Configurator` exposes following attributes:
+
+    - :attr:`template_dir` is root directory of the template
+    - :attr:`is_tempdir` if template directory is temporary (when using zipfile)
+    - :attr:`templateconfig` dictionary parsed from `template` section
+    - :attr:`questions` ordered list of `Question instances to be asked
+    - :attr:`bobconfig` dictionary parsed from `mrbob` section of the config
 
     """
 
@@ -224,9 +231,22 @@ class Configurator(object):
 
 
 class Question(object):
-    """Question configuration. Parameters are used to configure validation of the answer.
+    """Question configuration. Parameters are used to configure questioning
+    and possible validation of the answer.
 
-    TODO: parameters
+    :param name: Unique, namespaced name of the question
+    :param question: Question to be asked
+    :param default: Default value of the question
+    :param required: Is question required?
+    :type required: bool
+    :param command_prompt: Function to executed to ask the question given question text
+    :param help: Optional help message
+    :param pre_ask_question: Space limited functions in dotted notation to ask before the question is asked
+    :param post_ask_question: Space limited functions in dotted notation to ask aster the question is asked
+    :param **extra: Any extra parameters stored for possible extending of `Question` functionality
+
+    Any of above parameters can be accessed as an attribute of `Question` instance.
+
     """
 
     def __init__(self,
@@ -255,6 +275,9 @@ class Question(object):
 
     def ask(self, configurator):
         """Eventually, ask the question.
+
+        :param configurator: :class:`mrbob.configurator.Configurator` instance
+
         """
         correct_answer = None
         self.default = configurator.defaults.get(self.name, self.default)
