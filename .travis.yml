@@ -9,4 +9,4 @@ install:
   - python setup.py develop
   - easy_install mr.bob[test]
 script:
-  - ./run_tests.sh
+  - make test
