@@ -310,11 +310,12 @@ class Question(object):
                 for f in self.post_ask_question:
                     try:
                         correct_answer = f(configurator, self, correct_answer)
-                    except ValidationError:
+                    except ValidationError as e:
                         if non_interactive:
                             raise ConfigurationError('non-interactive mode: question %s failed validation.' % self.name)
                         else:
                             correct_answer = None
+                            print("ERROR: " + str(e))
                             continue
         except KeyboardInterrupt:  # pragma: no cover
             print('\nExiting...')
