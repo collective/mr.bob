@@ -38,7 +38,7 @@ def parse_config(fs_config):
         if parser.has_section(section):
             items = parser.items(section)
             if section == 'questions':
-                config[section + "_order"] = [key[:-9] for key, value in items if key.endswith('question')]
+                config[section + "_order"] = [key[:-9] for key, value in items if key.endswith('.question')]
             if section in ['variables', 'defaults']:
                 if PY3:  # pragma: no cover
                     config[section] = dict(items)

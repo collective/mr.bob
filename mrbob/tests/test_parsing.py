@@ -80,6 +80,10 @@ class parse_configTest(unittest.TestCase):
         ]
         self.assertEqual(output, expected_output)
 
+    def test_question_order(self):
+        c = self.call_FUT('question_order.ini')
+        self.assertEqual(c['questions_order'], ['foo'])
+
 
 class update_configTest(unittest.TestCase):
 
