@@ -3,8 +3,8 @@ try:  # pragma: no cover
     from collections import OrderedDict  # NOQA
 except ImportError:  # pragma: no cover
     from ordereddict import OrderedDict  # NOQA
+import six
 from six.moves import configparser
-from six import PY3
 
 
 def nest_variables(variables):
@@ -23,7 +23,7 @@ def nest_variables(variables):
         k = segments[-1]
         if isinstance(location.get(k, None), dict):
             raise ConfigurationError('Cannot assign "%s" to group "%s", subgroup is already used.' % (value, k))
-        if PY3:  # pragma: no cover
+        if six.PY3:  # pragma: no cover
             location[k] = value
         else:  # pragma: no cover
             location[k] = value.decode('utf-8')
@@ -40,7 +40,7 @@ def parse_config(fs_config):
             if section == 'questions':
                 config[section + "_order"] = [key[:-9] for key, value in items if key.endswith('.question')]
             if section in ['variables', 'defaults']:
-                if PY3:  # pragma: no cover
+                if six.PY3:  # pragma: no cover
                     config[section] = dict(items)
                 else:  # pragma: no cover
                     config[section] = dict([(key, value.decode('utf-8')) for key, value in items])
@@ -55,7 +55,10 @@ def write_config(fs_config, section, data):
     parser = configparser.SafeConfigParser(dict_type=OrderedDict)
     parser.add_section(section)
     for key, value in data.items():
-        if not PY3:  # pragma: no cover
+        if not isinstance(value, six.string_types):
+            value = str(value)
+
+        if not six.PY3:  # pragma: no cover
             value = value.encode('utf-8')
         parser.set(section, key, value)
     with open(fs_config, 'w') as f:
