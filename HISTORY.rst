@@ -2,7 +2,7 @@ Changelog
 =========
     
 
-0.1a6 (unreleased)
+0.1a6 (2013-01-02)
 ------------------
 
 - Use ``StrictUndefined`` with jinja2 renderer so that any missing key is
