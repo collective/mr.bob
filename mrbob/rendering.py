@@ -5,7 +5,7 @@ import re
 import codecs
 from os import path
 from shutil import copy2
-from jinja2 import Environment
+from jinja2 import Environment, StrictUndefined
 
 
 jinja2_env = Environment(
@@ -14,6 +14,7 @@ jinja2_env = Environment(
     variable_start_string="{{{",
     variable_end_string="}}}",
     trim_blocks=True,
+    undefined=StrictUndefined,
 )
 
 jinja2_renderer = lambda s, v: jinja2_env.from_string(s).render(parse_variables(v))

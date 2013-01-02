@@ -5,6 +5,10 @@ Changelog
 0.1a6 (unreleased)
 ------------------
 
+- Use ``StrictUndefined`` with jinja2 renderer so that any missing key is
+  reported as an error
+  [Domen Kožar]
+
 - If a key in a namespace was missing while rendering, no error was raised
   [Domen Kožar]
 

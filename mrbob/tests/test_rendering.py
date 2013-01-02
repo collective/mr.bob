@@ -263,6 +263,19 @@ class render_templateTest(unittest.TestCase):
                           {},
                           renderer=jinja2_renderer)
 
+    def test_jinja2_strict_undefined(self):
+        from jinja2 import UndefinedError
+        from ..rendering import jinja2_renderer
+
+        t = os.path.join(self.fs_templates,
+            'strict_undefined.bob')
+
+        self.assertRaises(UndefinedError,
+                          self.call_FUT,
+                          t,
+                          {},
+                          renderer=jinja2_renderer)
+
 
 class render_filenameTest(unittest.TestCase):
 
