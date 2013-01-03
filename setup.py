@@ -28,7 +28,7 @@ def read(*rnames):
 
 
 setup(name='mr.bob',
-      version='0.1a6.dev0',
+      version='0.1a7.dev0',
       description='Bob renders directory structure templates',
       long_description=read('README.rst') + "\n" + read('HISTORY.rst'),
       classifiers=[
@@ -50,7 +50,7 @@ setup(name='mr.bob',
       extras_require={
           'test': [
               'nose',
-              'coverage',
+              'coverage<3.6dev',
               'flake8',
               'mock',
           ],

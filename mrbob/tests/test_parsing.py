@@ -3,6 +3,10 @@ import os
 import unittest
 import tempfile
 import codecs
+try:  # pragma: no cover
+    from collections import OrderedDict  # NOQA
+except ImportError:  # pragma: no cover
+    from ordereddict import OrderedDict  # NOQA
 
 import six
 
@@ -46,18 +50,6 @@ class parse_configTest(unittest.TestCase):
         }
         self.assertEqual(c, expected_config)
 
-    def test_overwrite_dict_with_value(self):
-        """ providing a value for a key that already contains a
-        dictionary raises a ConfigurationError """
-        from ..configurator import ConfigurationError
-        self.assertRaises(ConfigurationError, self.call_FUT, 'example3.ini')
-
-    def test_overwrite_value_with_dict(self):
-        """ providing a dict for a key that already contains a
-        string raises a ConfigurationError """
-        from ..configurator import ConfigurationError
-        self.assertRaises(ConfigurationError, self.call_FUT, 'example4.ini')
-
     def test_parse_config_utf8(self):
         from ..parsing import pretty_format_config
         c = self.call_FUT('example6.ini')
@@ -87,6 +79,10 @@ class parse_configTest(unittest.TestCase):
             'webserver.ip_addr = 127.0.0.2',
         ]
         self.assertEqual(output, expected_output)
+
+    def test_question_order(self):
+        c = self.call_FUT('question_order.ini')
+        self.assertEqual(c['questions_order'], ['foo'])
 
 
 class update_configTest(unittest.TestCase):
@@ -189,6 +185,16 @@ class write_configTest(unittest.TestCase):
         with codecs.open(self.tmpfile, 'r', 'utf-8') as f:
             self.assertEqual(f.read(), six.u("[variables]\nfoo.bar = %s\n\n") % var_)
 
+    def test_non_str(self):
+        self.call_FUT(
+            'variables',
+            {'foo': True},
+        )
+
+        with open(self.tmpfile) as f:
+            output = f.read()
+            self.assertTrue('\nfoo = True\n' in output)
+
 
 class pretty_format_configTest(unittest.TestCase):
 
@@ -210,3 +216,24 @@ class pretty_format_configTest(unittest.TestCase):
             'foo = bar',
             'z = z'],
         )
+
+
+class nest_variablesTest(unittest.TestCase):
+
+    def call_FUT(self, d):
+        from ..parsing import nest_variables
+        return nest_variables(d)
+
+    def test_overwrite_dict_with_value(self):
+        """ providing a value for a key that already contains a
+        dictionary raises a ConfigurationError """
+        from ..configurator import ConfigurationError
+        d = OrderedDict([('foo.bar', '1'), ('foo', '2')])
+        self.assertRaises(ConfigurationError, self.call_FUT, d)
+
+    def test_overwrite_value_with_dict(self):
+        """ providing a dict for a key that already contains a
+        string raises a ConfigurationError """
+        from ..configurator import ConfigurationError
+        d = OrderedDict([('foo', '2'), ('foo.bar', '1')])
+        self.assertRaises(ConfigurationError, self.call_FUT, d)

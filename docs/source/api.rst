@@ -1,6 +1,10 @@
 Source documentation
 ====================
 
+.. warning::
+   Python API is far from being "frozen", use it with zero backwards-compatibility in mind.
+   You are welcome to report suggestions to bug tracker.
+
 
 :mod:`mrbob` -- Main package
 ****************************

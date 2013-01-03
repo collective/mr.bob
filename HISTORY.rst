@@ -2,8 +2,18 @@ Changelog
 =========
     
 
-0.1a6 (unreleased)
+0.1a7 (unreleased)
 ------------------
+
+- Nothing changed yet.
+
+
+0.1a6 (2013-01-02)
+------------------
+
+- Use ``StrictUndefined`` with jinja2 renderer so that any missing key is
+  reported as an error
+  [Domen Kožar]
 
 - If a key in a namespace was missing while rendering, no error was raised
   [Domen Kožar]
