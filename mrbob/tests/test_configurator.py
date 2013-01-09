@@ -174,6 +174,14 @@ class ConfiguratorTest(unittest.TestCase):
         from ..configurator import Configurator
         return Configurator(*args, **kw)
 
+    def test_target_directory_inside_template_dir(self):
+        from ..configurator import ConfigurationError
+        self.assertRaises(ConfigurationError,
+                          self.call_FUT,
+                          'mrbob.tests:templates/questions1',
+                          os.path.join(os.path.dirname(__file__), 'templates/questions1/foo'),
+                          {})
+
     def test_parse_questions_basic(self):
         c = self.call_FUT('mrbob.tests:templates/questions1',
                           self.target_dir,

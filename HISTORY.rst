@@ -5,7 +5,8 @@ Changelog
 0.1a7 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- #22: Prevent users from specifying target directory inside template dir
+  [Domen Kožar]
 
 
 0.1a6 (2013-01-02)
