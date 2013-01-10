@@ -147,8 +147,6 @@ class Configurator(object):
         self.variables = variables
         self.defaults = defaults
         self.target_directory = os.path.realpath(target_directory)
-        if not os.path.isdir(self.target_directory):
-            os.makedirs(self.target_directory)
 
         # figure out template directory
         self.template_dir, self.is_tempdir = parse_template(template)
@@ -157,6 +155,9 @@ class Configurator(object):
         if self.template_dir in os.path.commonprefix([self.target_directory,
                                                       self.template_dir]):
             raise ConfigurationError('You can not use target directory inside the template')
+
+        if not os.path.isdir(self.target_directory):
+            os.makedirs(self.target_directory)
 
         # parse template configuration file
         template_config = os.path.join(self.template_dir, '.mrbob.ini')
