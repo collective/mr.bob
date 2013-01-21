@@ -7,7 +7,6 @@ from setuptools import find_packages
 
 install_requires = [
     'setuptools',
-    'argparse',
     'jinja2',
     'six',
 ]
@@ -21,6 +20,11 @@ try:
     from collections import OrderedDict  # NOQA
 except ImportError:
     install_requires.append('ordereddict')
+
+try:
+    import argparse  # NOQA
+except ImportError:
+    install_requires.append('argparse')
 
 
 def read(*rnames):

@@ -5,6 +5,10 @@ Changelog
 0.1a7 (unreleased)
 ------------------
 
+- Don't depend on argparse in python 2.7 and higher, since it's already
+  in stdlib
+  [Domen Kožar]
+
 - #22: Prevent users from specifying target directory inside template dir
   [Domen Kožar]
 
