@@ -2,7 +2,7 @@ Changelog
 =========
     
 
-0.1a7 (unreleased)
+0.1a7 (2013-01-23)
 ------------------
 
 - Don't depend on argparse in python 2.7 and higher, since it's already
