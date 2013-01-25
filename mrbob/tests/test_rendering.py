@@ -240,7 +240,7 @@ class render_templateTest(unittest.TestCase):
                                  {'foo.bar': '2'},
                                  renderer=jinja2_renderer)
         with open(filename) as f:
-            self.assertEqual(f.read(), '2')
+            self.assertEqual(f.read(), '2\n')
 
     def test_render_newline(self):
         from ..rendering import jinja2_renderer

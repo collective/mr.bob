@@ -5,7 +5,8 @@ Changelog
 0.1a8 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- #30: Keep newlines of rendered template
+  [Domen Kožar]
 
 
 0.1a7 (2013-01-23)
