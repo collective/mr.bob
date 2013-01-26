@@ -58,6 +58,9 @@ class TestCLI(unittest.TestCase):
         template_dir = os.path.join(os.path.dirname(__file__), 'templates', 'empty')
         self.assertRaises(SystemExit, self.call_FUT, '-c', '/notexists', template_dir)
 
+    def test_zip_file_wrong(self):
+        self.assertRaises(SystemExit, self.call_FUT, 'foobar.zip')
+
     @mock.patch('mrbob.cli.os.path.expanduser')
     def test_configs_override_each_other(self, mock_expanduser):
         # global config

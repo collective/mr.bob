@@ -5,6 +5,9 @@ Changelog
 0.1a8 (unreleased)
 ------------------
 
+- Fix loading of zip files
+  [Domen Kožar]
+
 - #28: Remote loading of config files
   [Nejc Zupan]
 
