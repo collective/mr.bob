@@ -59,11 +59,11 @@ Or from a package::
 
 Or from a zip file::
 
-    https://github.com/iElectric/mr.bob/zipball/master
+    $ mrbob https://github.com/iElectric/mr.bob/zipball/master
 
 Or from a relative path in a zip file::
 
-    https://github.com/iElectric/mr.bob/zipball/master#mrbob/template_sample
+    $ mrbob https://github.com/iElectric/mr.bob/zipball/master#mrbob/template_sample
 
 
 Sample template to try out
