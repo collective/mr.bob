@@ -177,6 +177,14 @@ do::
 `mrbob` will as you questions but default values will be also taken from config file.
 
 
+Remote configuration
+********************
+
+Config file can also be loaded from a remote location::
+
+  $ mrbob --config https://raw.github.com/iElectric/mr.bob/master/mrbob/tests/example.ini mrbob:template_sample/
+
+
 Configuration inheritance
 *************************
 
@@ -211,5 +219,6 @@ Collection of community managed templates
 You are encouraged to use the `bobtemplates.something` Python egg namespace to write
 templates and contribute them to this list by making a `pull request <github.com/iElectric/mr.bob>`_.
 
-- `bobtemplates.ielectric <https://github.com/iElectric/bobtemplates.ielectric>`_ 
-- `bobtemplates.kotti <https://github.com/Kotti/bobtemplates.kotti>`_ 
+- `bobtemplates.ielectric <https://github.com/iElectric/bobtemplates.ielectric>`_
+- `bobtemplates.kotti <https://github.com/Kotti/bobtemplates.kotti>`_
+- `bobtemplates.niteoweb <https://github.com/niteoweb/bobtemplates.niteoweb>`_
