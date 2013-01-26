@@ -94,12 +94,14 @@ def main(args=sys.argv[1:]):
     original_global_defaults = dict(global_defaults)
 
     if options.config:
-        if not os.path.exists(options.config):
-            parser.error(six.u('ConfigurationError: config file does not exist: %s') % options.config)
-        file_config = parse_config(options.config)
+        try:
+            file_config = parse_config(options.config)
+        except ConfigurationError as e:
+            parser.error(e)
         file_bobconfig = file_config['mr.bob']
         file_variables = file_config['variables']
         file_defaults = file_config['defaults']
+
     else:
         file_bobconfig = {}
         file_variables = {}
