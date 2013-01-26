@@ -5,6 +5,9 @@ Changelog
 0.1a8 (unreleased)
 ------------------
 
+- #28: Remote loading of config files
+  [Nejc Zupan]
+
 - #30: Keep newlines of rendered template
   [Domen Kožar]
 
