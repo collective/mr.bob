@@ -139,10 +139,7 @@ class parse_templateTest(unittest.TestCase):
 
     def fake_wrong_zip(self, url, path):
         with open(path, 'w') as f:
-            if six.PY3:  # pragma: no cover
-                f.write(bytes('boo', 'utf-8'))
-            else:  # pragma: no cover
-                f.write('boo')
+            f.write('boo')
 
     def fake_zip(self, url, path):
         import zipfile
