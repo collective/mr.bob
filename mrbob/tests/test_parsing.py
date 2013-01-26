@@ -22,7 +22,7 @@ class parse_configTest(unittest.TestCase):
         if not configname.startswith('http'):
             f = os.path.abspath(
                 os.path.join(
-                    os.path.dirname(mrbob.__file__),  'tests', configname)
+                    os.path.dirname(mrbob.__file__), 'tests', configname)
             )
         else:
             f = configname
