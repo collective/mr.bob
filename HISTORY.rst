@@ -5,6 +5,9 @@ Changelog
 0.1a8 (unreleased)
 ------------------
 
+- Moved all exceptions to `mrbob.exceptions` module
+  [Domen Kožar]
+
 - Fix loading of zip files
   [Domen Kožar]
 

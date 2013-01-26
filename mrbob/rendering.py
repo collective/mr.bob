@@ -1,10 +1,11 @@
-import six
-import stat
-import os
-import re
-import codecs
 from os import path
 from shutil import copy2
+import codecs
+import os
+import re
+import six
+import stat
+
 from jinja2 import Environment, StrictUndefined
 
 

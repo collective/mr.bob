@@ -14,9 +14,10 @@ except ImportError:  # pragma: no cover
     # PY3K
     from urllib.request import urlretrieve  # NOQA
 
+from .exceptions import ConfigurationError
+
 
 def nest_variables(variables):
-    from .configurator import ConfigurationError
     nested = dict()
     for key, value in variables.items():
         segments = key.split('.')
@@ -46,7 +47,6 @@ def parse_config(configname):
         configname = tmpfile.name
 
     if not os.path.exists(configname):
-        from .configurator import ConfigurationError
         raise ConfigurationError('config file does not exist: %s' % configname)
 
     parser = configparser.SafeConfigParser(dict_type=OrderedDict)

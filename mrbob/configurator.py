@@ -23,29 +23,15 @@ from .parsing import (
     update_config,
     pretty_format_config,
 )
+from .exceptions import (
+    ConfigurationError,
+    TemplateConfigurationError,
+    SkipQuestion,
+    ValidationError,
+)
 
 
 DOTTED_REGEX = re.compile(r'^[a-zA-Z_.]+:[a-zA-Z_.]+$')
-
-
-class MrBobError(Exception):
-    """Base class for errors"""
-
-
-class ConfigurationError(MrBobError):
-    """Raised during configuration phase"""
-
-
-class TemplateConfigurationError(ConfigurationError):
-    """Raised reading template configuration"""
-
-
-class ValidationError(MrBobError):
-    """Raised during question validation"""
-
-
-class SkipQuestion(MrBobError):
-    """Raised during pre_ask_question if we should skip it"""
 
 
 def resolve_dotted_path(name):

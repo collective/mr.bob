@@ -9,9 +9,9 @@ import six
 import argparse
 
 from .configurator import Configurator
-from .configurator import ConfigurationError
-from .configurator import TemplateConfigurationError
 from .configurator import maybe_bool
+from .exceptions import ConfigurationError
+from .exceptions import TemplateConfigurationError
 from .parsing import parse_config, update_config, pretty_format_config
 
 
