@@ -8,7 +8,7 @@ from setuptools import find_packages
 install_requires = [
     'setuptools',
     'jinja2',
-    'six',
+    'six>=1.2.0',  # 1.1.0 release doesn't have six.moves.input
 ]
 
 try:

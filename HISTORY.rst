@@ -5,6 +5,9 @@ Changelog
 0.1a8 (unreleased)
 ------------------
 
+- Depend on six>=1.2.0
+  [Domen Kožar]
+
 - Moved all exceptions to `mrbob.exceptions` module
   [Domen Kožar]
 
