@@ -14,8 +14,8 @@ the ``setup.py`` ``setup(...)`` function::
   setup(
       ...
       entry_points={
-          'mrbobtemplates': [
-              'mrbobname=mrbobtemplates.mytemplates:localname
+          'bobtemplates': [
+              'mrbobname=mrbobtemplates.mytemplates:TemplateClass
           ]
       },
       ...
@@ -23,7 +23,7 @@ the ``setup.py`` ``setup(...)`` function::
 
 Where :
 
-``mrbobtemplates``
+``bobtemplates``
   The key used to register templates for mr.bob.
 
 ``mrbobname``
@@ -32,16 +32,20 @@ Where :
    --list-templates``.
 
 ``mrbobtemplate.mytemplates``
-  The module that defines the template descriptor object. Typically the main
+  The module that defines the template description class. Typically the main
   ``__init__.py`` of your package.
 
-``localname``
-  A dict with two keys:
 
-  - ``directory``: the absolute path of the regular mr.bob template (that
-    contains the ``.mrbob.ini`` file).
-  - ``description``: some lines of text that describe what you template
-    provides.
+``TemplateClass``
+  A class, in the ``__init__.py`` of the template package, that describes the
+  template, preferably inheriting from ``mrbob.TemplateDescription``. This
+  class must provide a ``path`` attribute that is the absolute path of a
+  template (that contains a ``.mrbob.ini`` file). This class may have a
+  ``description`` property that provides a plain text description of the
+  template for the end user. This description shows up when using the
+  ``--list-templates`` option. If the class does not provide a
+  ``description``, we use the ``description`` option of the ``[template]``
+  section of ``.mrbob.ini``.
 
 Given such this package structure::
 
@@ -49,45 +53,29 @@ Given such this package structure::
   |- mrbobtemplates/
      |- mytemplates/
         |- __init__.py
-        |- localname/ (a template directory with ".mrbob.ini")
+        |- a_template/ (a template directory with ".mrbob.ini")
 
 You should have something like this in the ``__init__.py`` ::
 
   import os
+  import mrbob
   ...
   this_directory = os.path.dirname(os.path.abspath(__file__))
-  localname = {
-      'directory': os.path.join(this_directory, 'localname'),
-      'description': "A very nice personal template. Lorem ipsum..."
-  }
 
-As viewed above, ``mrbob`` command comes with the following new options:
+  class MyTemplateClass(mrbob.TemplateDescription):
+      path = os.path.join(this_directory, 'a_template')  # contains .mrbob.ini
 
-- ``--list-templates``: show the registered templates and exits.
-- ``--template / -t TEMPLATE``: use the registered template named TEMPLATE.
+And in ``mrbobtemplates/mytemplates/a_template/.mrbob.ini``::
 
-As a consequence, given the above example and existing ``mrbob`` command, the
-following commands are equivalent ::
+  [template]
+  description = A bootstrap for a WSGI middleware with tests
 
-  $ mrbob -t localname -O my.project
-  $ mrbob -O my.project mrbobtemplates.mytemplates:localname
+Using a template
+----------------
 
-Python computed additional variables
-====================================
+Is just like in previous versions of ``mr.bob``. But the template is searched
+in the registered names before looking into the filesystem.
 
-Building additional variables in the JinJa2 templates is not an easy
-thing. Playing with Python code is easier to add some things like the current
-year or mangling other variables coming from ``.mrbob.ini`` processing.
-
-This branch enables template authors to provide a ``.mrbob.py`` script, located
-in the root of the template structure, beside ``.mrbob.ini``.
-
-This script is executed after the relies to the questions stated in
-``.mrbob.ini``. The variables coming from this questions processing are pushed
-in the namespace of ``.mrbob.py``.
-
-The variables from the global namespace of this script are available to the
-templates in addition to the ones that come from the execution of the wizard.
 
 Example
 =======

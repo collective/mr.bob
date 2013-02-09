@@ -9,10 +9,16 @@ try:  # pragma: no cover
 except ImportError:  # pragma: no cover
     # PY3K
     from urllib.request import urlretrieve  # NOQA
+try:  # pragma: no cover
+    from collections import OrderedDict  # NOQA
+except ImportError:  # pragma: no cover
+    from ordereddict import OrderedDict  # NOQA
+
 import tempfile
 from zipfile import ZipFile, is_zipfile
 readline  # make pyflakes happy, readline makes interactive mode keep history
 
+import pkg_resources
 import six
 from importlib import import_module
 
@@ -102,7 +108,10 @@ def parse_template(template_name):
             finally:
                 zf.close()
 
-    if ':' in template_name:
+    registry = TemplatesRegistry()
+    if registry.has_template(template_name):
+        path = registry.path_of_template(template_name)
+    elif ':' in template_name:
         path = resolve_dotted_path(template_name)
     else:
         path = os.path.realpath(template_name)
@@ -346,3 +355,46 @@ class Question(object):
 
         print('')
         return correct_answer
+
+
+class Singleton(type):
+    _instances = {}
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+
+class TemplatesRegistry(object):
+    """All services from templates registered throug setuptools entry points
+    """
+    __metaclass__ = Singleton
+    def __init__(self):
+        # Our list of registered templates
+        self.entry_points = list(pkg_resources.iter_entry_points('bobtemplates'))
+        return
+
+    def __str__(self):
+        """Help information about registered templates
+        """
+        out = six.StringIO()
+        infos = OrderedDict()
+        for ep in self.entry_points:
+            infos[ep.name] = ep.load()().formatted_description
+        for name, description in infos.items():
+            out.writelines([name, '\n'])
+            out.writelines([description, '\n'])
+        return out.getvalue().strip()
+
+    def has_template(self, template_name):
+        """A setuptools registered template <template_name>?
+        """
+        return any((ep.name == template_name for ep in self.entry_points))
+
+    def path_of_template(self, template_name):
+        """Absolute filesystem path of the template
+        """
+        for ep in self.entry_points:
+            if ep.name == template_name:
+                return ep.load()().path
+        return  # Should never go here, but who knows

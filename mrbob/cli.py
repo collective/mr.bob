@@ -9,6 +9,7 @@ import six
 import argparse
 
 from .configurator import Configurator
+from .configurator import TemplatesRegistry
 from .configurator import ConfigurationError
 from .configurator import TemplateConfigurationError
 from .parsing import parse_config, update_config, pretty_format_config
@@ -57,8 +58,6 @@ parser.add_argument('--list-templates',
                     action="store_true",
                     default=False,
                     help="Lists detailed registered templates and exits")
-parser.add_argument('-t', '--template', nargs=1,
-                    help="Use the named template TEMPLATE. See --list-templates option")
 
 #parser.add_option('--simulate',
                   #dest='simulate',
@@ -80,9 +79,12 @@ def main(args=sys.argv[1:], quiet=False):
     options = parser.parse_args(args=args)
 
     if options.version:
-        import pdb; pdb.set_trace()
         version = pkg_resources.get_distribution('mr.bob').version
         return version
+
+    if options.list_templates:
+        registry = TemplatesRegistry()
+        return str(registry)
 
     if not options.template:
         parser.error('You must specify what template to use.')
