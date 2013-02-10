@@ -213,4 +213,4 @@ templates and contribute them to this list by making a `pull request <github.com
 
 - `bobtemplates.ielectric <https://github.com/iElectric/bobtemplates.ielectric>`_ 
 - `bobtemplates.kotti <https://github.com/Kotti/bobtemplates.kotti>`_
-- `bobtemplates.gillux <http://pypi.python.org/pypi/bobtemplates.gillux`_
+- `bobtemplates.gillux <http://pypi.python.org/pypi/bobtemplates.gillux>`_
