@@ -212,4 +212,5 @@ You are encouraged to use the `bobtemplates.something` Python egg namespace to w
 templates and contribute them to this list by making a `pull request <github.com/iElectric/mr.bob>`_.
 
 - `bobtemplates.ielectric <https://github.com/iElectric/bobtemplates.ielectric>`_ 
-- `bobtemplates.kotti <https://github.com/Kotti/bobtemplates.kotti>`_ 
+- `bobtemplates.kotti <https://github.com/Kotti/bobtemplates.kotti>`_
+- `bobtemplates.gillux <http://pypi.python.org/pypi/bobtemplates.gillux`_
