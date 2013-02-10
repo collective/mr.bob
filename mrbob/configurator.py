@@ -369,6 +369,7 @@ class TemplatesRegistry(object):
     """All services from templates registered throug setuptools entry points
     """
     __metaclass__ = Singleton
+
     def __init__(self):
         # Our list of registered templates
         self.entry_points = list(pkg_resources.iter_entry_points('bobtemplates'))
@@ -380,9 +381,20 @@ class TemplatesRegistry(object):
         out = six.StringIO()
         infos = OrderedDict()
         for ep in self.entry_points:
-            infos[ep.name] = ep.load()().formatted_description
-        for name, description in infos.items():
-            out.writelines([name, '\n'])
+            # ep.load() is supposed to return a mrbob.TemplateDescription subclass
+            mod_name = ep.module_name
+            try:
+                mod_version = pkg_resources.get_distribution(mod_name).version
+            except:
+                mod_version = "Version not available"
+            infos[ep.name] = (
+                mod_name,
+                mod_version,
+                ep.load()().formatted_description
+            )
+        for name, (mod_name, mod_version, description) in infos.items():
+            heading = "{0}: from package {1} {2}".format(name, mod_name, mod_version)
+            out.writelines([heading, '\n'])
             out.writelines([description, '\n'])
         return out.getvalue().strip()
 
