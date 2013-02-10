@@ -240,7 +240,21 @@ class render_templateTest(unittest.TestCase):
                                  {'foo.bar': '2'},
                                  renderer=jinja2_renderer)
         with open(filename) as f:
-            self.assertEqual(f.read(), '2')
+            self.assertEqual(f.read(), '2\n')
+
+    def test_render_newline(self):
+        from ..rendering import jinja2_renderer
+        t = os.path.join(self.fs_templates,
+            'missing_namespace_key/foo_jinja2.bob')
+
+        tfile = open(t, 'r')
+        self.assertEqual(tfile.read(), '{{{foo.bar}}}\n')
+
+        filename = self.call_FUT(t,
+                                 {'foo.bar': '2'},
+                                 renderer=jinja2_renderer)
+        with open(filename) as f:
+            self.assertEqual(f.read(), '2\n')
 
     def test_render_namespace_missing_key(self):
         t = os.path.join(self.fs_templates,

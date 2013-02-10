@@ -26,6 +26,13 @@ Source documentation
    :members:
    :show-inheritance:
 
+:mod:`mrbob.exceptions` -- Exceptions
+-------------------------------------
+
+.. automodule:: mrbob.exceptions
+   :members:
+   :show-inheritance:
+
 :mod:`mrbob.parsing` -- Parsing `.ini` files
 --------------------------------------------
 

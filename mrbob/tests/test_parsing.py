@@ -10,6 +10,8 @@ except ImportError:  # pragma: no cover
 
 import six
 
+import mock
+
 
 class parse_configTest(unittest.TestCase):
 
@@ -17,8 +19,13 @@ class parse_configTest(unittest.TestCase):
         import mrbob
         from ..parsing import parse_config
 
-        f = os.path.abspath(os.path.join(os.path.dirname(mrbob.__file__),
-                          'tests', configname))
+        if not configname.startswith('http'):
+            f = os.path.abspath(
+                os.path.join(
+                    os.path.dirname(mrbob.__file__), 'tests', configname)
+            )
+        else:
+            f = configname
         return parse_config(f)
 
     def test_parse_variable(self):
@@ -83,6 +90,22 @@ class parse_configTest(unittest.TestCase):
     def test_question_order(self):
         c = self.call_FUT('question_order.ini')
         self.assertEqual(c['questions_order'], ['foo'])
+
+    @mock.patch('mrbob.parsing.urlretrieve')
+    def test_parse_remote_config(self, urlretrieve):
+
+        def write(url, filename):
+            f = open(filename, 'w')
+            f.write(
+                "[variables]\n"
+                "foo = bar\n"
+            )
+            f.close()
+
+        urlretrieve.side_effect = write
+
+        c = self.call_FUT(configname='http://nohost/mrbob.ini')
+        self.assertEqual(c['variables']['foo'], 'bar')
 
 
 class update_configTest(unittest.TestCase):
@@ -227,13 +250,13 @@ class nest_variablesTest(unittest.TestCase):
     def test_overwrite_dict_with_value(self):
         """ providing a value for a key that already contains a
         dictionary raises a ConfigurationError """
-        from ..configurator import ConfigurationError
+        from ..exceptions import ConfigurationError
         d = OrderedDict([('foo.bar', '1'), ('foo', '2')])
         self.assertRaises(ConfigurationError, self.call_FUT, d)
 
     def test_overwrite_value_with_dict(self):
         """ providing a dict for a key that already contains a
         string raises a ConfigurationError """
-        from ..configurator import ConfigurationError
+        from ..exceptions import ConfigurationError
         d = OrderedDict([('foo', '2'), ('foo.bar', '1')])
         self.assertRaises(ConfigurationError, self.call_FUT, d)

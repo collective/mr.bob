@@ -2,10 +2,31 @@ Changelog
 =========
     
 
-0.1a7 (unreleased)
+0.1a8 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Moved all exceptions to `mrbob.exceptions` module
+  [Domen Kožar]
+
+- Fix loading of zip files
+  [Domen Kožar]
+
+- #28: Remote loading of config files
+  [Nejc Zupan]
+
+- #30: Keep newlines of rendered template
+  [Domen Kožar]
+
+
+0.1a7 (2013-01-23)
+------------------
+
+- Don't depend on argparse in python 2.7 and higher, since it's already
+  in stdlib
+  [Domen Kožar]
+
+- #22: Prevent users from specifying target directory inside template dir
+  [Domen Kožar]
 
 
 0.1a6 (2013-01-02)

@@ -37,7 +37,7 @@ def dummy_render_hook(configurator):  # pragma: no cover
 
 
 def dummy_question_hook_skipquestion(configurator, question):  # pragma: no cover
-    from ..configurator import SkipQuestion
+    from ..exceptions import SkipQuestion
     raise SkipQuestion
 
 
@@ -80,7 +80,7 @@ class resolve_dotted_funcTest(unittest.TestCase):
         self.assertRaises(ImportError, self.call_FUT, 'foobar.blabla:foo')
 
     def test_error_no_func(self):
-        from ..configurator import ConfigurationError
+        from ..exceptions import ConfigurationError
         self.assertRaises(ConfigurationError, self.call_FUT, 'mrbob.rendering:foo')
 
     def test_return_func(self):
@@ -114,7 +114,7 @@ class parse_templateTest(unittest.TestCase):
         self.assertEqual(abs_path, (template_dir, False))
 
     def test_not_a_dir(self):
-        from ..configurator import ConfigurationError
+        from ..exceptions import ConfigurationError
         self.assertRaises(ConfigurationError, self.call_FUT, 'foo_bar')
 
     @mock.patch('mrbob.configurator.urlretrieve')
@@ -133,15 +133,13 @@ class parse_templateTest(unittest.TestCase):
 
     @mock.patch('mrbob.configurator.urlretrieve')
     def test_zipfile_not_zipfile(self, mock_urlretrieve):
-        from ..configurator import ConfigurationError
+        from ..exceptions import ConfigurationError
         mock_urlretrieve.side_effect = self.fake_wrong_zip
         self.assertRaises(ConfigurationError, self.call_FUT, 'http://foobar.com/bla.tar#some/dir')
 
     def fake_wrong_zip(self, url, path):
-        if six.PY3:  # pragma: no cover
-            path.write(bytes('boo', 'utf-8'))
-        else:  # pragma: no cover
-            path.write('boo')
+        with open(path, 'w') as f:
+            f.write('boo')
 
     def fake_zip(self, url, path):
         import zipfile
@@ -173,6 +171,14 @@ class ConfiguratorTest(unittest.TestCase):
     def call_FUT(self, *args, **kw):
         from ..configurator import Configurator
         return Configurator(*args, **kw)
+
+    def test_target_directory_inside_template_dir(self):
+        from ..exceptions import ConfigurationError
+        self.assertRaises(ConfigurationError,
+                          self.call_FUT,
+                          'mrbob.tests:templates/questions1',
+                          os.path.join(os.path.dirname(__file__), 'templates/questions1/foo'),
+                          {})
 
     def test_parse_questions_basic(self):
         c = self.call_FUT('mrbob.tests:templates/questions1',
@@ -392,7 +398,7 @@ class QuestionTest(unittest.TestCase):
         sys.stdout = sys.__stdout__
 
     def test_non_interactive_required(self):
-        from ..configurator import ConfigurationError
+        from ..exceptions import ConfigurationError
         q = self.call_FUT('foo', 'Why?', required=True)
         c = DummyConfigurator(bobconfig={'non_interactive': 'True'})
         self.assertRaises(ConfigurationError, q.ask, c)
@@ -449,7 +455,7 @@ class QuestionTest(unittest.TestCase):
             return go.pop()
 
         def side_effect(configurator, question, answer):
-            from ..configurator import ValidationError
+            from ..exceptions import ValidationError
             if answer == 'foo':
                 raise ValidationError
             elif answer == 'bar':
@@ -465,7 +471,7 @@ class QuestionTest(unittest.TestCase):
         self.assertEqual(q.ask(c), 'moo')
 
     def test_post_ask_question_validationerror_non_interactive(self):
-        from ..configurator import ValidationError, ConfigurationError
+        from ..exceptions import ConfigurationError, ValidationError
 
         mocked_post_ask_question_validationerror_non_interactive.side_effect = ValidationError
 

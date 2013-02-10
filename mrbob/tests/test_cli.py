@@ -58,6 +58,9 @@ class TestCLI(unittest.TestCase):
         template_dir = os.path.join(os.path.dirname(__file__), 'templates', 'empty')
         self.assertRaises(SystemExit, self.call_FUT, '-c', '/notexists', template_dir)
 
+    def test_zip_file_wrong(self):
+        self.assertRaises(SystemExit, self.call_FUT, 'foobar.zip')
+
     @mock.patch('mrbob.cli.os.path.expanduser')
     def test_configs_override_each_other(self, mock_expanduser):
         # global config
@@ -104,7 +107,7 @@ overriden_by_file_2 = file2
                       template_dir)
         with open(os.path.join(self.output_dir, 'vars')) as f:
             output = f.read()
-            self.assertEquals(output, "glob\nfile\nfile1\nglob2\nfile1\nfile2")
+            self.assertEquals(output, "glob\nfile\nfile1\nglob2\nfile1\nfile2\n")
 
         # cleanup
         os.remove(tempconfig)

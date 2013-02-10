@@ -1,3 +1,5 @@
+import os
+import tempfile
 import collections
 try:  # pragma: no cover
     from collections import OrderedDict  # NOQA
@@ -6,9 +8,16 @@ except ImportError:  # pragma: no cover
 import six
 from six.moves import configparser
 
+try:  # pragma: no cover
+    from urllib import urlretrieve  # NOQA
+except ImportError:  # pragma: no cover
+    # PY3K
+    from urllib.request import urlretrieve  # NOQA
+
+from .exceptions import ConfigurationError
+
 
 def nest_variables(variables):
-    from .configurator import ConfigurationError
     nested = dict()
     for key, value in variables.items():
         segments = key.split('.')
@@ -30,9 +39,18 @@ def nest_variables(variables):
     return nested
 
 
-def parse_config(fs_config):
+def parse_config(configname):
+    tmpfile = None
+    if configname.startswith('http'):
+        tmpfile = tempfile.NamedTemporaryFile()
+        urlretrieve(configname, tmpfile.name)
+        configname = tmpfile.name
+
+    if not os.path.exists(configname):
+        raise ConfigurationError('config file does not exist: %s' % configname)
+
     parser = configparser.SafeConfigParser(dict_type=OrderedDict)
-    parser.read(fs_config)
+    parser.read(configname)
     config = dict()
     for section in ['variables', 'defaults', 'mr.bob', 'questions', 'template']:
         if parser.has_section(section):
@@ -48,6 +66,10 @@ def parse_config(fs_config):
                 config[section] = nest_variables(dict(items))
         else:
             config[section] = {}
+
+    if tmpfile:
+        tmpfile.close()
+
     return config
 
 

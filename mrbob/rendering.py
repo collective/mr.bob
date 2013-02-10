@@ -1,10 +1,11 @@
-import six
-import stat
-import os
-import re
-import codecs
 from os import path
 from shutil import copy2
+import codecs
+import os
+import re
+import six
+import stat
+
 from jinja2 import Environment, StrictUndefined
 
 
@@ -86,6 +87,9 @@ def render_template(fs_source, fs_target_dir, variables, verbose, renderer):
         with codecs.open(fs_source, 'r', 'utf-8') as f:
             source_output = f.read()
             output = renderer(source_output, variables)
+            # append newline due to jinja2 bug, see https://github.com/iElectric/mr.bob/issues/30
+            if source_output.endswith('\n') and not output.endswith('\n'):
+                output += '\n'
         with codecs.open(fs_target_path, 'w', 'utf-8') as fs_target:
             fs_target.write(output)
         os.chmod(fs_target_path, fs_source_mode)

@@ -1,6 +1,6 @@
 """Use any of hooks below or write your own. You are welcome to contribute them!"""
 
-from .configurator import ValidationError
+from .exceptions import ValidationError
 
 
 def to_boolean(configurator, question, answer):

@@ -7,7 +7,6 @@ from setuptools import find_packages
 
 install_requires = [
     'setuptools',
-    'argparse',
     'jinja2',
     'six',
 ]
@@ -22,13 +21,18 @@ try:
 except ImportError:
     install_requires.append('ordereddict')
 
+try:
+    import argparse  # NOQA
+except ImportError:
+    install_requires.append('argparse')
+
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 
 setup(name='mr.bob',
-      version='0.1a7.dev0',
+      version='0.1a8.dev0',
       description='Bob renders directory structure templates',
       long_description=read('README.rst') + "\n" + read('HISTORY.rst'),
       classifiers=[
@@ -38,8 +42,8 @@ setup(name='mr.bob',
           "Programming Language :: Python :: 2.6",
           "Programming Language :: Python :: 2.7",
           "Programming Language :: Python :: 3",
-          "Programming Language :: Python :: 3.1",
           "Programming Language :: Python :: 3.2",
+          "Programming Language :: Python :: 3.3",
       ],
       author='Domen Kozar, Tom Lazar',
       author_email='',

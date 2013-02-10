@@ -12,7 +12,7 @@ Why another tool
 
 - PasteScript is a big package with lots of legacy code and noone seems to care about maintaining it (and porting it to python3)
 - a tool should do one thing and that thing good, which is where PasteScript fails
-- PasteScript works only with Python eggs, mr.bob can also render templates from folder and in future maybe from http links
+- PasteScript works only with Python eggs, mr.bob can also render templates from folder and zip files
 - PasteScript uses Cheetah which doesn't work on PyPy and has C extensions that need to be compiled
 - PasteScript in unmaintainable, with really dodgy code
 - PasteScript doesn't preserve permissions when copying/rendering files
