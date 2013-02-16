@@ -7,10 +7,6 @@ try:  # pragma: no cover
 except ImportError:  # pragma: no cover
     # PY3K
     from urllib.request import urlretrieve  # NOQA
-try:  # pragma: no cover
-    from collections import OrderedDict  # NOQA
-except ImportError:  # pragma: no cover
-    from ordereddict import OrderedDict  # NOQA
 
 import tempfile
 from zipfile import ZipFile, is_zipfile
@@ -369,7 +365,7 @@ class TemplatesRegistry(object):
         """Help information about registered templates
         """
         out = six.StringIO()
-        infos = OrderedDict()
+        infos = {}
         for ep in self.entry_points:
             # ep.load() is supposed to return a mrbob.TemplateDescription subclass
             mod_name = ep.module_name
@@ -382,7 +378,8 @@ class TemplatesRegistry(object):
                 mod_version,
                 ep.load().description
             )
-        for name, (mod_name, mod_version, description) in infos.items():
+        # Sorted by template name alpha ascending
+        for name, (mod_name, mod_version, description) in sorted(infos.items(), key=lambda x: x[0]):
             heading = "{0}: from package {1} {2}".format(name, mod_name, mod_version)
             out.writelines([heading, '\n'])
             out.writelines([description, '\n'])
