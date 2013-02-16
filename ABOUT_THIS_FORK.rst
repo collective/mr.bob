@@ -15,7 +15,7 @@ the ``setup.py`` ``setup(...)`` function::
       ...
       entry_points={
           'bobtemplates': [
-              'mrbobname=mrbobtemplates.mytemplates:TemplateClass
+              'mrbobname=mrbobtemplates.mytemplates:templateobj
           ]
       },
       ...
@@ -24,28 +24,25 @@ the ``setup.py`` ``setup(...)`` function::
 Where :
 
 ``bobtemplates``
+
   The key used to register templates for mr.bob.
 
 ``mrbobname``
+
    The name of the template as registered for mr.bob. All available names and
    respective templates descriptions are displayed with the command ``mrbob
    --list-templates``.
 
 ``mrbobtemplate.mytemplates``
+
   The module that defines the template description class. Typically the main
   ``__init__.py`` of your package.
 
+``templateobj``
 
-``TemplateClass``
-  A class, in the ``__init__.py`` of the template package, that describes the
-  template, preferably inheriting from ``mrbob.TemplateDescription``. This
-  class must provide a ``path`` attribute that is the absolute path of a
-  template (that contains a ``.mrbob.ini`` file). This class may have a
-  ``description`` property that provides a plain text description of the
-  template for the end user. This description shows up when using the
-  ``--list-templates`` option. If the class does not provide a
-  ``description``, we use the ``description`` option of the ``[template]``
-  section of ``.mrbob.ini``.
+  Your template registration. This object sits typically in the __init__.py of
+  your template package. The ``templateobj`` is created by the factory function
+  ``mrbob.register_template``
 
 Given such this package structure::
 
@@ -57,18 +54,21 @@ Given such this package structure::
 
 You should have something like this in the ``__init__.py`` ::
 
-  import os
-  import mrbob
-  ...
-  this_directory = os.path.dirname(os.path.abspath(__file__))
+  from mrbob import register_template
 
-  class MyTemplateClass(mrbob.TemplateDescription):
-      path = os.path.join(this_directory, 'a_template')  # contains .mrbob.ini
+  # ``templateobj`` being the last name of your registration in ``setup.py``
+  templateobj = register_template('a_template')
 
 And in ``mrbobtemplates/mytemplates/a_template/.mrbob.ini``::
 
   [template]
   description = A bootstrap for a WSGI middleware with tests
+
+Another option to provide a description of your template is to provide the
+optional ``description`` parameter to the ``register_template`` factory
+function ::
+
+  templateobj = register_template('a_template', description="A fancy project bootstrap")
 
 Using a template
 ----------------
