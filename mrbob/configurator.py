@@ -47,7 +47,7 @@ def resolve_dotted_func(name):
     if func:
         return func
     else:
-        raise ConfigurationError("There is no object named %s in module %s" % (module_name, func_name))
+        raise ConfigurationError("There is no object named %s in module %s" % (func_name, module_name))
 
 
 def maybe_resolve_dotted_func(name):
