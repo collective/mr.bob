@@ -2,7 +2,7 @@ Changelog
 =========
     
 
-0.1a8 (unreleased)
+0.1a8 (2013-03-11)
 ------------------
 
 - Depend on six>=1.2.0
