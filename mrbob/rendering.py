@@ -101,7 +101,7 @@ def render_template(fs_source, fs_target_dir, variables, verbose, renderer):
     return path.join(fs_target_dir, filename)
 
 
-variables_regex = re.compile("\+[^+]+\+")
+variables_regex = re.compile("\+[^+" + os.sep + "]+\+")
 
 
 def render_filename(filename, variables):

@@ -320,6 +320,11 @@ class render_filenameTest(unittest.TestCase):
                           dict(foo='127.0.0.1', bar='em0'))
         self.assertEqual(t, 'foobar')
 
+    def test_pluses_in_path(self):
+        t = self.call_FUT('+/bla/+/+bar+',
+                          dict(bar='em0'))
+        self.assertEqual(t, '+/bla/+/em0')
+
     def test_missing_key(self):
         self.assertRaises(KeyError, self.call_FUT, 'foo+bar+blub', dict())
 

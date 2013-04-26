@@ -5,7 +5,9 @@ Changelog
 0.1a9 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- regex to detect variable names when rendering file names was broken when 
+  directory path contains pluses.
+  [Godefroid Chapelle]
 
 
 0.1a8 (2013-03-11)
