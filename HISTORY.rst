@@ -2,7 +2,7 @@ Changelog
 =========
     
 
-0.1a9 (unreleased)
+0.1a9 (2013-04-26)
 ------------------
 
 - regex to detect variable names when rendering file names was broken when 
