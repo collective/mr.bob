@@ -1,11 +1,18 @@
 Changelog
 =========
-    
+
 
 0.1a9 (unreleased)
 ------------------
 
-- regex to detect variable names when rendering file names was broken when 
+- Do not copy ``.DS_Store``.
+  [Godefroid Chapelle]
+
+- Configure patterns of files to ignore through
+  ``ignored_files`` option of ``mr.bob`` section.
+  [Godefroid Chapelle]
+
+- Regex to detect variable names when rendering file names was broken when 
   directory path contains pluses.
   [Godefroid Chapelle]
 
