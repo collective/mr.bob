@@ -205,10 +205,11 @@ don't do anything special besides providing readability.
 ================  ===============================  =======================================================================
   Parameter         Default                          Explanation
 ================  ===============================  =======================================================================
-verbose           False                            Output more information, useful for debugging
+ignored_files     No patterns                      Multiple Unix-style patterns to specify which files should be ignored
+non_interactive   False                            Don't prompt for input. Fail if questions are required but not answered
 quiet             False                            Don't output anything except necessary
 remember_answers  False                            Write answers to `.mrbob.ini` file inside output directory
-non_interactive   False                            Don't prompt for input. Fail if questions are required but not answered
+verbose           False                            Output more information, useful for debugging
 ================  ===============================  =======================================================================
 
 
