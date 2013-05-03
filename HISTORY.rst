@@ -5,18 +5,16 @@ Changelog
 0.1a10 (unreleased)
 -------------------
 
-- Nothing changed yet.
-
-
-0.1a9 (2013-04-26)
-------------------
-
 - Do not copy ``.DS_Store``.
   [Godefroid Chapelle]
 
 - Configure patterns of files to ignore through
   ``ignored_files`` option of ``mr.bob`` section.
   [Godefroid Chapelle]
+
+
+0.1a9 (2013-04-26)
+------------------
 
 - Regex to detect variable names when rendering file names was broken when 
   directory path contains pluses.
