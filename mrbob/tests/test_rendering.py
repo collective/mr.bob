@@ -7,6 +7,7 @@ import os
 import stat
 import unittest
 
+import mock
 import six
 
 
@@ -346,6 +347,12 @@ class render_filenameTest(unittest.TestCase):
         t = self.call_FUT('+/bla/+/+bar+',
                           dict(bar='em0'))
         self.assertEqual(t, '+/bla/+/em0')
+
+    @mock.patch('mrbob.rendering.os', sep='\\')
+    def test_pluses_in_pathwindows(self, mock_sep):
+        t = self.call_FUT('+\\bla\\+\\+bar+',
+                          dict(bar='em0'))
+        self.assertEqual(t, '+\\bla\\+\\em0')
 
     def test_missing_key(self):
         self.assertRaises(KeyError, self.call_FUT, 'foo+bar+blub', dict())

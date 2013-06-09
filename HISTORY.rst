@@ -5,6 +5,9 @@ Changelog
 0.1a10 (unreleased)
 -------------------
 
+- filename variable name substitution regex failed to compile on windows
+  [Domen Kožar]
+
 - Do not copy ``.DS_Store``.
   [Godefroid Chapelle]
 

@@ -111,10 +111,9 @@ def render_template(fs_source, fs_target_dir, variables, verbose, renderer):
     return path.join(fs_target_dir, filename)
 
 
-variables_regex = re.compile("\+[^+" + os.sep + "]+\+")
-
-
 def render_filename(filename, variables):
+    variables_regex = re.compile(r"\+[^+%s]+\+" % re.escape(os.sep))
+
     replaceables = variables_regex.findall(filename)
     for replaceable in replaceables:
         actual_replaceable = replaceable.replace('+', '')
