@@ -5,7 +5,9 @@ Changelog
 0.1a10 (unreleased)
 -------------------
 
-- filename variable name substitution regex failed to compile on windows
+- Use jinja2 < 2.7, since 2.7+ doesn't support Python 3.2
+
+- Filename variable name substitution regex failed to compile on windows
   [Domen Kožar]
 
 - Do not copy ``.DS_Store``.

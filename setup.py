@@ -7,7 +7,7 @@ from setuptools import find_packages
 
 install_requires = [
     'setuptools',
-    'jinja2',
+    'jinja2<2.7',  # 2.7 doesn't support python 3.2
     'six>=1.2.0',  # 1.1.0 release doesn't have six.moves.input
 ]
 
