@@ -76,19 +76,29 @@ def parse_template(template_name):
         else:
             url = template_name
             subpath = ''
-        with tempfile.NamedTemporaryFile() as tmpfile:
-            urlretrieve(url, tmpfile.name)
-            if not is_zipfile(tmpfile.name):
-                raise ConfigurationError("Not a zip file: %s" % tmpfile)
-            zf = ZipFile(tmpfile)
-            try:
-                path = tempfile.mkdtemp()
-                zf.extractall(path)
-                return os.path.join(path, subpath), True
-            finally:
-                zf.close()
+        (temp_file_name, _) = urlretrieve(url)
+        if not is_zipfile(temp_file_name):
+            raise ConfigurationError("Not a zip file: %s" % temp_file_name)
+        zf = ZipFile(temp_file_name)
+        try:
+            path = tempfile.mkdtemp()
+            zf.extractall(path)
+            return os.path.join(path, subpath), True
+        finally:
+            zf.close()
+        # with tempfile.NamedTemporaryFile() as tmpfile:
+        #     urlretrieve(url, tmpfile.name)
+        #     if not is_zipfile(tmpfile.name):
+        #         raise ConfigurationError("Not a zip file: %s" % tmpfile)
+        #     zf = ZipFile(tmpfile)
+        #     try:
+        #         path = tempfile.mkdtemp()
+        #         zf.extractall(path)
+        #         return os.path.join(path, subpath), True
+        #     finally:
+        #         zf.close()
 
-    if ':' in template_name:
+    if ':' in template_name and not os.path.exists(template_name):
         path = resolve_dotted_path(template_name)
     else:
         path = os.path.realpath(template_name)

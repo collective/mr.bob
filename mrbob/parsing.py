@@ -40,11 +40,9 @@ def nest_variables(variables):
 
 
 def parse_config(configname):
-    tmpfile = None
+    headers = None
     if configname.startswith('http'):
-        tmpfile = tempfile.NamedTemporaryFile()
-        urlretrieve(configname, tmpfile.name)
-        configname = tmpfile.name
+        (configname, headers) = urlretrieve(configname)
 
     if not os.path.exists(configname):
         raise ConfigurationError('config file does not exist: %s' % configname)
@@ -67,8 +65,8 @@ def parse_config(configname):
         else:
             config[section] = {}
 
-    if tmpfile:
-        tmpfile.close()
+    if headers:
+        os.remove(configname)
 
     return config
 
