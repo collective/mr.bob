@@ -16,7 +16,8 @@ class TestCLI(unittest.TestCase):
 
     def call_FUT(self, *args):
         from ..cli import main
-        return main(args)
+        result = main(args)
+        return result
 
     def test_version(self):
         output = self.call_FUT('--version')

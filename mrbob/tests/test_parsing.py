@@ -100,7 +100,8 @@ class parse_configTest(unittest.TestCase):
     def test_parse_remote_config(self, urlretrieve):
 
         def write(url, filename):
-            f = open(filename, 'w')
+            # f = open(filename, 'w')
+            f = filename
             f.write(
                 "[variables]\n"
                 "foo = bar\n"
@@ -169,9 +170,10 @@ class update_configTest(unittest.TestCase):
 class write_configTest(unittest.TestCase):
 
     def setUp(self):
-        self.tmpfile = tempfile.mkstemp()[1]
+        (self.tmpfilefd,  self.tmpfile) = tempfile.mkstemp()
 
     def tearDown(self):
+        os.close(self.tmpfilefd)
         os.remove(self.tmpfile)
 
     def call_FUT(self, section, data):
@@ -209,9 +211,9 @@ class write_configTest(unittest.TestCase):
             'variables',
             {'foo.bar': var_},
         )
-
+        lsep = os.linesep
         with codecs.open(self.tmpfile, 'r', 'utf-8') as f:
-            self.assertEqual(f.read(), six.u("[variables]\nfoo.bar = %s\n\n") % var_)
+            self.assertEqual(f.read(), six.u("[variables]"+lsep+"foo.bar = %s"+lsep*2) % var_)
 
     def test_non_str(self):
         self.call_FUT(

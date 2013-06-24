@@ -65,7 +65,8 @@ def render_structure(fs_source_root, fs_target_root, variables, verbose,
     """
     ignored_files.extend(DEFAULT_IGNORED)
     if not isinstance(fs_source_root, six.text_type):  # pragma: no cover
-        fs_source_root = six.u(fs_source_root)
+        #fs_source_root = six.u(fs_source_root)
+        fs_source_root = fs_source_root.decode('utf-8')
     for fs_source_dir, local_directories, local_files in os.walk(fs_source_root):
         fs_target_dir = path.abspath(path.join(fs_target_root, path.relpath(fs_source_dir, fs_source_root)))
         for local_file in local_files:
