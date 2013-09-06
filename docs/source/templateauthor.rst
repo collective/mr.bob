@@ -8,7 +8,7 @@ Starting
 Writing your own template is as easy as creating a `.mrbob.ini` that may contain questions.
 Everything else is extra. To start quickly, use the template starter that ships with `mr.bob`::
 
-  $ mr.bob mrbob:template_starter/
+  $ mrbob mrbob:template_starter/
   Welcome to mr.bob interactive mode. Before we generate directory structure, some questions need to be answered.
 
   Answer with a question mark to display help.
