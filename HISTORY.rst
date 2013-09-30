@@ -1,9 +1,36 @@
 Changelog
 =========
-    
 
-0.1a8 (unreleased)
+
+0.1a10 (unreleased)
+-------------------
+
+- Use jinja2 < 2.7, since 2.7+ doesn't support Python 3.2
+
+- Filename variable name substitution regex failed to compile on windows
+  [Domen Kožar]
+
+- Do not copy ``.DS_Store``.
+  [Godefroid Chapelle]
+
+- Configure patterns of files to ignore through
+  ``ignored_files`` option of ``mr.bob`` section.
+  [Godefroid Chapelle]
+
+
+0.1a9 (2013-04-26)
 ------------------
+
+- Regex to detect variable names when rendering file names was broken when 
+  directory path contains pluses.
+  [Godefroid Chapelle]
+
+
+0.1a8 (2013-03-11)
+------------------
+
+- Depend on six>=1.2.0
+  [Domen Kožar]
 
 - Moved all exceptions to `mrbob.exceptions` module
   [Domen Kožar]

@@ -45,6 +45,11 @@ class parse_configTest(unittest.TestCase):
         self.assertEqual(c['variables']['webserver.foo.bar'], 'barf2')
         self.assertEqual(c['variables']['webserver.ip_addr'], '127.0.0.3')
 
+    def test_ignored(self):
+        c = self.call_FUT('ignored.ini')
+        self.assertTrue('ignored' in c['mr.bob']['ignored_files'])
+        self.assertTrue('*.txt' in c['mr.bob']['ignored_files'])
+
     def test_parse_deeply_nested_variables(self):
         c = self.call_FUT('example5.ini')
         expected_config = {

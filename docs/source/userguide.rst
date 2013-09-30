@@ -16,7 +16,7 @@ Usage
 -----
 
 
-Once you install mr.bob, the `mrbob` command is available::
+Once you install mr.bob, the ``mrbob`` command is available::
 
     $ mrbob --help
     usage: mrbob [-h] [-O TARGET_DIRECTORY] [-v] [-c CONFIG] [-V] [-l] [-w] [-n]
@@ -118,20 +118,20 @@ so later you reuse them::
     ...
 
 
-Using `non-interactive` mode
+Using ``non-interactive`` mode
 ----------------------------
 
-Sometimes you might want to automate a script and use `mrbob`. It
-is wise to tell `mrbob` to not prompt for any input. `mrbob` will use
+Sometimes you might want to automate a script and use ``mrbob``. It
+is wise to tell ``mrbob`` to not prompt for any input. ``mrbob`` will use
 given answers and defaults if answers are missing. In case a question
 is required and doesn't have a default, error will be thrown.
 
 Configuration
 -------------
 
-Configuration is done with `.ini` style files. There are two sections for configuration: :term:`mr.bob` and :term:`variables`.
+Configuration is done with ``.ini`` style files. There are two sections for configuration: :term:``mr.bob`` and :term:``variables``.
 
-Example of global config file `~/.mrbob` or command line parameter `mrbob --config foo.ini`.
+Example of global config file ``~/.mrbob`` or command line parameter ``mrbob --config foo.ini``.
 
 .. code-block:: ini
 
@@ -145,7 +145,7 @@ Example of global config file `~/.mrbob` or command line parameter `mrbob --conf
 Specifying answers
 ******************
 
-To answer some questions from a config file instead of interactively. Given `me.ini`:
+To answer some questions from a config file instead of interactively. Given ``me.ini``:
 
 .. code-block:: ini
 
@@ -161,7 +161,7 @@ do::
 Specifying defaults
 *******************
 
-Sometimes you might want to override defaults for a template. Given `me.ini`:
+Sometimes you might want to override defaults for a template. Given ``me.ini``:
 
 .. code-block:: ini
 
@@ -174,7 +174,7 @@ do::
 
   $ mrbob --config me.ini mrbob:template_sample/
 
-`mrbob` will as you questions but default values will be also taken from config file.
+``mrbob`` will as you questions but default values will be also taken from config file.
 
 
 Remote configuration
@@ -194,7 +194,7 @@ Configuration can be specified in multiple ways. See flow of mr.bob on the docum
 Nesting variables into namespaces called groups
 ***********************************************
 
-All variables can be specified in namespaces, such as `author.name`. Currently namespaces
+All variables can be specified in namespaces, such as ``author.name``. Currently namespaces
 don't do anything special besides providing readability.
 
 
@@ -205,10 +205,12 @@ don't do anything special besides providing readability.
 ================  ===============================  =======================================================================
   Parameter         Default                          Explanation
 ================  ===============================  =======================================================================
-verbose           False                            Output more information, useful for debugging
-quiet             False                            Don't output anything except necessary
-remember_answers  False                            Write answers to `.mrbob.ini` file inside output directory
+ignored_files     No patterns                      Multiple Unix-style patterns to specify which files should be ignored:
+                                                   for instance, to ignore, Vim swap files, specify ``*.swp``
 non_interactive   False                            Don't prompt for input. Fail if questions are required but not answered
+quiet             False                            Don't output anything except necessary
+remember_answers  False                            Write answers to ``.mrbob.ini`` file inside output directory
+verbose           False                            Output more information, useful for debugging
 ================  ===============================  =======================================================================
 
 
@@ -216,8 +218,8 @@ non_interactive   False                            Don't prompt for input. Fail 
 Collection of community managed templates
 -----------------------------------------
 
-You are encouraged to use the `bobtemplates.something` Python egg namespace to write
-templates and contribute them to this list by making a `pull request <github.com/iElectric/mr.bob>`_.
+You are encouraged to use the ``bobtemplates.something`` Python egg namespace to write
+templates and contribute them to this list by making a `pull request <https://github.com/iElectric/mr.bob>`_.
 
 - `bobtemplates.ielectric <https://github.com/iElectric/bobtemplates.ielectric>`_ 
 - `bobtemplates.kotti <https://github.com/Kotti/bobtemplates.kotti>`_

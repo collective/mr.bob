@@ -7,8 +7,8 @@ from setuptools import find_packages
 
 install_requires = [
     'setuptools',
-    'jinja2',
-    'six',
+    'jinja2<2.7',  # 2.7 doesn't support python 3.2
+    'six>=1.2.0',  # 1.1.0 release doesn't have six.moves.input
 ]
 
 try:
@@ -32,7 +32,7 @@ def read(*rnames):
 
 
 setup(name='mr.bob',
-      version='0.1a8.dev0',
+      version='0.1a10.dev0',
       description='Bob renders directory structure templates',
       long_description=read('README.rst') + "\n" + read('HISTORY.rst'),
       classifiers=[
@@ -55,7 +55,7 @@ setup(name='mr.bob',
           'test': [
               'nose',
               'coverage<3.6dev',
-              'flake8',
+              'flake8<2.0',
               'mock',
           ],
           'development': [

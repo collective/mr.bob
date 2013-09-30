@@ -1,6 +1,7 @@
 from os import path
 from shutil import copy2
 import codecs
+import fnmatch
 import os
 import re
 import six
@@ -20,6 +21,8 @@ jinja2_env = Environment(
 
 jinja2_renderer = lambda s, v: jinja2_env.from_string(s).render(parse_variables(v))
 python_formatting_renderer = lambda s, v: s % v
+
+DEFAULT_IGNORED = ['.mrbob.ini', '.DS_Store']
 
 
 def parse_variables(variables):
@@ -44,7 +47,13 @@ def parse_variables(variables):
     return dict(d)
 
 
-def render_structure(fs_source_root, fs_target_root, variables, verbose, renderer):
+def matches_any(filename, patterns):
+    result = any(fnmatch.fnmatch(filename, pat) for pat in patterns)
+    return result
+
+
+def render_structure(fs_source_root, fs_target_root, variables, verbose,
+        renderer, ignored_files):
     """Recursively copies the given filesystem path `fs_source_root_ to a target directory `fs_target_root`.
 
     Any files ending in `.bob` are rendered as templates using the given
@@ -54,12 +63,13 @@ def render_structure(fs_source_root, fs_target_root, variables, verbose, rendere
     with values from the variables, i.e. a file named `+name+.py.bob` given a
     dictionary {'name': 'bar'} would be rendered as `bar.py`.
     """
+    ignored_files.extend(DEFAULT_IGNORED)
     if not isinstance(fs_source_root, six.text_type):  # pragma: no cover
         fs_source_root = six.u(fs_source_root)
     for fs_source_dir, local_directories, local_files in os.walk(fs_source_root):
         fs_target_dir = path.abspath(path.join(fs_target_root, path.relpath(fs_source_dir, fs_source_root)))
         for local_file in local_files:
-            if local_file == '.mrbob.ini':
+            if matches_any(local_file, ignored_files):
                 continue
             render_template(
                 path.join(fs_source_dir, local_file),
@@ -101,10 +111,9 @@ def render_template(fs_source, fs_target_dir, variables, verbose, renderer):
     return path.join(fs_target_dir, filename)
 
 
-variables_regex = re.compile("\+[^+]+\+")
-
-
 def render_filename(filename, variables):
+    variables_regex = re.compile(r"\+[^+%s]+\+" % re.escape(os.sep))
+
     replaceables = variables_regex.findall(filename)
     for replaceable in replaceables:
         actual_replaceable = replaceable.replace('+', '')

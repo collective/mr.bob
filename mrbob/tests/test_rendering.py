@@ -7,6 +7,7 @@ import os
 import stat
 import unittest
 
+import mock
 import six
 
 
@@ -22,7 +23,8 @@ class render_structureTest(unittest.TestCase):
     def tearDown(self):
         rmtree(self.fs_tempdir)
 
-    def call_FUT(self, template, variables, output_dir=None, verbose=True, renderer=None):
+    def call_FUT(self, template, variables, output_dir=None, verbose=True,
+            renderer=None, ignored_files=[]):
         from ..rendering import render_structure
         from ..rendering import jinja2_renderer
 
@@ -38,6 +40,7 @@ class render_structureTest(unittest.TestCase):
             variables,
             verbose,
             renderer,
+            ignored_files,
         )
 
     def test_subdirectories_created(self):
@@ -57,6 +60,26 @@ class render_structureTest(unittest.TestCase):
         )
         self.assertTrue(os.path.exists('%s/%s' % (self.fs_tempdir, 'test')))
         self.assertFalse(os.path.exists('%s/%s' % (self.fs_tempdir, '.mrbob.ini')))
+
+    def test_ds_store(self):
+        self.call_FUT(
+            os.path.join(self.fs_templates, 'ds_store'),
+            dict(),
+        )
+        self.assertFalse(os.path.exists('%s/%s' % (self.fs_tempdir, '.mrbob.ini')))
+        self.assertFalse(os.path.exists('%s/%s' % (self.fs_tempdir, '.DS_Store')))
+
+    def test_ignored(self):
+        self.call_FUT(
+            os.path.join(self.fs_templates, 'ignored'),
+            dict(),
+            ignored_files=['ignored', '*.txt', '.mrbob.ini'],
+        )
+        self.assertFalse(os.path.exists('%s/%s' % (self.fs_tempdir, '.mrbob.ini')))
+        self.assertFalse(os.path.exists('%s/%s' % (self.fs_tempdir, 'ignored')))
+        self.assertFalse(os.path.exists('%s/%s' % (self.fs_tempdir,
+            'ignored.txt')))
+        self.assertTrue(os.path.exists('%s/%s' % (self.fs_tempdir, 'not_ignored')))
 
     def test_encoding_is_utf8(self):
         from ..rendering import python_formatting_renderer
@@ -319,6 +342,17 @@ class render_filenameTest(unittest.TestCase):
         t = self.call_FUT('foobar',
                           dict(foo='127.0.0.1', bar='em0'))
         self.assertEqual(t, 'foobar')
+
+    def test_pluses_in_path(self):
+        t = self.call_FUT('+/bla/+/+bar+',
+                          dict(bar='em0'))
+        self.assertEqual(t, '+/bla/+/em0')
+
+    @mock.patch('mrbob.rendering.os', sep='\\')
+    def test_pluses_in_pathwindows(self, mock_sep):
+        t = self.call_FUT('+\\bla\\+\\+bar+',
+                          dict(bar='em0'))
+        self.assertEqual(t, '+\\bla\\+\\em0')
 
     def test_missing_key(self):
         self.assertRaises(KeyError, self.call_FUT, 'foo+bar+blub', dict())

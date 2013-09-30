@@ -47,7 +47,7 @@ def resolve_dotted_func(name):
     if func:
         return func
     else:
-        raise ConfigurationError("There is no object named %s in module %s" % (module_name, func_name))
+        raise ConfigurationError("There is no object named %s in module %s" % (func_name, module_name))
 
 
 def maybe_resolve_dotted_func(name):
@@ -167,6 +167,7 @@ class Configurator(object):
         self.verbose = maybe_bool(self.bobconfig.get('verbose', False))
         self.quiet = maybe_bool(self.bobconfig.get('quiet', False))
         self.remember_answers = maybe_bool(self.bobconfig.get('remember_answers', False))
+        self.ignored_files = self.bobconfig.get('ignored_files', '').split()
 
         # parse template settings
         self.templateconfig = self.config['template']
@@ -186,7 +187,8 @@ class Configurator(object):
                          self.target_directory,
                          self.variables,
                          self.verbose,
-                         self.renderer)
+                         self.renderer,
+                         self.ignored_files)
         if self.remember_answers:
             write_config(os.path.join(self.target_directory, '.mrbob.ini'),
                          'variables',
