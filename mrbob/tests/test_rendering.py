@@ -5,7 +5,10 @@ from tempfile import mkdtemp
 import codecs
 import os
 import stat
-import unittest
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
 
 import mock
 import six
@@ -96,10 +99,10 @@ class render_structureTest(unittest.TestCase):
 
         if six.PY3:  # pragma: no cover
             file_name = 'mapča/ća'
-            expected = 'Ćača.\n'
+            expected = 'Ćača.' + os.linesep
         else:  # pragma: no cover
             file_name = 'mapča/ća'.decode('utf-8')
-            expected = 'Ćača.\n'.decode('utf-8')
+            expected = 'Ćača.'.decode('utf-8') + os.linesep  # Annakan os.linesep is the platform independent way of getting the line ending
 
         with codecs.open(os.path.join(self.fs_tempdir, file_name), 'r', 'utf-8') as f:
             self.assertEquals(f.read(), expected)
@@ -224,9 +227,10 @@ class render_templateTest(unittest.TestCase):
             fs_source,
             dict(ip_addr='192.168.0.1',
                  access_control='10.0.1.0/16 allow'))
-        self.assertTrue(fs_rendered.endswith('/unbound.conf'))
+        self.assertTrue(fs_rendered.endswith(os.sep + 'unbound.conf'))
         self.assertTrue('interface: 192.168.0.1' in open(fs_rendered).read())
 
+    @unittest.skipIf(os.name == "nt", "on windows chmod only set the r/O bit, useless test and it prevent cleanup to boot ")
     def test_rendered_permissions_preserved(self):
         fs_source = os.path.join(self.fs_templates,
             'unbound/usr/local/etc/unbound/unbound.conf.bob')

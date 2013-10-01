@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
 
 from setuptools import setup
 from setuptools import find_packages
@@ -26,6 +27,15 @@ try:
 except ImportError:
     install_requires.append('argparse')
 
+test_requires = [
+    'nose',
+    'coverage<3.6dev',
+    'flake8<2.0',
+    'mock'
+]
+
+if sys.version_info < (2, 7):
+  test_requires.append('unittest2')
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
@@ -52,12 +62,7 @@ setup(name='mr.bob',
       packages=find_packages(),
       install_requires=install_requires,
       extras_require={
-          'test': [
-              'nose',
-              'coverage<3.6dev',
-              'flake8<2.0',
-              'mock',
-          ],
+          'test': test_requires,
           'development': [
               'zest.releaser',
               'Sphinx',

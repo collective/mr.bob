@@ -62,13 +62,13 @@ parser.add_argument('-q', '--quiet',
                     default=False,
                     help='Suppress all but necessary output')
 #parser.add_argument('--dry-run',
-#dest='simulate',
-#action='store_true',
-#help='Simulate but do no work')
+                  #dest='simulate',
+                  #action='store_true',
+                  #help='Simulate but do no work')
 #parser.add_argument('--overwrite',
-#dest='overwrite',
-#action='store_true',
-#help='Always overwrite')
+                  #dest='overwrite',
+                  #action='store_true',
+                  #help='Always overwrite')
 
 
 def main(args=sys.argv[1:]):
@@ -123,7 +123,7 @@ def main(args=sys.argv[1:]):
         'quiet': options.quiet,
         'remember_answers': options.remember_answers,
         'non_interactive': options.non_interactive,
-        }
+    }
 
     bobconfig = update_config(update_config(global_bobconfig, file_bobconfig), cli_bobconfig)
     variables = update_config(update_config(global_variables, file_variables), cli_variables)
@@ -138,7 +138,7 @@ def main(args=sys.argv[1:]):
         print('[variables] from --config file')
         for line in pretty_format_config(file_variables):
             print(line)
-            # TODO: implement variables on cli
+        # TODO: implement variables on cli
         #print('[variables] from command line interface')
         #for line in pretty_format_config(file_variables):
         #    print(line)
@@ -148,7 +148,7 @@ def main(args=sys.argv[1:]):
         print('[defaults] from --config file')
         for line in pretty_format_config(file_defaults):
             print(line)
-            # TODO: implement defaults on cli
+        # TODO: implement defaults on cli
         #print('[defaults] from command line interface')
         #for line in pretty_format_config(file_defaults):
         #    print(line)
