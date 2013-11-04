@@ -68,7 +68,6 @@ def render_structure(fs_source_root, fs_target_root, variables, verbose,
         fs_source_root = six.u(fs_source_root)
     for fs_source_dir, local_directories, local_files in os.walk(fs_source_root):
 
-
         fs_target_dir = path.abspath(path.join(fs_target_root, path.relpath(fs_source_dir, fs_source_root)))
         for local_file in local_files:
             if matches_any(local_file, ignored_files):
