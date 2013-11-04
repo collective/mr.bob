@@ -51,7 +51,7 @@ class render_structureTest(unittest.TestCase):
                  access_control='10.0.1.0/16 allow'),
             renderer=python_formatting_renderer,
         )
-        self.assertTrue(os.path.exists('%s/%s' % (self.fs_tempdir, '/usr/local/etc')))
+        self.assertTrue(os.path.exists('%s/%s' % (self.fs_tempdir, 'usr/local/etc')))
 
     def test_skip_mrbobini_copying(self):
         self.call_FUT(
