@@ -231,9 +231,7 @@ class render_templateTest(unittest.TestCase):
         """if the source is not a template, it is copied."""
         filename = 'renamedtemplate2/+author.name++__if_rdr.me__+_endpoint.py.bob'
         fs_source = os.path.join(self.fs_templates, filename)
-        fs_rendered = self.call_FUT(
-            fs_source,
-            {'rdr.me': 'y', 'author.name': 'bob'},)
+        self.call_FUT(fs_source, {'rdr.me': 'y', 'author.name': 'bob'},)
         self.assertTrue(os.path.exists('%s/%s' % (self.fs_tempdir, 'bob_endpoint.py')))
 
     def test_render_false_statement_template_is_None(self):
@@ -263,7 +261,6 @@ class render_templateTest(unittest.TestCase):
                           t,
                           {'another_rdr.me': 'y'}
                           )
-
 
     def test_render_template(self):
         """if the source is a template, it is rendered and the target file drops
