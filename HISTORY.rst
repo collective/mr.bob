@@ -5,6 +5,9 @@ Changelog
 0.1a10 (unreleased)
 -------------------
 
+- Add optional rendering with +__if_rdr.me__+ statement 
+  [Jean-Philippe Camguilhem jpcw]
+
 - Use jinja2 < 2.7, since 2.7+ doesn't support Python 3.2
 
 - Filename variable name substitution regex failed to compile on windows

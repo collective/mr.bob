@@ -119,7 +119,7 @@ so later you reuse them::
 
 
 Using ``non-interactive`` mode
-----------------------------
+-------------------------------
 
 Sometimes you might want to automate a script and use ``mrbob``. It
 is wise to tell ``mrbob`` to not prompt for any input. ``mrbob`` will use
@@ -224,3 +224,4 @@ templates and contribute them to this list by making a `pull request <https://gi
 - `bobtemplates.ielectric <https://github.com/iElectric/bobtemplates.ielectric>`_
 - `bobtemplates.kotti <https://github.com/Kotti/bobtemplates.kotti>`_
 - `bobtemplates.niteoweb <https://github.com/niteoweb/bobtemplates.niteoweb>`_
+- `bobtemplates.jpcw <https://github.com/jpcw/bobtemplates.jpcw>`_

@@ -37,6 +37,9 @@ By default a slightly customized `Jinja2` templating is used. The big difference
 
 Variables can also be used on folder and file names. Surround variables with plus signs. For example `foo/+author+/+age+.bob` given variables *author* being `Foo` and *age* being `12`, `foo/Foo/12` will be rendered.
 
+Variables can also influence rendering. Surround variables with plus signs. For example `foo/+__if_render.me__++author+/+age+.bob` given variables *author* being `Foo` and *age* being `12`, `foo/Foo/12` will be rendered if `render.me` is True.  Else only `foo/` will be rendered. Please notice that only ('y', 'yes', 'true', 'True', 1) are True, anything else will be considred as False.
+
+
 Templating engine can be changed by specifying `renderer` in mr.bob config section in :term:`dotted notation`. It must be a callable that expects a text source as the first parameter and a dictionary of variables as the second.
 
 When rendering the structure, permissions will be preserved for files.
@@ -109,6 +112,7 @@ Use something like:
 
 And based on `mrbob.Configurator.variables` answers, delete a file or add one.
 
+or use `+__if_var.me__+` on foldername or filneame, they will be rendered only if `var.me` is True.
 
 Based on the answer of the question do something
 ************************************************
