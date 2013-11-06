@@ -23,7 +23,7 @@ from .parsing import (
     update_config,
     pretty_format_config,
 )
-from .exceptions import (
+from .bobexceptions import (
     ConfigurationError,
     TemplateConfigurationError,
     SkipQuestion,

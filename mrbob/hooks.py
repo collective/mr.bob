@@ -1,6 +1,6 @@
 """Use any of hooks below or write your own. You are welcome to contribute them!"""
 
-from .exceptions import ValidationError
+from .bobexceptions import ValidationError
 
 
 def to_boolean(configurator, question, answer):
