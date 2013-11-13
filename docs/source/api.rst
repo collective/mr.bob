@@ -26,10 +26,10 @@ Source documentation
    :members:
    :show-inheritance:
 
-:mod:`mrbob.exceptions` -- Exceptions
--------------------------------------
+:mod:`mrbob.bobexceptions` -- Exceptions
+-----------------------------------------
 
-.. automodule:: mrbob.exceptions
+.. automodule:: mrbob.bobexceptions
    :members:
    :show-inheritance:
 
