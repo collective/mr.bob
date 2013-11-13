@@ -1,0 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+{{{ pkg.project }}}
+------------------------------
+{{{ pkg.description }}}
+
+"""
+
+__docformat__ = 'restructuredtext en'
+

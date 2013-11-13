@@ -10,8 +10,8 @@ import argparse
 
 from .configurator import Configurator
 from .configurator import maybe_bool
-from .exceptions import ConfigurationError
-from .exceptions import TemplateConfigurationError
+from .bobexceptions import ConfigurationError
+from .bobexceptions import TemplateConfigurationError
 from .parsing import parse_config, update_config, pretty_format_config
 
 

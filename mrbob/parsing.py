@@ -14,7 +14,7 @@ except ImportError:  # pragma: no cover
     # PY3K
     from urllib.request import urlretrieve  # NOQA
 
-from .exceptions import ConfigurationError
+from .bobexceptions import ConfigurationError
 
 
 def nest_variables(variables):
