@@ -37,7 +37,7 @@ def dummy_render_hook(configurator):  # pragma: no cover
 
 
 def dummy_question_hook_skipquestion(configurator, question):  # pragma: no cover
-    from ..exceptions import SkipQuestion
+    from ..bobexceptions import SkipQuestion
     raise SkipQuestion
 
 
@@ -80,7 +80,7 @@ class resolve_dotted_funcTest(unittest.TestCase):
         self.assertRaises(ImportError, self.call_FUT, 'foobar.blabla:foo')
 
     def test_error_no_func(self):
-        from ..exceptions import ConfigurationError
+        from ..bobexceptions import ConfigurationError
         self.assertRaises(ConfigurationError, self.call_FUT, 'mrbob.rendering:foo')
 
     def test_return_func(self):
@@ -114,7 +114,7 @@ class parse_templateTest(unittest.TestCase):
         self.assertEqual(abs_path, (template_dir, False))
 
     def test_not_a_dir(self):
-        from ..exceptions import ConfigurationError
+        from ..bobexceptions import ConfigurationError
         self.assertRaises(ConfigurationError, self.call_FUT, 'foo_bar')
 
     @mock.patch('mrbob.configurator.urlretrieve')
@@ -133,7 +133,7 @@ class parse_templateTest(unittest.TestCase):
 
     @mock.patch('mrbob.configurator.urlretrieve')
     def test_zipfile_not_zipfile(self, mock_urlretrieve):
-        from ..exceptions import ConfigurationError
+        from ..bobexceptions import ConfigurationError
         mock_urlretrieve.side_effect = self.fake_wrong_zip
         self.assertRaises(ConfigurationError, self.call_FUT, 'http://foobar.com/bla.tar#some/dir')
 
@@ -173,7 +173,7 @@ class ConfiguratorTest(unittest.TestCase):
         return Configurator(*args, **kw)
 
     def test_target_directory_inside_template_dir(self):
-        from ..exceptions import ConfigurationError
+        from ..bobexceptions import ConfigurationError
         self.assertRaises(ConfigurationError,
                           self.call_FUT,
                           'mrbob.tests:templates/questions1',
@@ -406,7 +406,7 @@ class QuestionTest(unittest.TestCase):
         sys.stdout = sys.__stdout__
 
     def test_non_interactive_required(self):
-        from ..exceptions import ConfigurationError
+        from ..bobexceptions import ConfigurationError
         q = self.call_FUT('foo', 'Why?', required=True)
         c = DummyConfigurator(bobconfig={'non_interactive': 'True'})
         self.assertRaises(ConfigurationError, q.ask, c)
@@ -463,7 +463,7 @@ class QuestionTest(unittest.TestCase):
             return go.pop()
 
         def side_effect(configurator, question, answer):
-            from ..exceptions import ValidationError
+            from ..bobexceptions import ValidationError
             if answer == 'foo':
                 raise ValidationError
             elif answer == 'bar':
@@ -479,7 +479,7 @@ class QuestionTest(unittest.TestCase):
         self.assertEqual(q.ask(c), 'moo')
 
     def test_post_ask_question_validationerror_non_interactive(self):
-        from ..exceptions import ConfigurationError, ValidationError
+        from ..bobexceptions import ConfigurationError, ValidationError
 
         mocked_post_ask_question_validationerror_non_interactive.side_effect = ValidationError
 

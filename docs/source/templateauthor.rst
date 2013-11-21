@@ -200,7 +200,7 @@ The function expects two arguments:
     def set_fullname(configurator, question):
         question.default = 'foobar'
 
-If you want question to be skipped, simply raise :exc:`mrbob.exceptions.SkipQuestion` inside
+If you want question to be skipped, simply raise :exc:`mrbob.bobexceptions.SkipQuestion` inside
 your hook.
 
 .. _post-question-hook:
@@ -233,7 +233,7 @@ The function expects three arguments:
             answer
         return answer
 
-Raise :exc:`mrbob.exceptions.ValidationError` to re-ask the question.
+Raise :exc:`mrbob.bobexceptions.ValidationError` to re-ask the question.
 
 
 Hooks shipped with `mr.bob`
