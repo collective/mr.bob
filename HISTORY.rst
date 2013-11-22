@@ -5,6 +5,12 @@ Changelog
 0.1a10 (unreleased)
 -------------------
 
+- Add optional rendering with +__if_rdr.me__+ statement 
+  [Jean-Philippe Camguilhem jpcw]
+
+- add bobtemplates starter
+  [Jean-Philippe Camguilhem]
+
 - move exceptions to bobexceptions
   [Jean-Philippe Camguilhem]
 

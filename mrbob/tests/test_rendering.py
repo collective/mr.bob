@@ -47,11 +47,23 @@ class render_structureTest(unittest.TestCase):
         from ..rendering import python_formatting_renderer
         self.call_FUT(
             os.path.join(self.fs_templates, 'unbound'),
-            dict(ip_addr='192.168.0.1',
-                 access_control='10.0.1.0/16 allow'),
+            {'ip_addr': '192.168.0.1', 'access_control': '10.0.1.0/16 allow',
+              'rdr.me': 'y'},
             renderer=python_formatting_renderer,
         )
-        self.assertTrue(os.path.exists('%s/%s' % (self.fs_tempdir, '/usr/local/etc')))
+        self.assertTrue(os.path.exists('%s/%s' % (self.fs_tempdir, 'usr/local/etc')))
+
+    def test_subdirectories_not_created(self):
+        from ..rendering import python_formatting_renderer
+        self.call_FUT(
+            os.path.join(self.fs_templates, 'unbound'),
+            {'ip_addr': '192.168.0.1', 'access_control': '10.0.1.0/16 allow',
+              'rdr.me': 'f'},
+            renderer=python_formatting_renderer,
+        )
+        self.assertFalse(os.path.exists('%s/%s' % (self.fs_tempdir, 'usr/local/etc')))
+        self.assertTrue(os.path.exists('%s/%s' % (self.fs_tempdir, 'etc')))
+        self.assertTrue(os.path.exists('%s/%s' % (self.fs_tempdir, 'etc/rc.conf')))
 
     def test_skip_mrbobini_copying(self):
         self.call_FUT(
@@ -108,8 +120,8 @@ class render_structureTest(unittest.TestCase):
         from ..rendering import python_formatting_renderer
         self.call_FUT(
             os.path.join(self.fs_templates, 'unbound'),
-            dict(ip_addr='192.168.0.1',
-                 access_control='10.0.1.0/16 allow'),
+            {'ip_addr': '192.168.0.1', 'access_control': '10.0.1.0/16 allow',
+              'rdr.me': 'y'},
             verbose=False,
             renderer=python_formatting_renderer,
         )
@@ -120,7 +132,7 @@ class render_structureTest(unittest.TestCase):
         from ..rendering import python_formatting_renderer
         self.call_FUT(
             os.path.join(self.fs_templates, 'renamedir'),
-            dict(name='blubber'),
+            {'name': 'blubber', 'rdr.me': 'y'},
             verbose=False,
             renderer=python_formatting_renderer,
         )
@@ -130,7 +142,7 @@ class render_structureTest(unittest.TestCase):
         from ..rendering import python_formatting_renderer
         self.call_FUT(
             os.path.join(self.fs_templates, 'renamedfile'),
-            dict(name='blubber'),
+            {'name': 'blubber', 'rdr.me': 'y'},
             verbose=False,
             renderer=python_formatting_renderer,
         )
@@ -140,7 +152,7 @@ class render_structureTest(unittest.TestCase):
         from ..rendering import python_formatting_renderer
         self.call_FUT(
             os.path.join(self.fs_templates, 'renamedtemplate'),
-            dict(name='blubber', module='blather'),
+            {'name': 'blubber', 'rdr.me': 'y', 'module': 'blather'},
             verbose=False,
             renderer=python_formatting_renderer,
         )
@@ -152,7 +164,7 @@ class render_structureTest(unittest.TestCase):
         from ..rendering import python_formatting_renderer
         self.call_FUT(
             os.path.join(self.fs_templates, 'renamedtemplate2'),
-            {'author.name': 'foo'},
+            {'author.name': 'foo', 'rdr.me': 'y'},
             verbose=False,
             renderer=python_formatting_renderer,
         )
@@ -164,7 +176,7 @@ class render_structureTest(unittest.TestCase):
         from ..rendering import python_formatting_renderer
         self.call_FUT(
             os.path.join(self.fs_templates, 'renamed'),
-            dict(name='blubber', module='blather'),
+            {'name': 'blubber', 'rdr.me': 'y', 'module': 'blather'},
             verbose=False,
             renderer=python_formatting_renderer,
         )
@@ -208,38 +220,73 @@ class render_templateTest(unittest.TestCase):
 
         fs_rendered = self.call_FUT(
             fs_source,
-            dict(ip_addr='192.168.0.1',
-                 access_control='10.0.1.0/16 allow'))
+            {'ip_addr': '192.168.0.1', 'access_control': '10.0.1.0/16 allow',
+              'rdr.me': 'y'},)
         self.assertTrue(fs_rendered.endswith('rc.conf'))
         with open(fs_source) as f1:
             with open(fs_rendered) as f2:
                 self.assertEqual(f1.read(), f2.read())
 
+    def test_render_statement_template(self):
+        """if the source is not a template, it is copied."""
+        filename = 'renamedtemplate2/+author.name++__if_rdr.me__+_endpoint.py.bob'
+        fs_source = os.path.join(self.fs_templates, filename)
+        self.call_FUT(fs_source, {'rdr.me': 'y', 'author.name': 'bob'},)
+        self.assertTrue(os.path.exists('%s/%s' % (self.fs_tempdir, 'bob_endpoint.py')))
+
+    def test_render_false_statement_template_is_None(self):
+        """if the source is not a template, it is copied."""
+        filename = 'renamedtemplate2/+author.name++__if_rdr.me__+_endpoint.py.bob'
+        fs_source = os.path.join(self.fs_templates, filename)
+        fs_rendered = self.call_FUT(
+            fs_source,
+            {'rdr.me': 'n'},)
+        self.assertEquals(fs_rendered, None)
+
+    def test_render_any_non_true_value_statement_template_is_None(self):
+        """if the source is not a template, it is copied."""
+        filename = 'renamedtemplate2/+author.name++__if_rdr.me__+_endpoint.py.bob'
+        fs_source = os.path.join(self.fs_templates, filename)
+        fs_rendered = self.call_FUT(
+            fs_source,
+            {'rdr.me': 'any value here'},)
+        self.assertEquals(fs_rendered, None)
+
+    def test_render_key_error_statement_template(self):
+        """if the source is not a template, it is copied."""
+        filename = 'renamedtemplate2/+author.name++__if_rdr.me__+_endpoint.py.bob'
+        t = os.path.join(self.fs_templates, filename)
+        self.assertRaises(KeyError,
+                          self.call_FUT,
+                          t,
+                          {'another_rdr.me': 'y'}
+                          )
+
     def test_render_template(self):
         """if the source is a template, it is rendered and the target file drops
         the `.bob` suffix."""
         fs_source = os.path.join(self.fs_templates,
-            'unbound/usr/local/etc/unbound/unbound.conf.bob')
+            'unbound/+__if_rdr.me__+usr/local/etc/unbound/unbound.conf.bob')
         fs_rendered = self.call_FUT(
             fs_source,
-            dict(ip_addr='192.168.0.1',
-                 access_control='10.0.1.0/16 allow'))
+            {'ip_addr': '192.168.0.1', 'access_control': '10.0.1.0/16 allow',
+              'rdr.me': 'y'})
         self.assertTrue(fs_rendered.endswith('/unbound.conf'))
         self.assertTrue('interface: 192.168.0.1' in open(fs_rendered).read())
 
     def test_rendered_permissions_preserved(self):
         fs_source = os.path.join(self.fs_templates,
-            'unbound/usr/local/etc/unbound/unbound.conf.bob')
+            'unbound/+__if_rdr.me__+usr/local/etc/unbound/unbound.conf.bob')
         os.chmod(fs_source, 771)
         fs_rendered = self.call_FUT(
             fs_source,
-            dict(ip_addr='192.168.0.1',
-                 access_control='10.0.1.0/16 allow'))
+            {'ip_addr': '192.168.0.1', 'access_control': '10.0.1.0/16 allow',
+              'rdr.me': 'y'})
         self.assertEqual(stat.S_IMODE(os.stat(fs_rendered).st_mode), 771)
 
     def test_render_missing_key(self):
         t = os.path.join(self.fs_templates,
-            'unbound/usr/local/etc/unbound/unbound.conf.bob')
+            'unbound/+__if_rdr.me__+usr/local/etc/unbound/unbound.conf.bob')
 
         self.assertRaises(KeyError,
                           self.call_FUT,
@@ -287,6 +334,15 @@ class render_templateTest(unittest.TestCase):
                           self.call_FUT,
                           t,
                           {})
+
+    def test_render_missing_key_statement(self):
+        t = os.path.join(self.fs_templates,
+            'missing_namespace_key/foo.bob')
+
+        self.assertRaises(KeyError,
+                          self.call_FUT,
+                          t,
+                          {'rdr.me': 'y'})
 
     def test_render_namespace_missing_key_jinja2(self):
         from jinja2 import UndefinedError
