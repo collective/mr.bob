@@ -18,7 +18,7 @@ class to_booleanTest(TestCase):
             self.assertFalse(self.call_FUT(value))
 
     def test_boolean_wrong_input(self):
-        from ..exceptions import ValidationError
+        from ..bobexceptions import ValidationError
         self.assertRaises(ValidationError, self.call_FUT, 'foo')
 
 

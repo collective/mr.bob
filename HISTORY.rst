@@ -5,6 +5,9 @@ Changelog
 0.1a10 (unreleased)
 -------------------
 
+- move exceptions to bobexceptions
+  [Jean-Philippe Camguilhem]
+
 - Use jinja2 < 2.7, since 2.7+ doesn't support Python 3.2
 
 - Filename variable name substitution regex failed to compile on windows

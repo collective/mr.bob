@@ -119,7 +119,7 @@ so later you reuse them::
 
 
 Using ``non-interactive`` mode
-----------------------------
+--------------------------------
 
 Sometimes you might want to automate a script and use ``mrbob``. It
 is wise to tell ``mrbob`` to not prompt for any input. ``mrbob`` will use

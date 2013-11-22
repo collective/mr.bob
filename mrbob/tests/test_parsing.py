@@ -255,13 +255,13 @@ class nest_variablesTest(unittest.TestCase):
     def test_overwrite_dict_with_value(self):
         """ providing a value for a key that already contains a
         dictionary raises a ConfigurationError """
-        from ..exceptions import ConfigurationError
+        from ..bobexceptions import ConfigurationError
         d = OrderedDict([('foo.bar', '1'), ('foo', '2')])
         self.assertRaises(ConfigurationError, self.call_FUT, d)
 
     def test_overwrite_value_with_dict(self):
         """ providing a dict for a key that already contains a
         string raises a ConfigurationError """
-        from ..exceptions import ConfigurationError
+        from ..bobexceptions import ConfigurationError
         d = OrderedDict([('foo', '2'), ('foo.bar', '1')])
         self.assertRaises(ConfigurationError, self.call_FUT, d)
