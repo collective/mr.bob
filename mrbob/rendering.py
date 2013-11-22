@@ -67,30 +67,39 @@ def render_structure(fs_source_root, fs_target_root, variables, verbose,
     if not isinstance(fs_source_root, six.text_type):  # pragma: no cover
         fs_source_root = six.u(fs_source_root)
     for fs_source_dir, local_directories, local_files in os.walk(fs_source_root):
+
         fs_target_dir = path.abspath(path.join(fs_target_root, path.relpath(fs_source_dir, fs_source_root)))
         for local_file in local_files:
             if matches_any(local_file, ignored_files):
                 continue
-            render_template(
-                path.join(fs_source_dir, local_file),
-                render_filename(fs_target_dir, variables),
-                variables,
-                verbose,
-                renderer,
-            )
+
+            filename = render_filename(fs_target_dir, variables)
+            if filename is not None:
+                render_template(
+                    path.join(fs_source_dir, local_file),
+                    filename,
+                    variables,
+                    verbose,
+                    renderer,
+                )
+
         for local_directory in local_directories:
             abs_dir = render_filename(path.join(fs_target_dir, local_directory), variables)
-            if not path.exists(abs_dir):
-                if verbose:
-                    print(six.u("mkdir %s") % abs_dir)
-                os.mkdir(abs_dir)
+
+            if abs_dir is not None:
+                if not path.exists(abs_dir):
+                    if verbose:
+                        print(six.u("mkdir %s") % abs_dir)
+                    os.mkdir(abs_dir)
 
 
 def render_template(fs_source, fs_target_dir, variables, verbose, renderer):
-    filename = path.split(fs_source)[1]
+    filename = render_filename(path.split(fs_source)[1], variables)
+    if filename is None:
+        return
     if filename.endswith('.bob'):
         filename = filename.split('.bob')[0]
-        fs_target_path = path.join(fs_target_dir, render_filename(filename, variables))
+        fs_target_path = path.join(fs_target_dir, filename)
         if verbose:
             print(six.u("Rendering %s to %s") % (fs_source, fs_target_path))
         fs_source_mode = stat.S_IMODE(os.stat(fs_source).st_mode)
@@ -104,7 +113,7 @@ def render_template(fs_source, fs_target_dir, variables, verbose, renderer):
             fs_target.write(output)
         os.chmod(fs_target_path, fs_source_mode)
     else:
-        fs_target_path = path.join(fs_target_dir, render_filename(filename, variables))
+        fs_target_path = path.join(fs_target_dir, filename)
         if verbose:
             print(six.u("Copying %s to %s") % (fs_source, fs_target_path))
         copy2(fs_source, fs_target_path)
@@ -112,6 +121,20 @@ def render_template(fs_source, fs_target_dir, variables, verbose, renderer):
 
 
 def render_filename(filename, variables):
+    # check if there is an 'if statement'
+    statement_regex = re.compile(r"\+__if_[^+]+__\+")
+    statement = statement_regex.search(filename)
+    if statement:
+        var = statement.group()[6:-3]
+        if var in variables:
+            # be sure we have booelan string response
+            if str(variables[var]).lower() in ['y', 'yes', 'true', '1']:
+                filename = re.sub(statement_regex, '', filename)
+            else:
+                return
+        else:
+            raise KeyError('%s statement of filename %s was not found in variables %s' % (var, filename, variables))
+
     variables_regex = re.compile(r"\+[^+%s]+\+" % re.escape(os.sep))
 
     replaceables = variables_regex.findall(filename)
