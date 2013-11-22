@@ -5,6 +5,9 @@ Changelog
 0.1a10 (unreleased)
 -------------------
 
+- add bobtemplates starter
+  [Jean-Philippe Camguilhem]
+
 - move exceptions to bobexceptions
   [Jean-Philippe Camguilhem]
 
