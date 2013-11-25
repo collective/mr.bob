@@ -64,6 +64,11 @@ parser.add_argument('-q', '--quiet',
                   #dest='overwrite',
                   #action='store_true',
                   #help='Always overwrite')
+parser.add_argument('-r', '--rdr-fname-plugin-target',
+                    type=int,
+                    default=None,
+                    dest='rdr_fname_plugin_target',
+                    help='Specify target plugin like 10|20')
 
 
 def main(args=sys.argv[1:]):
@@ -114,6 +119,7 @@ def main(args=sys.argv[1:]):
         'quiet': options.quiet,
         'remember_answers': options.remember_answers,
         'non_interactive': options.non_interactive,
+        'rdr_fname_plugin_target': options.rdr_fname_plugin_target,
     }
 
     bobconfig = update_config(update_config(global_bobconfig, file_bobconfig), cli_bobconfig)
