@@ -16,6 +16,7 @@ readline  # make pyflakes happy, readline makes interactive mode keep history
 import six
 from importlib import import_module
 
+import mrbob.plugins as plugins
 from .rendering import render_structure
 from .parsing import (
     parse_config,
@@ -113,8 +114,8 @@ class Configurator(object):
     - :attr:`template_dir` is root directory of the template
     - :attr:`is_tempdir` if template directory is temporary (when using zipfile)
     - :attr:`templateconfig` dictionary parsed from `template` section
-    - :attr:`questions` ordered list of `Question instances to be asked
-    - :attr:`bobconfig` dictionary parsed from `mrbob` section of the config
+    - :attr:`questions` ordered list of `Question` instances to be asked
+    - :attr:`bobconfig` dictionary parsed from `mrbobx` section of the config
 
     """
 
@@ -133,6 +134,7 @@ class Configurator(object):
         self.variables = variables
         self.defaults = defaults
         self.target_directory = os.path.realpath(target_directory)
+        self.plugins_options = {}
 
         # figure out template directory
         self.template_dir, self.is_tempdir = parse_template(template)
@@ -165,6 +167,10 @@ class Configurator(object):
         self.quiet = maybe_bool(self.bobconfig.get('quiet', False))
         self.remember_answers = maybe_bool(self.bobconfig.get('remember_answers', False))
         self.ignored_files = self.bobconfig.get('ignored_files', '').split()
+        self.plugins_options['render_filename'] = self.bobconfig.get('rdr_fname_plugin_target', None)
+
+        # load plugins
+        plugins.PLUGINS = dict((key, plugins.load_plugin(key, target=value)) for key, value in self.plugins_options.items())
 
         # parse template settings
         self.templateconfig = self.config['template']
@@ -237,7 +243,7 @@ class Question(object):
     :param help: Optional help message
     :param pre_ask_question: Space limited functions in dotted notation to ask before the question is asked
     :param post_ask_question: Space limited functions in dotted notation to ask aster the question is asked
-    :param **extra: Any extra parameters stored for possible extending of `Question` functionality
+    :param \**extra: Any extra parameters stored for possible extending of `Question` functionality
 
     Any of above parameters can be accessed as an attribute of `Question` instance.
 

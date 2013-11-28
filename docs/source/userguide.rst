@@ -48,6 +48,8 @@ Once you install mr.bob, the ``mrbob`` command is available::
                             Don't prompt for input. Fail if questions are required
                             but not answered
       -q, --quiet           Suppress all but necessary output
+      -r RDR_FNAME_PLUGIN_TARGET, --rdr-fname-plugin-target RDR_FNAME_PLUGIN_TARGET
+                            Specify target plugin like 10|20
 
 By default, the target directory is the current folder. The most basic use case is rendering a template from a relative folder::
 
@@ -224,3 +226,12 @@ templates and contribute them to this list by making a `pull request <https://gi
 - `bobtemplates.ielectric <https://github.com/iElectric/bobtemplates.ielectric>`_
 - `bobtemplates.kotti <https://github.com/Kotti/bobtemplates.kotti>`_
 - `bobtemplates.niteoweb <https://github.com/niteoweb/bobtemplates.niteoweb>`_
+
+
+Collection of community plugins
+-------------------------------
+
+You are encouraged to use the ``bobplugins.something`` Python egg namespace to write
+templates and contribute them to this list by making a `pull request <https://github.com/iElectric/mr.bob>`_.
+
+- `bobplugins.jpcw <https://github.com/jpcw/bobplugins.jpcw>`_

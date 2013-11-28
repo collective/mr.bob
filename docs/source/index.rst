@@ -47,6 +47,7 @@ Welcome to mr.bob's documentation!
 
    userguide.rst
    templateauthor.rst
+   pluginauthor.rst
    other.rst
    developer.rst
    api.rst

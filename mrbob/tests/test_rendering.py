@@ -15,6 +15,7 @@ class render_structureTest(unittest.TestCase):
 
     def setUp(self):
         import mrbob
+        mrbob.plugins.PLUGINS = {'render_filename': None}
         self.fs_tempdir = mkdtemp()
         self.fs_templates = os.path.abspath(
             os.path.join(os.path.dirname(mrbob.__file__),
@@ -51,7 +52,7 @@ class render_structureTest(unittest.TestCase):
                  access_control='10.0.1.0/16 allow'),
             renderer=python_formatting_renderer,
         )
-        self.assertTrue(os.path.exists('%s/%s' % (self.fs_tempdir, '/usr/local/etc')))
+        self.assertTrue(os.path.exists('%s/%s' % (self.fs_tempdir, 'usr/local/etc')))
 
     def test_skip_mrbobini_copying(self):
         self.call_FUT(
@@ -316,6 +317,10 @@ class render_templateTest(unittest.TestCase):
 
 class render_filenameTest(unittest.TestCase):
 
+    def setUp(self):
+        import mrbob
+        mrbob.plugins.PLUGINS = {'render_filename': None}
+
     def call_FUT(self, filename, variables):
         from ..rendering import render_filename
         return render_filename(filename, variables)
@@ -356,6 +361,35 @@ class render_filenameTest(unittest.TestCase):
 
     def test_missing_key(self):
         self.assertRaises(KeyError, self.call_FUT, 'foo+bar+blub', dict())
+
+    def test_plugin_rdr_filename_is_bad(self):
+        from .test_plugins import bad_mock_ep
+        import mrbob.plugins
+        ep = mrbob.plugins.load_plugin('render_filename',
+                                        bad_mock_ep)
+        mrbob.plugins.PLUGINS['render_filename'] = ep
+        self.assertRaises(AttributeError, self.call_FUT, '+/bla/+/+bar+',
+                          dict(bar='em0'))
+
+    def test_plugin_rdr_filename_will_continue(self):
+        from .test_plugins import will_continue_mock_ep
+        import mrbob.plugins
+        ep = mrbob.plugins.load_plugin('render_filename',
+                                        will_continue_mock_ep)
+        mrbob.plugins.PLUGINS['render_filename'] = ep
+        t = self.call_FUT('+/bla/+/+bar+',
+                          dict(bar='em0'))
+        self.assertEqual(t, 'fake_foo_+/bla/+/em0')
+
+    def test_plugin_rdr_filename_will_not_continue(self):
+        from .test_plugins import unordered_pkg_mock_entries
+        import mrbob.plugins
+        ep = mrbob.plugins.load_plugin('render_filename',
+                                        unordered_pkg_mock_entries)
+        mrbob.plugins.PLUGINS['render_filename'] = ep
+        t = self.call_FUT('+/bla/+/+bar+',
+                          dict(bar='em0'))
+        self.assertEqual(t, '+/bla/+/+bar+_fake_bar')
 
 
 class parse_variablesTest(unittest.TestCase):

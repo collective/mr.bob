@@ -54,3 +54,9 @@ Source documentation
 
 .. automodule:: mrbob.hooks
    :members:
+
+:mod:`mrbob.plugins` -- Included plugins
+-----------------------------------------
+
+.. automodule:: mrbob.plugins
+   :members:
