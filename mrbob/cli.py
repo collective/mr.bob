@@ -9,6 +9,7 @@ import six
 import argparse
 
 from .configurator import Configurator
+from .configurator import TemplatesRegistry
 from .configurator import maybe_bool
 from .bobexceptions import ConfigurationError
 from .bobexceptions import TemplateConfigurationError
@@ -48,10 +49,14 @@ parser.add_argument('-w', '--remember-answers',
                     default=False,
                     help='Remember answers to .mrbob.ini file inside output directory')
 parser.add_argument('-n', '--non-interactive',
-                  dest='non_interactive',
-                  action='store_true',
-                  default=False,
-                  help="Don't prompt for input. Fail if questions are required but not answered")
+                    dest='non_interactive',
+                    action='store_true',
+                    default=False,
+                    help="Don't prompt for input. Fail if questions are required but not answered")
+parser.add_argument('--list-templates',
+                    action="store_true",
+                    default=False,
+                    help="Lists detailed registered templates and exits")
 parser.add_argument('-q', '--quiet',
                     action="store_true",
                     default=False,
@@ -74,6 +79,10 @@ def main(args=sys.argv[1:]):
     if options.version:
         version = pkg_resources.get_distribution('mr.bob').version
         return version
+
+    if options.list_templates:
+        registry = TemplatesRegistry()
+        return str(registry)
 
     if not options.template:
         parser.error('You must specify what template to use.')
@@ -156,10 +165,10 @@ def main(args=sys.argv[1:]):
 
     try:
         c = Configurator(template=options.template,
-            target_directory=options.target_directory,
-            bobconfig=bobconfig,
-            variables=variables,
-            defaults=defaults)
+                         target_directory=options.target_directory,
+                         bobconfig=bobconfig,
+                         variables=variables,
+                         defaults=defaults)
 
         if options.list_questions:
             return c.print_questions()

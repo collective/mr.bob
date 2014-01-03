@@ -13,6 +13,7 @@ import tempfile
 from zipfile import ZipFile, is_zipfile
 readline  # make pyflakes happy, readline makes interactive mode keep history
 
+import pkg_resources
 import six
 from importlib import import_module
 
@@ -88,7 +89,10 @@ def parse_template(template_name):
             finally:
                 zf.close()
 
-    if ':' in template_name:
+    registry = TemplatesRegistry()
+    if registry.has_template(template_name):
+        path = registry.path_of_template(template_name)
+    elif ':' in template_name:
         path = resolve_dotted_path(template_name)
     else:
         path = os.path.realpath(template_name)
@@ -340,3 +344,59 @@ class Question(object):
 
         print('')
         return correct_answer
+
+
+class Singleton(type):
+    _instances = {}
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+
+class TemplatesRegistry(object):
+    """All services from templates registered throug setuptools entry points
+    """
+    __metaclass__ = Singleton
+
+    def __init__(self):
+        # Our list of registered templates
+        self.entry_points = list(pkg_resources.iter_entry_points('bobtemplates'))
+        return
+
+    def __str__(self):
+        """Help information about registered templates
+        """
+        out = six.StringIO()
+        infos = {}
+        for ep in self.entry_points:
+            # ep.load() is supposed to return a mrbob.TemplateDescription subclass
+            mod_name = ep.module_name
+            try:
+                mod_version = pkg_resources.get_distribution(mod_name).version
+            except:
+                mod_version = "Version not available"
+            infos[ep.name] = (
+                mod_name,
+                mod_version,
+                ep.load().description
+            )
+        # Sorted by template name alpha ascending
+        for name, (mod_name, mod_version, description) in sorted(infos.items(), key=lambda x: x[0]):
+            heading = "{0}: from package {1} {2}".format(name, mod_name, mod_version)
+            out.writelines([heading, '\n'])
+            out.writelines([description, '\n'])
+        return out.getvalue().strip()
+
+    def has_template(self, template_name):
+        """A setuptools registered template <template_name>?
+        """
+        return any((ep.name == template_name for ep in self.entry_points))
+
+    def path_of_template(self, template_name):
+        """Absolute filesystem path of the template
+        """
+        for ep in self.entry_points:
+            if ep.name == template_name:
+                return ep.load().directory
+        return  # Should never go here, but who knows

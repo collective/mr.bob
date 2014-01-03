@@ -221,6 +221,7 @@ Collection of community managed templates
 You are encouraged to use the ``bobtemplates.something`` Python egg namespace to write
 templates and contribute them to this list by making a `pull request <https://github.com/iElectric/mr.bob>`_.
 
-- `bobtemplates.ielectric <https://github.com/iElectric/bobtemplates.ielectric>`_
+- `bobtemplates.ielectric <https://github.com/iElectric/bobtemplates.ielectric>`_ 
 - `bobtemplates.kotti <https://github.com/Kotti/bobtemplates.kotti>`_
 - `bobtemplates.niteoweb <https://github.com/niteoweb/bobtemplates.niteoweb>`_
+- `bobtemplates.gillux <http://pypi.python.org/pypi/bobtemplates.gillux>`_
