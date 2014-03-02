@@ -20,6 +20,10 @@ Changelog
   ``ignored_files`` option of ``mr.bob`` section.
   [Godefroid Chapelle]
 
+- Configure patterns of directories to ignore through
+  ``ignored_directories`` option of ``mr.bob`` section.
+  [Fotis Gimian]
+
 
 0.1a9 (2013-04-26)
 ------------------
