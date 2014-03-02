@@ -55,7 +55,7 @@ setup(name='mr.bob',
           'test': [
               'nose',
               'coverage<3.6dev',
-              'flake8<2.0',
+              'flake8>2.0',
               'mock',
           ],
           'development': [
