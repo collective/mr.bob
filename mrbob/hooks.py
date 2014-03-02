@@ -135,7 +135,7 @@ def validate_regex(configurator, question, answer):
     if re.match(regex, answer):
         return answer
     else:
-         raise ValidationError(
+        raise ValidationError(
             'Value was not of the expected format (%s)' % regex)
 
 
@@ -184,7 +184,7 @@ def validate_datetime(configurator, question, answer):
         time.strptime(answer, datetime_format)
         return answer
     except ValueError:
-         raise ValidationError(
+        raise ValidationError(
             'Value was not a date in the format ' + datetime_format)
 
 
