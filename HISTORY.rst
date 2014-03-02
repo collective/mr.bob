@@ -20,6 +20,24 @@ Changelog
   ``ignored_files`` option of ``mr.bob`` section.
   [Godefroid Chapelle]
 
+- Added new post-question hook ``mrbob.hooks.to_integer``
+  [Fotis Gimian]
+
+- Added new post-question hook ``mrbob.hooks.to_decimal``
+  [Fotis Gimian]
+
+- Added new post-question hook ``mrbob.hooks.validate_choices``
+  [Fotis Gimian]
+
+- Added new post-question hook ``mrbob.hooks.validate_regex``
+  [Fotis Gimian]
+
+- Added new pre-question hook ``mrbob.hooks.set_current_datetime``
+  [Fotis Gimian]
+
+- Added new post-question hook ``mrbob.hooks.validate_datetime``
+  [Fotis Gimian]
+
 
 0.1a9 (2013-04-26)
 ------------------
