@@ -2,8 +2,8 @@ Changelog
 =========
 
 
-0.1a10 (unreleased)
--------------------
+0.1 (2014-03-02)
+----------------
 
 - move exceptions to bobexceptions
   [Jean-Philippe Camguilhem]
