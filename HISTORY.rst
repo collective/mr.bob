@@ -5,7 +5,8 @@ Changelog
 0.2 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Improved handling of symbolic links for both files and directories
+  [Fotis Gimian]
 
 
 0.1 (2014-03-02)

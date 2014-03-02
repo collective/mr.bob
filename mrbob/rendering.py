@@ -53,40 +53,98 @@ def matches_any(filename, patterns):
     return result
 
 
-def render_structure(fs_source_root, fs_target_root, variables, verbose,
-        renderer, ignored_files, ignored_directories):
-    """Recursively copies the given filesystem path `fs_source_root_ to a target directory `fs_target_root`.
+def render_structure(
+    fs_source_root, fs_target_root, variables, verbose, renderer,
+    ignored_files, ignored_directories
+):
+    """Recursively copies the given filesystem path `fs_source_root_ to a
+    target directory `fs_target_root`.
 
     Any files ending in `.bob` are rendered as templates using the given
     renderer using the variables dictionary, thereby losing the `.bob` suffix.
 
-    strings wrapped in `+` signs in file- or directory names will be replaced
+    Strings wrapped in `+` signs in file or directory names will be replaced
     with values from the variables, i.e. a file named `+name+.py.bob` given a
     dictionary {'name': 'bar'} would be rendered as `bar.py`.
+
+    Any symbolic links will be replicated as per the source, as such is best
+    that templates use relative symbolic links.
     """
     ignored_files.extend(DEFAULT_IGNORED_FILES)
     ignored_directories.extend(DEFAULT_IGNORED_DIRECTORIES)
     if not isinstance(fs_source_root, six.text_type):  # pragma: no cover
         fs_source_root = six.u(fs_source_root)
-    for fs_source_dir, local_directories, local_files in os.walk(fs_source_root, topdown=True):
-        fs_target_dir = path.abspath(path.join(fs_target_root, path.relpath(fs_source_dir, fs_source_root)))
-        local_directories[:] = [d for d in local_directories if not matches_any(d, ignored_directories)]
+
+    # Iterate through all files and directories from the source directory
+    for current_directory, sub_directories, local_files in os.walk(
+        fs_source_root, topdown=True
+    ):
+        # Remove any ignored directories from our list of sub-directories
+        sub_directories[:] = [d for d in sub_directories
+                              if not matches_any(d, ignored_directories)]
+
+        fs_target_dir = path.abspath(path.join(
+            fs_target_root, path.relpath(current_directory, fs_source_root)))
+
+        # Iterate through all files
         for local_file in local_files:
+
+            # If the file is to be ignored, skip it
             if matches_any(local_file, ignored_files):
                 continue
-            render_template(
-                path.join(fs_source_dir, local_file),
-                render_filename(fs_target_dir, variables),
-                variables,
-                verbose,
-                renderer,
-            )
-        for local_directory in local_directories:
-            abs_dir = render_filename(path.join(fs_target_dir, local_directory), variables)
-            if not path.exists(abs_dir):
+
+            fs_source_file = path.join(current_directory, local_file)
+            fs_target_dir_rendered = render_filename(
+                fs_target_dir, variables)
+
+            # Source file is a symbolic link
+            if path.islink(fs_source_file):
+                fs_source_symlink = os.readlink(fs_source_file)
+                filename = path.split(fs_source_file)[1]
+                if filename.endswith('.bob'):
+                    filename = filename.split('.bob')[0]
+                fs_target_file = path.join(
+                    fs_target_dir_rendered,
+                    render_filename(filename, variables))
                 if verbose:
-                    print(six.u("mkdir %s") % abs_dir)
-                os.mkdir(abs_dir)
+                    print(
+                        six.u("Symlinking file %s to %s") %
+                        (fs_target_file, fs_source_symlink))
+                os.symlink(fs_source_symlink, fs_target_file)
+
+            # Source file is a regular file
+            else:
+                render_template(
+                    fs_source_file, fs_target_dir_rendered, variables,
+                    verbose, renderer)
+
+        # Iterate through all sub-directories
+        for sub_directory in sub_directories:
+
+            fs_source_subdir = path.join(current_directory, sub_directory)
+            fs_target_subdir = path.join(fs_target_dir, sub_directory)
+            fs_target_subdir_rendered = render_filename(
+                fs_target_subdir, variables)
+
+            # If the target sub-directory doesn't exist, we create it
+            if not path.exists(fs_target_subdir_rendered):
+
+                # Source sub-directory is a symbolic link
+                if path.islink(fs_source_subdir):
+                    fs_source_symlink = os.readlink(fs_source_subdir)
+                    if verbose:
+                        print(
+                            six.u("Symlinking directory %s to %s") %
+                            (fs_target_subdir_rendered, fs_source_symlink))
+                    os.symlink(fs_source_symlink, fs_target_subdir_rendered)
+
+                # Source sub-directory is a regular directory
+                else:
+                    if verbose:
+                        print(
+                            six.u("Making directory %s") %
+                            fs_target_subdir_rendered)
+                    os.mkdir(fs_target_subdir_rendered)
 
 
 def render_template(fs_source, fs_target_dir, variables, verbose, renderer):

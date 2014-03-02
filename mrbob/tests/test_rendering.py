@@ -183,6 +183,34 @@ class render_structureTest(unittest.TestCase):
         self.assertTrue(os.path.exists(fs_rendered))
         self.assertTrue('blather = blubber' in open(fs_rendered).read())
 
+    def test_symlinked_files(self):
+        self.call_FUT(
+            os.path.join(self.fs_templates, 'symlinkfile'),
+            dict(),
+        )
+        self.assertFalse(os.path.exists('%s/%s' % (self.fs_tempdir, '.mrbob.ini')))
+        self.assertTrue(os.path.exists('%s/%s' % (self.fs_tempdir, 'file')))
+        self.assertFalse(os.path.islink('%s/%s' % (self.fs_tempdir, 'file')))
+        self.assertFalse(os.path.exists('%s/%s' % (self.fs_tempdir, 'bad_symlink')))
+        self.assertTrue(os.path.islink('%s/%s' % (self.fs_tempdir, 'bad_symlink')))
+        self.assertTrue(os.path.exists('%s/%s' % (self.fs_tempdir, 'bob_symlink')))
+        self.assertTrue(os.path.islink('%s/%s' % (self.fs_tempdir, 'bob_symlink')))
+        self.assertTrue(os.path.exists('%s/%s' % (self.fs_tempdir, 'good_symlink')))
+        self.assertTrue(os.path.islink('%s/%s' % (self.fs_tempdir, 'good_symlink')))
+
+    def test_symlinked_directories(self):
+        self.call_FUT(
+            os.path.join(self.fs_templates, 'symlinkdir'),
+            dict(),
+        )
+        self.assertFalse(os.path.exists('%s/%s' % (self.fs_tempdir, '.mrbob.ini')))
+        self.assertTrue(os.path.exists('%s/%s' % (self.fs_tempdir, 'directory')))
+        self.assertFalse(os.path.islink('%s/%s' % (self.fs_tempdir, 'directory')))
+        self.assertFalse(os.path.exists('%s/%s' % (self.fs_tempdir, 'bad_symlink')))
+        self.assertTrue(os.path.islink('%s/%s' % (self.fs_tempdir, 'bad_symlink')))
+        self.assertTrue(os.path.exists('%s/%s' % (self.fs_tempdir, 'good_symlink')))
+        self.assertTrue(os.path.islink('%s/%s' % (self.fs_tempdir, 'good_symlink')))
+
 
 class render_templateTest(unittest.TestCase):
     def setUp(self):
