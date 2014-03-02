@@ -24,7 +24,7 @@ class render_structureTest(unittest.TestCase):
         rmtree(self.fs_tempdir)
 
     def call_FUT(self, template, variables, output_dir=None, verbose=True,
-            renderer=None, ignored_files=[]):
+            renderer=None, ignored_files=[], ignored_directories=[]):
         from ..rendering import render_structure
         from ..rendering import jinja2_renderer
 
@@ -41,6 +41,7 @@ class render_structureTest(unittest.TestCase):
             verbose,
             renderer,
             ignored_files,
+            ignored_directories,
         )
 
     def test_subdirectories_created(self):
@@ -69,7 +70,7 @@ class render_structureTest(unittest.TestCase):
         self.assertFalse(os.path.exists('%s/%s' % (self.fs_tempdir, '.mrbob.ini')))
         self.assertFalse(os.path.exists('%s/%s' % (self.fs_tempdir, '.DS_Store')))
 
-    def test_ignored(self):
+    def test_ignored_files(self):
         self.call_FUT(
             os.path.join(self.fs_templates, 'ignored'),
             dict(),
@@ -79,6 +80,16 @@ class render_structureTest(unittest.TestCase):
         self.assertFalse(os.path.exists('%s/%s' % (self.fs_tempdir, 'ignored')))
         self.assertFalse(os.path.exists('%s/%s' % (self.fs_tempdir,
             'ignored.txt')))
+        self.assertTrue(os.path.exists('%s/%s' % (self.fs_tempdir, 'not_ignored')))
+
+    def test_ignored_directories(self):
+        self.call_FUT(
+            os.path.join(self.fs_templates, 'ignored_dirs'),
+            dict(),
+            ignored_directories=['ignored', '*_stuff'],
+        )
+        self.assertFalse(os.path.exists('%s/%s' % (self.fs_tempdir, 'ignored')))
+        self.assertFalse(os.path.exists('%s/%s' % (self.fs_tempdir, 'ignored_stuff')))
         self.assertTrue(os.path.exists('%s/%s' % (self.fs_tempdir, 'not_ignored')))
 
     def test_encoding_is_utf8(self):

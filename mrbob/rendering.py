@@ -22,7 +22,8 @@ jinja2_env = Environment(
 jinja2_renderer = lambda s, v: jinja2_env.from_string(s).render(parse_variables(v))
 python_formatting_renderer = lambda s, v: s % v
 
-DEFAULT_IGNORED = ['.mrbob.ini', '.DS_Store']
+DEFAULT_IGNORED_FILES = ['.mrbob.ini', '.DS_Store']
+DEFAULT_IGNORED_DIRECTORIES = []
 
 
 def parse_variables(variables):
@@ -53,7 +54,7 @@ def matches_any(filename, patterns):
 
 
 def render_structure(fs_source_root, fs_target_root, variables, verbose,
-        renderer, ignored_files):
+        renderer, ignored_files, ignored_directories):
     """Recursively copies the given filesystem path `fs_source_root_ to a target directory `fs_target_root`.
 
     Any files ending in `.bob` are rendered as templates using the given
@@ -63,11 +64,13 @@ def render_structure(fs_source_root, fs_target_root, variables, verbose,
     with values from the variables, i.e. a file named `+name+.py.bob` given a
     dictionary {'name': 'bar'} would be rendered as `bar.py`.
     """
-    ignored_files.extend(DEFAULT_IGNORED)
+    ignored_files.extend(DEFAULT_IGNORED_FILES)
+    ignored_directories.extend(DEFAULT_IGNORED_DIRECTORIES)
     if not isinstance(fs_source_root, six.text_type):  # pragma: no cover
         fs_source_root = six.u(fs_source_root)
-    for fs_source_dir, local_directories, local_files in os.walk(fs_source_root):
+    for fs_source_dir, local_directories, local_files in os.walk(fs_source_root, topdown=True):
         fs_target_dir = path.abspath(path.join(fs_target_root, path.relpath(fs_source_dir, fs_source_root)))
+        local_directories[:] = [d for d in local_directories if not matches_any(d, ignored_directories)]
         for local_file in local_files:
             if matches_any(local_file, ignored_files):
                 continue

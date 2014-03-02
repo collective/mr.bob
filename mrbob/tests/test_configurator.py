@@ -285,13 +285,21 @@ class ConfiguratorTest(unittest.TestCase):
         c.render()
         self.assertEqual(mocked_render_hook.mock_calls, [mock.call(c), mock.call(c)])
 
-    def test_ignored(self):
+    def test_ignored_files(self):
         c = self.call_FUT('mrbob.tests:templates/ignored',
                           self.target_dir,
                           {})
         self.assertEqual(len(c.ignored_files), 2)
         self.assertTrue('ignored' in c.ignored_files)
         self.assertTrue('*.txt' in c.ignored_files)
+
+    def test_ignored_directories(self):
+        c = self.call_FUT('mrbob.tests:templates/ignored_dirs',
+                          self.target_dir,
+                          {})
+        self.assertEqual(len(c.ignored_directories), 2)
+        self.assertTrue('ignored' in c.ignored_directories)
+        self.assertTrue('*_stuff' in c.ignored_directories)
 
 
 class QuestionTest(unittest.TestCase):

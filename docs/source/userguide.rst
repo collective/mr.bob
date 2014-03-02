@@ -202,16 +202,18 @@ don't do anything special besides providing readability.
 ``mr.bob`` section reference
 ****************************
 
-================  ===============================  =======================================================================
-  Parameter         Default                          Explanation
-================  ===============================  =======================================================================
-ignored_files     No patterns                      Multiple Unix-style patterns to specify which files should be ignored:
-                                                   for instance, to ignore, Vim swap files, specify ``*.swp``
-non_interactive   False                            Don't prompt for input. Fail if questions are required but not answered
-quiet             False                            Don't output anything except necessary
-remember_answers  False                            Write answers to ``.mrbob.ini`` file inside output directory
-verbose           False                            Output more information, useful for debugging
-================  ===============================  =======================================================================
+=====================  ===============================  =======================================================================
+  Parameter              Default                          Explanation
+=====================  ===============================  =======================================================================
+ignored_files          No patterns                      Multiple Unix-style patterns to specify which files should be ignored:
+                                                        for instance, to ignore Vim swap files, specify ``*.swp``
+ignored_directories    No patterns                      Multiple Unix-style patterns to specify which directories should be ignored:
+                                                        for instance, to ignore a Git directory, specify ``.git``
+non_interactive        False                            Don't prompt for input. Fail if questions are required but not answered
+quiet                  False                            Don't output anything except necessary
+remember_answers       False                            Write answers to ``.mrbob.ini`` file inside output directory
+verbose                False                            Output more information, useful for debugging
+=====================  ===============================  =======================================================================
 
 
 
