@@ -2,8 +2,8 @@ Changelog
 =========
 
 
-0.1.1 (unreleased)
------------------
+0.1.1 (2014-03-03)
+------------------
 
 - Claim Python 3.4 support
   [Domen Kožar]
