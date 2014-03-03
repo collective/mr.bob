@@ -106,6 +106,14 @@ def render_structure(
                 fs_target_file = path.join(
                     fs_target_dir_rendered,
                     render_filename(filename, variables))
+
+                # If the target exists, we need to clean it up first.
+                # We assume it's not a directory since performing a recursive
+                # delete would simply be too risky.
+                if path.islink(fs_target_file) or path.exists(fs_target_file):
+                    os.remove(fs_target_file)
+
+                # Create the symlink
                 if verbose:
                     print(
                         six.u("Symlinking file %s to %s") %
@@ -126,7 +134,9 @@ def render_structure(
             fs_target_subdir_rendered = render_filename(
                 fs_target_subdir, variables)
 
-            # If the target sub-directory doesn't exist, we create it
+            # If the target sub-directory doesn't exist, we create it.
+            # We assume that an existing directory symlink points to the right
+            # place since a recursive delete would be too risky.
             if not path.exists(fs_target_subdir_rendered):
 
                 # Source sub-directory is a symbolic link
