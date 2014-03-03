@@ -3,7 +3,13 @@ Changelog
 
 
 0.1.1 (unreleased)
-----------------
+-----------------
+
+- Claim Python 3.4 support
+  [Domen Kožar]
+
+- Fix encoding errors on Python 3 during installation
+  [Domen Kožar]
 
 - Use Jinja2 < 2.7 only for python 3.2
   [Domen Kožar]

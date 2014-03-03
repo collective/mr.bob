@@ -2,6 +2,7 @@
 
 import os
 import sys
+import codecs
 
 from setuptools import setup
 from setuptools import find_packages
@@ -34,13 +35,13 @@ except ImportError:
 
 
 def read(*rnames):
-    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+    return codecs.open(os.path.join(os.path.dirname(__file__), *rnames), 'r', 'utf-8').read()
 
 
 setup(name='mr.bob',
       version='0.2.dev0',
       description='Bob renders directory structure templates',
-      long_description=read('README.rst') + "\n" + read('HISTORY.rst'),
+      long_description=read('README.rst') + read('HISTORY.rst'),
       classifiers=[
           "Programming Language :: Python",
           "Programming Language :: Python :: Implementation :: CPython",
@@ -50,6 +51,7 @@ setup(name='mr.bob',
           "Programming Language :: Python :: 3",
           "Programming Language :: Python :: 3.2",
           "Programming Language :: Python :: 3.3",
+          "Programming Language :: Python :: 3.4",
       ],
       author='Domen Kozar, Tom Lazar',
       author_email='',
