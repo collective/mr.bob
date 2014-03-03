@@ -1,15 +1,21 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
 
 from setuptools import setup
 from setuptools import find_packages
 
 install_requires = [
     'setuptools',
-    'jinja2<2.7',  # 2.7 doesn't support python 3.2
     'six>=1.2.0',  # 1.1.0 release doesn't have six.moves.input
 ]
+
+if (3,) < sys.version_info < (3, 3):
+    # Jinja 2.7 drops Python 3.2 compat.
+    install_requires.append('Jinja2>=2.5.0,<2.7dev')
+else:
+    install_requires.append('Jinja2>=2.5.0')
 
 try:
     import importlib  # NOQA

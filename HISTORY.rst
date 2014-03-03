@@ -2,10 +2,11 @@ Changelog
 =========
 
 
-0.2 (unreleased)
+0.1.1 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Use Jinja2 < 2.7 only for python 3.2
+  [Domen Kožar]
 
 
 0.1 (2014-03-02)
@@ -15,6 +16,7 @@ Changelog
   [Jean-Philippe Camguilhem]
 
 - Use jinja2 < 2.7, since 2.7+ doesn't support Python 3.2
+  [Domen Kožar]
 
 - Filename variable name substitution regex failed to compile on windows
   [Domen Kožar]
