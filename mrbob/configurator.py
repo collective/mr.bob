@@ -340,5 +340,6 @@ class Question(object):
             print('\nExiting...')
             sys.exit(0)
 
-        print('')
+        if not non_interactive:
+            print('')
         return correct_answer

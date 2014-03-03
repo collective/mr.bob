@@ -122,7 +122,9 @@ def main(args=sys.argv[1:]):
 
     c = None
     if bobconfig['verbose']:
+        print('')
         print('Configuration provided:')
+        print('')
         print('[variables] from ~/.mrbob')
         for line in pretty_format_config(original_global_variables):
             print(line)
@@ -152,7 +154,6 @@ def main(args=sys.argv[1:]):
         print('[mr.bob] from command line interface')
         for line in pretty_format_config(cli_bobconfig):
             print(line)
-        print('\n')
 
     try:
         c = Configurator(template=options.template,
@@ -165,16 +166,24 @@ def main(args=sys.argv[1:]):
             return c.print_questions()
 
         if c.questions and not maybe_bool(bobconfig['quiet']):
-            print("Welcome to mr.bob interactive mode. Before we generate directory structure, some questions need to be answered.")
-            print("")
-            print("Answer with a question mark to display help.")
-            print("Values in square brackets at the end of the questions show the default value if there is no answer.")
-            print("\n")
+            if options.non_interactive:
+                print('')
+                print('Welcome to mr.bob non-interactive mode. Questions will be answered by default values or hooks.')
+                print('')
+            else:
+                print('')
+                print('Welcome to mr.bob interactive mode. Before we generate directory structure, some questions need to be answered.')
+                print('')
+                print('Answer with a question mark to display help.')
+                print('Values in square brackets at the end of the questions show the default value if there is no answer.')
+                print('\n')
             c.ask_questions()
-            print("")
+            if not options.non_interactive:
+                print('')
         c.render()
         if not maybe_bool(bobconfig['quiet']):
             print("Generated file structure at %s" % os.path.realpath(options.target_directory))
+            print('')
         return
     except TemplateConfigurationError as e:
         parser.error(six.u('TemplateConfigurationError: %s') % e.args[0])
