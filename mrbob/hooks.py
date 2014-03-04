@@ -1,7 +1,9 @@
 """Use any of hooks below or write your own. You are welcome to contribute them!"""
 
+import os
 import re
 import time
+import subprocess
 
 from .bobexceptions import ValidationError
 
@@ -139,6 +141,36 @@ def validate_regex(configurator, question, answer):
             'Value was not of the expected format (%s)' % regex)
 
 
+def validate_url(configurator, question, answer):
+    """
+    If you want to validate whether an answer is a valid HTTP/HTTPS URL, you
+    can use this function as :ref:`post-question-hook`:
+
+    .. code-block:: ini
+
+        [questions]
+        website.question = Please enter the URL where your website is located
+        website.post_ask_question = mrbob.hooks:validate_url
+
+    This code was adapted from Django's core.validators.URLValidator class.
+    """
+    url_schemes = ['http', 'https']
+    url_regex = re.compile(
+        r'(?:[a-z0-9\.\-]*)://'  # scheme is validated separately
+        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'  # domain...
+        r'localhost|'  # localhost...
+        r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|'  # ...or ipv4
+        r'\[?[A-F0-9]*:[A-F0-9:]+\]?)'  # ...or ipv6
+        r'(?::\d+)?'  # optional port
+        r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+
+    if (answer.split('://')[0].lower() in url_schemes and
+            re.match(url_regex, answer)):
+        return answer
+    else:
+        raise ValidationError('Value was not a valid URL')
+
+
 def set_current_datetime(configurator, question):
     """
     If you want to set the default answer of a question to the current
@@ -159,6 +191,23 @@ def set_current_datetime(configurator, question):
     """
     datetime_format = question.extra.get('datetime_format', '%Y-%m-%d')
     question.default = time.strftime(datetime_format)
+
+
+def set_target_dir_basename(configurator, question):
+    """
+    If you want to set the default answer of a question to the base name of
+    the target directory, then use this function as :ref:`pre-question-hook`:
+
+    .. code-block:: ini
+
+        [questions]
+        project.question = What is your project module name?
+        project.pre_ask_question = mrbob.hooks:set_target_dir_basename
+
+    For example, if your target directory is set to /home/user/project123,
+    then this will set the question default to project123.
+    """
+    question.default = os.path.basename(configurator.target_directory)
 
 
 def validate_datetime(configurator, question, answer):
@@ -186,6 +235,109 @@ def validate_datetime(configurator, question, answer):
     except ValueError:
         raise ValidationError(
             'Value was not a date in the format ' + datetime_format)
+
+
+def _run_script(configurator, script):
+    """
+    This helper function builds an environment based on the provided
+    configurator and then attempts to run the given script.
+
+    The function will search for scripts with relative paths in the target
+    directory first and in the template directory second.
+
+    Scripts are started with the working directory set to the target directory.
+
+    If the script is not found, it is ignored quietly.
+    """
+
+    # Prepare the environment variables
+    env = os.environ.copy()
+    for key, value in configurator.variables.items():
+        key_env = 'MRBOB_%s' % key.upper().replace('_', '').replace('.', '_')
+        env[key_env] = str(value)
+
+    # Determine the correct script to run first trying the target directory
+    # as the root, followed by the template directory next.
+    script_to_run = os.path.join(configurator.target_directory, script)
+    if not os.path.exists(script_to_run):
+        script_to_run = os.path.join(configurator.template_dir, script)
+
+    # Run the script if it exists
+    if os.path.exists(script_to_run):
+        proc = subprocess.Popen(
+            script_to_run, cwd=configurator.target_directory, env=env)
+        proc.wait()
+
+
+def run_pre_script(configurator):
+    """
+    If you want to run a chosen shell script or similar before rendering, you
+    use this function as :ref:`pre-render-hook`:
+
+    .. code-block:: ini
+
+        [template]
+        pre_render = mrbob.hooks:run_pre_script
+        pre_script = /usr/local/bin/thescript.sh
+
+    If an absolute path is not specified, mr.bob will attempt to run the
+    script specified from the template directory.
+
+    The script will be run with the working directory set to the root of the
+    target directory.
+
+    A special set of mr.bob environment variables will be made available to
+    your script which expose all the variables and their answers.  Variable
+    names are transformed as follows to comply with the limitations
+    of shell variable names:
+
+    - All underscores will be removed from variable names
+    - The dot separators will be transformed into underscores
+    - All variable names will have MRBOB_ prepended to their name
+    - The variables will be in uppercase
+
+    For example, **author.full_name** will become **MRBOB_AUTHOR_FULLNAME**.
+
+    You may use the following basic shell script to easily see the variables
+    your configuration has made available.
+
+    .. code-block:: bash
+
+        #!/bin/bash
+        env | grep ^MRBOB
+
+    """
+    pre_script = configurator.templateconfig.get('pre_script')
+
+    # If no script location has been provided, then we have nothing to do
+    if not pre_script:
+        return
+
+    _run_script(configurator, pre_script)
+
+
+def run_post_script(configurator):
+    """
+    If you want to run a chosen shell script or similar after rendering, you
+    use this function as :ref:`post-render-hook`:
+
+    .. code-block:: ini
+
+        [template]
+        post_render = mrbob.hooks:run_post_script
+        post_script = ./setup.sh
+
+    The run_post_script hook works exactly like **run_pre_script**.  Please
+    refer to its documentation for further information.
+
+    """
+    post_script = configurator.templateconfig.get('post_script')
+
+    # If no script location has been provided, then we have nothing to do
+    if not post_script:
+        return
+
+    _run_script(configurator, post_script)
 
 
 def show_message(configurator):

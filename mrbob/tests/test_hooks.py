@@ -1,6 +1,7 @@
 from unittest import TestCase
 import mock
 import time
+import os
 
 from ..configurator import Question
 from .test_configurator import DummyConfigurator
@@ -133,6 +134,23 @@ class validate_regexTest(TestCase):
         self.assertEquals(self.call_FUT('abc123', question=q), 'abc123')
 
 
+class validate_urlTest(TestCase):
+
+    def call_FUT(self, answer, configurator=None, question=None):
+        from ..hooks import validate_url
+        return validate_url(
+            configurator or DummyConfigurator(), question, answer)
+
+    def test_validate_url(self):
+        self.assertEquals(
+            self.call_FUT('http://www.google.com/search'),
+            'http://www.google.com/search')
+
+    def test_validate_url_wrong_input(self):
+        from ..bobexceptions import ValidationError
+        self.assertRaises(ValidationError, self.call_FUT, 'Wr0ng')
+
+
 class set_current_datetimeTest(TestCase):
 
     def call_FUT(self, configurator=None, question=None):
@@ -149,6 +167,20 @@ class set_current_datetimeTest(TestCase):
         q = Question(name='dummy', question='dummy', datetime_format='%Y')
         self.call_FUT(question=q)
         self.assertEquals(q.default, time.strftime('%Y'))
+
+
+class set_target_dir_basenameTest(TestCase):
+
+    def call_FUT(self, configurator=None, question=None):
+        from ..hooks import set_target_dir_basename
+        return set_target_dir_basename(
+            configurator or DummyConfigurator(), question)
+
+    def test_set_target_dir_basename(self):
+        q = Question(name='dummy', question='dummy')
+        c = DummyConfigurator(target_directory='/home/bob/my_new_project')
+        self.call_FUT(c, q)
+        self.assertEquals(q.default, 'my_new_project')
 
 
 class validate_datetimeTest(TestCase):
@@ -177,6 +209,144 @@ class validate_datetimeTest(TestCase):
         from ..bobexceptions import ValidationError
         q = Question(name='dummy', question='dummy', datetime_format='%Y')
         self.assertRaises(ValidationError, self.call_FUT, 'foo', None, q)
+
+
+class run_pre_scriptTest(TestCase):
+
+    def setUp(self):
+        import mrbob
+        mrbob_dir = os.path.dirname(mrbob.__file__)
+        self.dir_with_script_1 = os.path.abspath(
+            os.path.join(mrbob_dir, 'tests', 'templates', 'scripthere1'))
+        self.dir_with_script_2 = os.path.abspath(
+            os.path.join(mrbob_dir, 'tests', 'templates', 'scripthere2'))
+        self.dir_no_script = os.path.abspath(
+            os.path.join(mrbob_dir, 'tests', 'templates', 'scriptempty'))
+
+    def tearDown(self):
+        for dir in [self.dir_with_script_1, self.dir_with_script_2,
+                    self.dir_no_script]:
+            if os.path.exists(os.path.join(dir, 'pre_coolbob_1.out')):
+                os.remove(os.path.join(dir, 'pre_coolbob_1.out'))
+            if os.path.exists(os.path.join(dir, 'pre_file_2.out')):
+                os.remove(os.path.join(dir, 'pre_file_2.out'))
+
+    def call_FUT(self, configurator=None):
+        from ..hooks import run_pre_script
+        return run_pre_script(configurator)
+
+    def test_run_pre_script_missing(self):
+        c = DummyConfigurator(
+            template_dir=self.dir_with_script_1,
+            target_directory=self.dir_no_script)
+        self.call_FUT(c)
+        self.assertFalse(
+            os.path.exists(
+                os.path.join(self.dir_no_script, 'pre_coolbob_1.out')))
+        self.assertFalse(
+            os.path.exists(
+                os.path.join(self.dir_no_script, 'pre_file_2.out')))
+
+    def test_run_pre_script_template_dir(self):
+        c = DummyConfigurator(
+            templateconfig={'pre_script': 'script_pre.sh'},
+            variables={'testvar': 'coolbob'},
+            template_dir=self.dir_with_script_1,
+            target_directory=self.dir_no_script)
+        self.call_FUT(c)
+        self.assertTrue(
+            os.path.exists(
+                os.path.join(self.dir_no_script, 'pre_coolbob_1.out')))
+
+    def test_run_pre_script_target_dir(self):
+        c = DummyConfigurator(
+            templateconfig={'pre_script': 'script_pre.sh'},
+            variables={'testvar': 'coolbob'},
+            template_dir=self.dir_no_script,
+            target_directory=self.dir_with_script_1)
+        self.call_FUT(c)
+        self.assertTrue(
+            os.path.exists(
+                os.path.join(self.dir_with_script_1, 'pre_coolbob_1.out')))
+
+    def test_run_pre_script_both_dirs(self):
+        c = DummyConfigurator(
+            templateconfig={'pre_script': 'script_pre.sh'},
+            template_dir=self.dir_with_script_1,
+            target_directory=self.dir_with_script_2)
+        self.call_FUT(c)
+        self.assertTrue(
+            os.path.exists(
+                os.path.join(self.dir_with_script_2, 'pre_file_2.out')))
+
+
+class run_post_scriptTest(TestCase):
+
+    def setUp(self):
+        import mrbob
+        mrbob_dir = os.path.dirname(mrbob.__file__)
+        self.dir_with_script_1 = os.path.abspath(
+            os.path.join(mrbob_dir, 'tests', 'templates', 'scripthere1'))
+        self.dir_with_script_2 = os.path.abspath(
+            os.path.join(mrbob_dir, 'tests', 'templates', 'scripthere2'))
+        self.dir_no_script = os.path.abspath(
+            os.path.join(mrbob_dir, 'tests', 'templates', 'scriptempty'))
+
+    def tearDown(self):
+        for dir in [self.dir_with_script_1, self.dir_with_script_2,
+                    self.dir_no_script]:
+            if os.path.exists(os.path.join(dir, 'post_coolbob_1.out')):
+                os.remove(os.path.join(dir, 'post_coolbob_1.out'))
+            if os.path.exists(os.path.join(dir, 'post_file_2.out')):
+                os.remove(os.path.join(dir, 'post_file_2.out'))
+
+    def call_FUT(self, configurator=None):
+        from ..hooks import run_post_script
+        return run_post_script(configurator)
+
+    def test_run_post_script_missing(self):
+        c = DummyConfigurator(
+            template_dir=self.dir_with_script_1,
+            target_directory=self.dir_no_script)
+        self.call_FUT(c)
+        self.assertFalse(
+            os.path.exists(
+                os.path.join(self.dir_no_script, 'post_coolbob_1.out')))
+        self.assertFalse(
+            os.path.exists(
+                os.path.join(self.dir_no_script, 'post_file_2.out')))
+
+    def test_run_post_script_template_dir(self):
+        c = DummyConfigurator(
+            templateconfig={'post_script': 'script_post.sh'},
+            variables={'testvar': 'coolbob'},
+            template_dir=self.dir_with_script_1,
+            target_directory=self.dir_no_script)
+        self.call_FUT(c)
+        self.assertTrue(
+            os.path.exists(
+                os.path.join(self.dir_no_script, 'post_coolbob_1.out')))
+
+    def test_run_post_script_target_dir(self):
+        c = DummyConfigurator(
+            templateconfig={'post_script': 'script_post.sh'},
+            variables={'testvar': 'coolbob'},
+            template_dir=self.dir_no_script,
+            target_directory=self.dir_with_script_1)
+        self.call_FUT(c)
+        self.assertTrue(
+            os.path.exists(
+                os.path.join(self.dir_with_script_1, 'post_coolbob_1.out')))
+
+    def test_run_post_script_both_dirs(self):
+        c = DummyConfigurator(
+            templateconfig={'post_script': 'script_post.sh'},
+            template_dir=self.dir_with_script_1,
+            target_directory=self.dir_with_script_2)
+        self.call_FUT(c)
+        self.assertTrue(
+            os.path.exists(
+                os.path.join(self.dir_with_script_2, 'post_file_2.out')))
 
 
 class show_messageTest(TestCase):

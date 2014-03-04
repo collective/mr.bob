@@ -43,16 +43,20 @@ def dummy_question_hook_skipquestion(configurator, question):  # pragma: no cove
 
 class DummyConfigurator(object):
     def __init__(self,
-                 defaults=None,
-                 bobconfig=None,
-                 templateconfig=None,
-                 variables=None,
+                 defaults={},
+                 bobconfig={},
+                 templateconfig={},
+                 template_dir='',
+                 target_directory='',
+                 variables={},
                  quiet=False):
-        self.defaults = defaults or {}
-        self.bobconfig = bobconfig or {}
-        self.variables = variables or {}
+        self.defaults = defaults
+        self.bobconfig = bobconfig
+        self.templateconfig = templateconfig
+        self.template_dir = template_dir
+        self.target_directory = target_directory
+        self.variables = variables
         self.quiet = quiet
-        self.templateconfig = templateconfig or {}
 
 
 class resolve_dotted_pathTest(unittest.TestCase):
