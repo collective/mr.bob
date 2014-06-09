@@ -57,13 +57,13 @@ Or from a package::
 
     $ mrbob some.package:template_folder/
 
-Or from a zip file::
+Or from a downloaded zip file::
 
-    $ mrbob https://github.com/iElectric/mr.bob/zipball/master
+    $ mrbob https://example.com/templates/mytemplate.zip
 
 Or from a relative path in a zip file::
 
-    $ mrbob https://github.com/iElectric/mr.bob/zipball/master#mrbob/template_sample
+    $ mrbob https://github.com/iElectric/mr.bob/archive/master.zip#mr.bob-master/mrbob/template_sample
 
 
 Sample template to try out

@@ -74,9 +74,9 @@ def validate_choices(configurator, question, answer):
         [questions]
         license.question = What license would you like to use?
         license.post_ask_question = mrbob.hooks:validate_choices
-        license.choices = MIT;BSD;Apache 2.0;Other
+        license.choices = MIT|BSD|Apache 2.0|Other
         license.choices_case_sensitive = yes
-        license.choices_delimiter = ;
+        license.choices_delimiter = |
 
     Currently choices are split using whitespace by default. If you wish to
     have whitespace within each choice, you may specify a custom delimiter
@@ -149,10 +149,13 @@ def set_current_datetime(configurator, question):
         [questions]
         project.question = What year was the project started?
         project.pre_ask_question = mrbob.hooks:set_current_datetime
-        project.datetime_format = %Y
+        project.datetime_format = %%Y
 
     The datetime_format property should be of the standard Python strftime
     format.  It defaults to YYYY-MM-DD if not specified.
+
+    Please note that you'll have to escape the % character (by using %%)
+    due to the fact it's a special character in INI files.
 
     See the following URL for more information:
     http://docs.python.org/2/library/datetime.html#strftime-and-strptime-behavior
@@ -171,10 +174,13 @@ def validate_datetime(configurator, question, answer):
         [questions]
         project.question = What year was the project started?
         project.post_ask_question = mrbob.hooks:validate_datetime
-        project.datetime_format = %Y
+        project.datetime_format = %%Y
 
     The datetime_format property should be of the standard Python strftime
     format.  It defaults to YYYY-MM-DD if not specified.
+
+    Please note that you'll have to escape the % character (by using %%)
+    due to the fact it's a special character in INI files.
 
     See the following URL for more information:
     http://docs.python.org/2/library/datetime.html#strftime-and-strptime-behavior
