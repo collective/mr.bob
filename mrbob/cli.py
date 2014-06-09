@@ -56,14 +56,6 @@ parser.add_argument('-q', '--quiet',
                     action="store_true",
                     default=False,
                     help='Suppress all but necessary output')
-#parser.add_argument('--dry-run',
-                  #dest='simulate',
-                  #action='store_true',
-                  #help='Simulate but do no work')
-#parser.add_argument('--overwrite',
-                  #dest='overwrite',
-                  #action='store_true',
-                  #help='Always overwrite')
 
 
 def main(args=sys.argv[1:]):
@@ -132,9 +124,9 @@ def main(args=sys.argv[1:]):
         for line in pretty_format_config(file_variables):
             print(line)
         # TODO: implement variables on cli
-        #print('[variables] from command line interface')
-        #for line in pretty_format_config(file_variables):
-        #    print(line)
+        # print('[variables] from command line interface')
+        # for line in pretty_format_config(file_variables):
+        #     print(line)
         print('[defaults] from ~/.mrbob')
         for line in pretty_format_config(original_global_defaults):
             print(line)
@@ -142,9 +134,9 @@ def main(args=sys.argv[1:]):
         for line in pretty_format_config(file_defaults):
             print(line)
         # TODO: implement defaults on cli
-        #print('[defaults] from command line interface')
-        #for line in pretty_format_config(file_defaults):
-        #    print(line)
+        # print('[defaults] from command line interface')
+        # for line in pretty_format_config(file_defaults):
+        #     print(line)
         print('[mr.bob] from ~/.mrbob')
         for line in pretty_format_config(original_global_bobconfig):
             print(line)
