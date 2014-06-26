@@ -223,6 +223,31 @@ Collection of community managed templates
 You are encouraged to use the ``bobtemplates.something`` Python egg namespace to write
 templates and contribute them to this list by making a `pull request <https://github.com/iElectric/mr.bob>`_.
 
+For that, you could use template_starter wich will provide you an egg ``bobtemplates.something`` skeleton.
+
+::
+ 
+     bin/mrbob -O bobtemplates.something mrbob:template_starter
+     Welcome to mr.bob interactive mode. Before we generate directory structure, some questions need to be answered.
+
+     Answer with a question mark to display help.
+     Values in square brackets at the end of the questions show the default value if there is no answer.
+
+
+     --> Package Name: something
+
+     --> Description: A very cool bobtemplates package
+
+     --> Author: me
+
+     --> Author Email: me@domain.tld
+
+     --> Zip-Safe [n/y] [n]:
+
+     Generated file structure at current_path/bobtemplates.something
+
+
 - `bobtemplates.ielectric <https://github.com/iElectric/bobtemplates.ielectric>`_
 - `bobtemplates.kotti <https://github.com/Kotti/bobtemplates.kotti>`_
 - `bobtemplates.niteoweb <https://github.com/niteoweb/bobtemplates.niteoweb>`_
+- `bobtemplates.jpcw <https://github.com/jpcw/bobtemplates.jpcw>`_

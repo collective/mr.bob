@@ -8,16 +8,16 @@ Starting
 Writing your own template is as easy as creating a `.mrbob.ini` that may contain questions.
 Everything else is extra. To start quickly, use the template starter that ships with `mr.bob`::
 
-  $ mrbob mrbob:template_starter/
+  $ mrbob mrbob:template_sample
   Welcome to mr.bob interactive mode. Before we generate directory structure, some questions need to be answered.
 
   Answer with a question mark to display help.
   Value in square brackets at the end of the questions present default value if there is no answer.
 
 
-  --> How old are you? [24]:
+  --> What is your name?: 
 
-  --> What is your name?: Foobar
+  --> How old are you? [24]:
 
   --> Enter password:
 

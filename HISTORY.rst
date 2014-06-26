@@ -24,6 +24,9 @@ Changelog
 0.1 (2014-03-02)
 ----------------
 
+- add bobtemplates starter
+  [Jean-Philippe Camguilhem]
+
 - move exceptions to bobexceptions
   [Jean-Philippe Camguilhem]
 
