@@ -226,3 +226,4 @@ templates and contribute them to this list by making a `pull request <https://gi
 - `bobtemplates.ielectric <https://github.com/iElectric/bobtemplates.ielectric>`_
 - `bobtemplates.kotti <https://github.com/Kotti/bobtemplates.kotti>`_
 - `bobtemplates.niteoweb <https://github.com/niteoweb/bobtemplates.niteoweb>`_
+- `bobtemplates.plone <https://github.com/collective/bobtemplates.plone>`_
