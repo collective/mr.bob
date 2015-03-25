@@ -12,8 +12,7 @@ Setup developer environment
     $ cd mrbob
     $ virtualenv .
     $ source bin/activate
-    $ python setup.py develop
-    $ easy_install mr.bob[test,development]
+    $ pip install -e . [test,development]
     $ mrbob --help
 
 
