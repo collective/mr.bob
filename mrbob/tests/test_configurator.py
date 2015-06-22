@@ -14,6 +14,7 @@ mocked_post_ask_question = mock.Mock()
 mocked_post_ask_question_validationerror = mock.Mock()
 mocked_post_ask_question_validationerror_non_interactive = mock.Mock()
 mocked_render_hook = mock.Mock()
+mocked_ask_hook = mock.Mock()
 
 
 def dummy_prompt(value):  # pragma: no cover
@@ -228,6 +229,17 @@ class ConfiguratorTest(unittest.TestCase):
         c.variables = {}
         c.ask_questions()
         self.assertEquals(c.variables, {})
+
+    def test_pre_post_ask_hooks_multiple(self):
+        c = self.call_FUT(
+            'mrbob.tests:templates/ask_hooks',
+            self.target_dir,
+            {},
+        )
+        self.assertEqual(c.pre_ask, [dummy_render_hook, mocked_ask_hook])
+        self.assertEqual(c.post_ask, [dummy_render_hook, mocked_ask_hook])
+        c.ask_questions()
+        self.assertEqual(mocked_ask_hook.mock_calls, [mock.call(c), mock.call(c)])
 
     def test_ask_questions_missing(self):
         from ..configurator import Question

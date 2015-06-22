@@ -171,6 +171,8 @@ class Configurator(object):
         self.templateconfig = self.config['template']
         self.post_render = [resolve_dotted_func(f) for f in self.templateconfig.get('post_render', '').split()]
         self.pre_render = [resolve_dotted_func(f) for f in self.templateconfig.get('pre_render', '').split()]
+        self.post_ask = [resolve_dotted_func(f) for f in self.templateconfig.get('post_ask', '').split()]
+        self.pre_ask = [resolve_dotted_func(f) for f in self.templateconfig.get('pre_ask', '').split()]
         self.renderer = resolve_dotted_func(
             self.templateconfig.get('renderer', 'mrbob.rendering:jinja2_renderer'))
 
@@ -220,10 +222,16 @@ class Configurator(object):
     def ask_questions(self):
         """Loops through questions and asks for input if variable is not yet set.
         """
+        if self.pre_ask:
+            for f in self.pre_ask:
+                f(self)
         # TODO: if users want to manipulate questions order, this is curently not possible.
         for question in self.questions:
             if question.name not in self.variables:
                 self.variables[question.name] = question.ask(self)
+        if self.post_ask:
+            for f in self.post_ask:
+                f(self)
 
 
 class Question(object):
