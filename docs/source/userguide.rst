@@ -78,11 +78,11 @@ Sample template to try out
     Value in square brackets at the end of the questions present default value if there is no answer.
 
 
-    --> How old are you? [24]: 
+    --> How old are you? [24]:
 
     --> What is your name?: Foobar
 
-    --> Enter password: 
+    --> Enter password:
 
 
     Generated file structure at /current/directory/
@@ -227,3 +227,4 @@ templates and contribute them to this list by making a `pull request <https://gi
 - `bobtemplates.kotti <https://github.com/Kotti/bobtemplates.kotti>`_
 - `bobtemplates.niteoweb <https://github.com/niteoweb/bobtemplates.niteoweb>`_
 - `bobtemplates.plone <https://github.com/collective/bobtemplates.plone>`_
+- `bobtemplates.gillux <https://github.com/glenfant/bobtemplates.gillux>`_
