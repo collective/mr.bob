@@ -5,7 +5,8 @@ Changelog
 0.2 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Add pre_ask and post_ask hooks.
+  [Godefroid Chapelle]
 
 
 0.1.1 (2014-03-03)
