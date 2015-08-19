@@ -8,6 +8,9 @@ Changelog
 - Add pre_ask and post_ask hooks.
   [Godefroid Chapelle]
 
+- Upload tarball instead of zipfile to fix unicode errors
+  during installation [Domen Kožar]
+
 
 0.1.1 (2014-03-03)
 ------------------
