@@ -4,6 +4,7 @@ import os
 import re
 import sys
 import readline
+import chardet
 try:  # pragma: no cover
     from urllib import urlretrieve  # NOQA
 except ImportError:  # pragma: no cover
@@ -300,6 +301,9 @@ class Question(object):
 
                 # prepare question
                 if self.default:
+                    if not isinstance(self.default, unicode):
+                        encoding = chardet.detect(self.default)['encoding']
+                        self.default = self.default.decode(encoding)
                     question = six.u("--> %s [%s]: ") % (self.question, self.default)
                 else:
                     question = six.u("--> %s: ") % self.question

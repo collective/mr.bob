@@ -10,6 +10,7 @@ from setuptools import find_packages
 install_requires = [
     'setuptools',
     'six>=1.2.0',  # 1.1.0 release doesn't have six.moves.input
+    'chardet>=2.3.0',
 ]
 
 if (3,) < sys.version_info < (3, 3):
