@@ -148,6 +148,8 @@ def main(args=sys.argv[1:]):
             print(line)
 
     try:
+        sys.path.append(os.path.abspath(options.template))
+
         c = Configurator(template=options.template,
             target_directory=options.target_directory,
             bobconfig=bobconfig,
