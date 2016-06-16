@@ -203,7 +203,7 @@ def show_message(configurator):
 
         [template]
         post_render = mrbob.hooks:show_message
-        message = Well done, %(author.name)s, your code is ready!
+        message = Well done, %%(author.name)s, your code is ready!
 
     As shown above, you can use standard Python formatting in ``post_render_msg``.
     """
