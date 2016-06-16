@@ -19,11 +19,17 @@ jinja2_env = Environment(
     undefined=StrictUndefined,
 )
 
-jinja2_renderer = lambda s, v: jinja2_env.from_string(s).render(parse_variables(v))
-python_formatting_renderer = lambda s, v: s % v
 
 DEFAULT_IGNORED_FILES = ['.mrbob.ini', '.DS_Store']
 DEFAULT_IGNORED_DIRECTORIES = []
+
+
+def jinja2_renderer(s, v):
+    return jinja2_env.from_string(s).render(parse_variables(v))
+
+
+def python_formatting_renderer(s, v):
+    return s % v
 
 
 def parse_variables(variables):

@@ -11,7 +11,7 @@ except ImportError:  # pragma: no cover
     from urllib.request import urlretrieve  # NOQA
 import tempfile
 from zipfile import ZipFile, is_zipfile
-readline  # make pyflakes happy, readline makes interactive mode keep history
+readline  # NOQA: make pyflakes happy, readline makes interactive mode keep history
 
 import six
 from importlib import import_module
