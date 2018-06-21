@@ -227,8 +227,7 @@ class Configurator(object):
                 f(self)
         # TODO: if users want to manipulate questions order, this is curently not possible.
         for question in self.questions:
-            if question.name not in self.variables:
-                self.variables[question.name] = question.ask(self)
+            self.variables[question.name] = question.ask(self)
         if self.post_ask:
             for f in self.post_ask:
                 f(self)
@@ -320,6 +319,8 @@ class Question(object):
 
                 if answer:
                     correct_answer = answer
+                elif non_interactive and configurator.variables.get(self.name):
+                    correct_answer = configurator.variables[self.name]
                 # if we don't have an answer, take default
                 elif self.default is not None:
                     correct_answer = maybe_bool(self.default)
