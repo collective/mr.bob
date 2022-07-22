@@ -89,7 +89,7 @@ def write_config(fs_config, section, data):
 
 def update_config(first_config, second_config):
     for k, v in second_config.items():
-        if isinstance(v, collections.Mapping):
+        if isinstance(v, collections.abc.Mapping):
             r = update_config(first_config.get(k, {}), v)
             first_config[k] = r
         else:
