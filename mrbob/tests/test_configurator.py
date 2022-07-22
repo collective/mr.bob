@@ -6,7 +6,7 @@ import sys
 import tempfile
 import shutil
 import six
-import mock
+from unittest import mock
 
 
 mocked_pre_ask_question = mock.Mock()
