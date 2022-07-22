@@ -3,14 +3,11 @@ import os
 import unittest
 import tempfile
 import codecs
-try:  # pragma: no cover
-    from collections import OrderedDict  # NOQA
-except ImportError:  # pragma: no cover
-    from ordereddict import OrderedDict  # NOQA
+from collections import OrderedDict  # NOQA
 
 import six
 
-import mock
+from unittest import mock
 
 
 class parse_configTest(unittest.TestCase):
