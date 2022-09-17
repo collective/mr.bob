@@ -2,10 +2,11 @@ Changelog
 =========
 
 
-0.1.3 (unreleased)
+0.2.0 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Support for Python 3.10, drop Python 2 support.
+  [pbauer]
 
 
 0.1.2 (2015-08-19)

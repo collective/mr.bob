@@ -7,7 +7,7 @@ import os
 import stat
 import unittest
 
-import mock
+from unittest import mock
 import six
 
 

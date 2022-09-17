@@ -2,7 +2,7 @@ import unittest
 import tempfile
 import os
 import shutil
-import mock
+from unittest import mock
 import pkg_resources
 
 
