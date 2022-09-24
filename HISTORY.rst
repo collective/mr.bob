@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-0.2.0 (unreleased)
+1.0.0 (2022-09-24)
 ------------------
 
 - Support for Python 3.10, drop Python 2 support.
