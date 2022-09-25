@@ -5,7 +5,8 @@ Changelog
 1.0.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Improved handling of symbolic links for both files and directories
+  [Fotis Gimian]
 
 
 1.0.0 (2022-09-24)
