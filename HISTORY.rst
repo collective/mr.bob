@@ -5,7 +5,8 @@ Changelog
 1.0.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add support for Python 3.12
+  [pbauer]
 
 
 1.0.0 (2022-09-24)
@@ -83,7 +84,7 @@ Changelog
 0.1a9 (2013-04-26)
 ------------------
 
-- Regex to detect variable names when rendering file names was broken when 
+- Regex to detect variable names when rendering file names was broken when
   directory path contains pluses.
   [Godefroid Chapelle]
 
@@ -143,7 +144,7 @@ Changelog
 
 - Added ``pre_ask_question`` and ``post_ask_question`` to ``[questions]`` section
   [Domen Kožar]
-  
+
 - Added ``pre_render``, ``post_render`` and  ``post_render_msg`` options
   [Domen Kožar]
 
