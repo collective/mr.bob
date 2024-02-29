@@ -43,6 +43,7 @@ setup(
     url="https://github.com/collective/mr.bob.git",
     license="BSD",
     packages=find_packages(),
+    python_requires=">=3.7",
     install_requires=install_requires,
     extras_require={
         "test": [
