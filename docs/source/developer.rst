@@ -8,7 +8,7 @@ Setup developer environment
 
 ::
 
-    $ git clone https://github.com/domenkozar/mr.bob.git
+    $ git clone https://github.com/collective/mr.bob.git
     $ cd mrbob
     $ virtualenv .
     $ source bin/activate
