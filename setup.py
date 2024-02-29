@@ -40,7 +40,7 @@ setup(
     keywords="template skeleton",
     author="Domen Kozar, Tom Lazar",
     author_email="",
-    url="https://github.com/collective/mr.bob.git",
+    url="https://github.com/collective/mr.bob",
     license="BSD",
     packages=find_packages(),
     python_requires=">=3.7",
