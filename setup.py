@@ -7,7 +7,7 @@ from setuptools import setup
 from setuptools import find_packages
 
 install_requires = [
-    "setuptools",
+    "setuptools<82.0.0",
     "six",
     "Jinja2",
 ]
