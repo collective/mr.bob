@@ -8,7 +8,6 @@ import shutil
 import six
 from unittest import mock
 
-
 mocked_pre_ask_question = mock.Mock()
 mocked_post_ask_question = mock.Mock()
 mocked_post_ask_question_validationerror = mock.Mock()

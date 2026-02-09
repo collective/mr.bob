@@ -71,8 +71,7 @@ class TestCLI(unittest.TestCase):
         globalconfig = tempfile.mkstemp()[1]
         mock_expanduser.return_value = globalconfig
         with open(globalconfig, "w") as f:
-            f.write(
-                """
+            f.write("""
 [mr.bob]
 only_global = glob
 overriden_by_file = foo
@@ -85,14 +84,12 @@ overriden_by_file = file
 only_global_2 = glob2
 overriden_by_file_2 = file1
 
-                    """
-            )
+                    """)
 
         # config file
         tempconfig = tempfile.mkstemp()[1]
         with open(tempconfig, "w") as f:
-            f.write(
-                """
+            f.write("""
 [mr.bob]
 only_file = file
 overriden_by_file = file1
@@ -104,8 +101,7 @@ overriden_by_file = file1
 [defaults]
 only_file_2 = file1
 overriden_by_file_2 = file2
-                    """
-            )
+                    """)
 
         template_dir = os.path.join(
             os.path.dirname(__file__), "templates", "multiconfig"
