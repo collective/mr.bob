@@ -3,7 +3,7 @@ import tempfile
 import os
 import shutil
 from unittest import mock
-import pkg_resources
+import importlib.metadata
 
 
 class TestCLI(unittest.TestCase):
@@ -20,7 +20,7 @@ class TestCLI(unittest.TestCase):
 
     def test_version(self):
         output = self.call_FUT("--version")
-        version = pkg_resources.get_distribution("mr.bob").version
+        version = importlib.metadata.version("mr.bob")
         self.assertEqual(output, version)
 
     def test_no_template_name(self):

@@ -1,6 +1,6 @@
 """Command line interface to mr.bob"""
 
-import pkg_resources
+import importlib.metadata
 import sys
 import os
 import shutil
@@ -64,7 +64,7 @@ def main(args=sys.argv[1:]):
     options = parser.parse_args(args=args)
 
     if options.version:
-        version = pkg_resources.get_distribution('mr.bob').version
+        version = importlib.metadata.version("mr.bob")
         return version
 
     if not options.template:
