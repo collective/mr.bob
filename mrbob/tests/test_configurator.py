@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import unittest
 import os
+import shutil
 import sys
 import tempfile
-import shutil
-import six
+import unittest
 from unittest import mock
+
+import six
 
 mocked_pre_ask_question = mock.Mock()
 mocked_post_ask_question = mock.Mock()

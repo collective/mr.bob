@@ -2,35 +2,37 @@
 
 import os
 import re
-import sys
 import readline
+import sys
+from importlib import import_module
+
+import six
+
+from .bobexceptions import (
+    ConfigurationError,
+    SkipQuestion,
+    TemplateConfigurationError,
+    ValidationError,
+)
+from .parsing import (
+    parse_config,
+    pretty_format_config,
+    update_config,
+    write_config,
+)
+from .rendering import render_structure
 
 try:  # pragma: no cover
-    from urllib import urlretrieve  # NOQA
+    from urllib import urlretrieve  # noqa
 except ImportError:  # pragma: no cover
     # PY3K
-    from urllib.request import urlretrieve  # NOQA
+    from urllib.request import urlretrieve  # noqa
 import tempfile
 from zipfile import ZipFile, is_zipfile
 
-readline  # NOQA: make pyflakes happy, readline makes interactive mode keep history
+# make pyflakes happy, readline makes interactive mode keep history
+readline  # noqa
 
-import six
-from importlib import import_module
-
-from .rendering import render_structure
-from .parsing import (
-    parse_config,
-    write_config,
-    update_config,
-    pretty_format_config,
-)
-from .bobexceptions import (
-    ConfigurationError,
-    TemplateConfigurationError,
-    SkipQuestion,
-    ValidationError,
-)
 
 DOTTED_REGEX = re.compile(r"^[a-zA-Z_.]+:[a-zA-Z_.]+$")
 
@@ -286,7 +288,7 @@ class Question(object):
         pre_ask_question="",
         post_ask_question="",
         help="",
-        **extra
+        **extra,
     ):
         self.name = name
         self.question = question

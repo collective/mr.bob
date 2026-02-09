@@ -1,12 +1,12 @@
-from os import path
-from shutil import copy2
 import codecs
 import fnmatch
 import os
 import re
-import six
 import stat
+from os import path
+from shutil import copy2
 
+import six
 from jinja2 import Environment, StrictUndefined
 
 jinja2_env = Environment(

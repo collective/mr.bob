@@ -1,6 +1,5 @@
-from unittest import TestCase
-from unittest import mock
 import time
+from unittest import TestCase, mock
 
 from ..configurator import Question
 from .test_configurator import DummyConfigurator

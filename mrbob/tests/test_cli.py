@@ -1,9 +1,9 @@
-import unittest
-import tempfile
+import importlib.metadata
 import os
 import shutil
+import tempfile
+import unittest
 from unittest import mock
-import importlib.metadata
 
 
 class TestCLI(unittest.TestCase):

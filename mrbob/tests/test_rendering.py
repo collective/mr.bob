@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from shutil import rmtree
-from tempfile import mkdtemp
 import codecs
 import os
 import stat
 import unittest
-
+from shutil import rmtree
+from tempfile import mkdtemp
 from unittest import mock
+
 import six
 
 
@@ -33,8 +33,7 @@ class render_structureTest(unittest.TestCase):
         ignored_files=[],
         ignored_directories=[],
     ):
-        from ..rendering import render_structure
-        from ..rendering import jinja2_renderer
+        from ..rendering import jinja2_renderer, render_structure
 
         if output_dir is None:
             output_dir = self.fs_tempdir
@@ -218,8 +217,7 @@ class render_templateTest(unittest.TestCase):
     def call_FUT(
         self, template, variables, output_dir=None, verbose=False, renderer=None
     ):
-        from ..rendering import render_template
-        from ..rendering import python_formatting_renderer
+        from ..rendering import python_formatting_renderer, render_template
 
         if output_dir is None:
             output_dir = self.fs_tempdir
@@ -311,6 +309,7 @@ class render_templateTest(unittest.TestCase):
 
     def test_render_namespace_missing_key_jinja2(self):
         from jinja2 import UndefinedError
+
         from ..rendering import jinja2_renderer
 
         t = os.path.join(self.fs_templates, "missing_namespace_key/foo_jinja2.bob")
@@ -321,6 +320,7 @@ class render_templateTest(unittest.TestCase):
 
     def test_jinja2_strict_undefined(self):
         from jinja2 import UndefinedError
+
         from ..rendering import jinja2_renderer
 
         t = os.path.join(self.fs_templates, "strict_undefined.bob")

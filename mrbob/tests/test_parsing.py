@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
-import os
-import unittest
-import tempfile
 import codecs
-from collections import OrderedDict  # NOQA
+import os
+import tempfile
+import unittest
+from collections import OrderedDict  # noqa
+from unittest import mock
 
 import six
 
-from unittest import mock
-
 
 class parse_configTest(unittest.TestCase):
-
     def call_FUT(self, configname="example.ini"):
         import mrbob
+
         from ..parsing import parse_config
 
         if not configname.startswith("http"):
@@ -104,7 +103,7 @@ class parse_configTest(unittest.TestCase):
 
         def write(url, filename):
             f = open(filename, "w")
-            f.write("[variables]\n" "foo = bar\n")
+            f.write("[variables]\nfoo = bar\n")
             f.close()
 
         urlretrieve.side_effect = write
@@ -114,7 +113,6 @@ class parse_configTest(unittest.TestCase):
 
 
 class update_configTest(unittest.TestCase):
-
     def call_FUT(self, config, newconfig):
         from ..parsing import update_config
 
@@ -160,7 +158,6 @@ class update_configTest(unittest.TestCase):
 
 
 class write_configTest(unittest.TestCase):
-
     def setUp(self):
         self.tmpfile = tempfile.mkstemp()[1]
 
@@ -218,7 +215,6 @@ class write_configTest(unittest.TestCase):
 
 
 class pretty_format_configTest(unittest.TestCase):
-
     def call_FUT(self, config):
         from ..parsing import pretty_format_config
 
@@ -240,7 +236,6 @@ class pretty_format_configTest(unittest.TestCase):
 
 
 class nest_variablesTest(unittest.TestCase):
-
     def call_FUT(self, d):
         from ..parsing import nest_variables
 

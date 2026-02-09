@@ -1,18 +1,16 @@
 """Command line interface to mr.bob"""
 
+import argparse
 import importlib.metadata
-import sys
 import os
 import shutil
+import sys
 
 import six
-import argparse
 
-from .configurator import Configurator
-from .configurator import maybe_bool
-from .bobexceptions import ConfigurationError
-from .bobexceptions import TemplateConfigurationError
-from .parsing import parse_config, update_config, pretty_format_config
+from .bobexceptions import ConfigurationError, TemplateConfigurationError
+from .configurator import Configurator, maybe_bool
+from .parsing import parse_config, pretty_format_config, update_config
 
 # http://docs.python.org/library/argparse.html
 parser = argparse.ArgumentParser(description="Filesystem template renderer")
