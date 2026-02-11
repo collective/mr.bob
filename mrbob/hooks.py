@@ -20,12 +20,12 @@ def to_boolean(configurator, question, answer):
     Following variables can be converted to a boolean: **y, n, yes, no, true, false, 1, 0**
     """
     value = answer.lower()
-    if value in ['y', 'yes', 'true', '1']:
+    if value in ["y", "yes", "true", "1"]:
         return True
-    elif value in ['n', 'no', 'false', '0']:
+    elif value in ["n", "no", "false", "0"]:
         return False
     else:
-        raise ValidationError('Value must be a boolean (y/n)')
+        raise ValidationError("Value must be a boolean (y/n)")
 
 
 def to_integer(configurator, question, answer):
@@ -43,7 +43,7 @@ def to_integer(configurator, question, answer):
     try:
         return int(answer)
     except ValueError:
-        raise ValidationError('Value must be an integer')
+        raise ValidationError("Value must be an integer")
 
 
 def to_decimal(configurator, question, answer):
@@ -61,7 +61,7 @@ def to_decimal(configurator, question, answer):
     try:
         return float(answer)
     except ValueError:
-        raise ValidationError('Value must be a decimal')
+        raise ValidationError("Value must be a decimal")
 
 
 def validate_choices(configurator, question, answer):
@@ -85,15 +85,15 @@ def validate_choices(configurator, question, answer):
     This hook may be set to validate the choices in a case sensitive manner.
     However, this behaviour is disabled by default.
     """
-    delimiter = question.extra.get('choices_delimiter')
-    choices = question.extra.get('choices', '').split(delimiter)
+    delimiter = question.extra.get("choices_delimiter")
+    choices = question.extra.get("choices", "").split(delimiter)
 
     # If no choices are defined, then we assume the provided answer is correct
     if not choices:
         return answer
 
     # Determine case sensitivity
-    case_sensitive_config = question.extra.get('choices_case_sensitive')
+    case_sensitive_config = question.extra.get("choices_case_sensitive")
     case_sensitive = False
     if case_sensitive_config:
         try:
@@ -110,7 +110,8 @@ def validate_choices(configurator, question, answer):
         return answer
     else:
         raise ValidationError(
-            'Value must be ' + ', '.join(choices[:-1]) + ' or ' + choices[-1])
+            "Value must be " + ", ".join(choices[:-1]) + " or " + choices[-1]
+        )
 
 
 def validate_regex(configurator, question, answer):
@@ -126,7 +127,7 @@ def validate_regex(configurator, question, answer):
         project.regex = ^[a-z]+$
 
     """
-    regex = question.extra.get('regex')
+    regex = question.extra.get("regex")
 
     # If no regex is defined, then we assume the provided answer is correct
     if not regex:
@@ -135,8 +136,7 @@ def validate_regex(configurator, question, answer):
     if re.match(regex, answer):
         return answer
     else:
-        raise ValidationError(
-            'Value was not of the expected format (%s)' % regex)
+        raise ValidationError("Value was not of the expected format (%s)" % regex)
 
 
 def set_current_datetime(configurator, question):
@@ -160,7 +160,7 @@ def set_current_datetime(configurator, question):
     See the following URL for more information:
     http://docs.python.org/2/library/datetime.html#strftime-and-strptime-behavior
     """
-    datetime_format = question.extra.get('datetime_format', '%Y-%m-%d')
+    datetime_format = question.extra.get("datetime_format", "%Y-%m-%d")
     question.default = time.strftime(datetime_format)
 
 
@@ -185,13 +185,12 @@ def validate_datetime(configurator, question, answer):
     See the following URL for more information:
     http://docs.python.org/2/library/datetime.html#strftime-and-strptime-behavior
     """
-    datetime_format = question.extra.get('datetime_format', '%Y-%m-%d')
+    datetime_format = question.extra.get("datetime_format", "%Y-%m-%d")
     try:
         time.strptime(answer, datetime_format)
         return answer
     except ValueError:
-        raise ValidationError(
-            'Value was not a date in the format ' + datetime_format)
+        raise ValidationError("Value was not a date in the format " + datetime_format)
 
 
 def show_message(configurator):
@@ -207,6 +206,6 @@ def show_message(configurator):
 
     As shown above, you can use standard Python formatting in ``post_render_msg``.
     """
-    message = configurator.templateconfig.get('message', '')
+    message = configurator.templateconfig.get("message", "")
     if not configurator.quiet and message:
         print(message % configurator.variables)

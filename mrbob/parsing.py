@@ -1,19 +1,20 @@
+import collections
 import os
 import tempfile
-import collections
 
 try:  # pragma: no cover
-    from collections import OrderedDict  # NOQA
+    from collections import OrderedDict  # noqa
 except ImportError:  # pragma: no cover
-    from ordereddict import OrderedDict  # NOQA
-import six
+    from ordereddict import OrderedDict  # noqa
 import configparser
 
+import six
+
 try:  # pragma: no cover
-    from urllib import urlretrieve  # NOQA
+    from urllib import urlretrieve  # noqa
 except ImportError:  # pragma: no cover
     # PY3K
-    from urllib.request import urlretrieve  # NOQA
+    from urllib.request import urlretrieve  # noqa
 
 from .bobexceptions import ConfigurationError
 
@@ -109,7 +110,7 @@ def update_config(first_config, second_config):
 
 
 def pretty_format_config(config):
-    l = []
+    item_list = []
 
     def format_config(dict_, namespace=""):
         for key, value in dict_.items():
@@ -120,8 +121,8 @@ def pretty_format_config(config):
             if isinstance(value, dict):
                 format_config(value, namespace=namespace_new)
             else:
-                l.append("%s = %s" % (namespace_new, value))
+                item_list.append("%s = %s" % (namespace_new, value))
 
     format_config(config)
 
-    return sorted(l)
+    return sorted(item_list)
