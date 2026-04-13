@@ -5,7 +5,8 @@ Changelog
 1.0.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Remove usage of pkg_resources.
+  [erral]
 
 
 1.0.1 (2024-02-29)
