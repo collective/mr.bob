@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.0.2 (unreleased)
+2.0b1 (2026-04-16)
 ------------------
 
 - Remove usage of pkg_resources.
