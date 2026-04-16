@@ -21,7 +21,7 @@ def read(*rnames):
 
 setup(
     name="mr.bob",
-    version="2.0.dev0",
+    version="2.0",
     description="Bob renders directory structure templates",
     long_description=read("README.rst") + "\n" + read("HISTORY.rst"),
     classifiers=[
